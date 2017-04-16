@@ -1,24 +1,465 @@
+html,
+body,
+#root,
 .App {
-  text-align: center;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: "Lato", "Helvetica", sans-serif;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
+.App {
+    text-align: center;
 }
 
-.App-header {
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
-  color: white;
+.App-backgroundColor {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgb(255, 252, 252);
+    pointer-events: none;
+    z-index: -1;
 }
 
-.App-intro {
-  font-size: large;
+.App-backgroundImage {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    pointer-events: none;
+    z-index: -1;
 }
 
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+.paneContainer {
+    position: absolute;
+    left: 50%;
+    width: 80%;
+    max-width: 60rem;
+    bottom: 0;
+    padding: 2rem 1rem 1rem 1rem;
+    box-sizing: border-box;
+    background: rgba(255, 252, 252, 0.75);
+    overflow-x: hidden;
+    overflow-y: scroll;
+    -webkit-transform: translateX(-50%);
+    -moz-transform: translateX(-50%);
+    -o-transform: translateX(-50%);
+    transform: translateX(-50%);
+}
+
+.Modal-container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(50, 50, 50, 0.8275);
+    z-index: 1;
+    opacity: 0;
+    transition: 0.33s opacity;
+}
+
+.Modal-container.hidden {
+    display: none;
+}
+
+.header {
+    font-size: 200%;
+}
+
+.header:first-of-type {
+    margin-top: 0;
+}
+
+.subheader {
+    font-size: 140%;
+}
+
+.body {
+    font-size: 100%;
+}
+
+.footer {
+    font-size: 67%;
+}
+
+.footer:last-of-type {
+    margin-bottom: 0;
+}
+
+.wideButton {
+    display: block;
+    position: relative;
+    padding: 0.33rem;
+    margin-left: auto;
+    margin-right: auto;
+    border: 0.1rem solid rgb(200, 200, 200);
+    border-radius: 0.67rem;
+    color: rgb(245, 245, 245);
+    background: rgb(185, 0, 0);
+    cursor: pointer;
+}
+
+.wideButton span {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.wideButton:hover,
+.wideButton:active {
+    background: rgb(200, 0, 0);
+}
+
+@media (min-width: 0px) {
+    .paneContainer {
+        top: 1.25rem;
+        bottom: 1.7rem;
+        padding-top: 0.9rem;
+    }
+
+    .paneContainer,
+    .Modal {
+        font-size: 0.33rem;
+    }
+
+    .wideButton {
+        width: 8rem;
+        height: 1rem;
+        margin-top: 0.25rem;
+        margin-bottom: 0.25rem;
+        font-size: 110%;
+    }
+}
+
+@media (min-width: 250px) {
+    .paneContainer {
+        top: 1.5rem;
+        bottom: 2rem;
+        padding-top: 0.95rem;
+    }
+
+    .paneContainer,
+    .Modal {
+        font-size: 0.48rem;
+    }
+
+    .wideButton {
+        width: 10rem;
+        height: 1.33rem;
+        margin-top: 0.3rem;
+        margin-bottom: 0.3rem;
+        font-size: 115%;
+    }
+}
+
+@media (min-width: 300px) {
+    .paneContainer {
+        top: 2.35rem;
+        bottom: 2.3rem;
+        padding-top: 1rem;
+    }
+
+    .paneContainer,
+    .Modal {
+        font-size: 0.625rem;
+    }
+
+    .wideButton {
+        width: 12.25rem;
+        height: 1.67rem;
+        margin-top: 0.35rem;
+        margin-bottom: 0.35rem;
+        font-size: 112.5%;
+    }
+}
+
+@media (min-width: 350px) {
+    .paneContainer {
+        top: 2.35rem;
+        bottom: 2.5rem;
+        padding-top: 1.05rem;
+    }
+
+    .paneContainer,
+    .Modal {
+        font-size: 0.8rem;
+    }
+
+    .wideButton {
+        width: 15rem;
+        height: 2rem;
+        margin-top: 0.4rem;
+        margin-bottom: 0.4rem;
+        font-size: 110%;
+    }
+}
+
+@media (min-width: 400px) {
+    .paneContainer {
+        top: 2.5rem;
+        bottom: 3.1rem;
+        padding-top: 1.1rem;
+    }
+
+    .paneContainer,
+    .Modal {
+        font-size: 0.85rem;
+    }
+
+    .wideButton {
+        width: 16.5rem;
+        height: 2.33rem;
+        margin-top: 0.45rem;
+        margin-bottom: 0.45rem;
+        font-size: 107.5%;
+    }
+}
+
+@media (min-width: 450px) {
+    .paneContainer {
+        top: 2.7rem;
+        bottom: 3.3rem;
+        padding-top: 1.15rem;
+    }
+
+    .paneContainer,
+    .Modal {
+        font-size: 0.9rem;
+    }
+
+    .wideButton {
+        width: 17.5rem;
+        height: 2.67rem;
+        margin-top: 0.5rem;
+        margin-bottom: 0.5rem;
+        font-size: 110%;
+    }
+}
+
+@media (min-width: 500px) {
+    .paneContainer {
+        top: 2.75rem;
+        bottom: 2.5rem;
+        padding-top: 1.2rem;
+    }
+
+    .paneContainer,
+    .Modal {
+        font-size: 0.95rem;
+    }
+
+    .wideButton {
+        width: 18.75rem;
+        height: 3rem;
+        margin-top: 0.55rem;
+        margin-bottom: 0.55rem;
+        font-size: 107.5%;
+    }
+}
+
+@media (min-width: 550px) {
+    .paneContainer {
+        top: 2.85rem;
+        bottom: 3.6rem;
+        padding-top: 1.25rem;
+    }
+
+    .paneContainer,
+    .Modal {
+        font-size: 1rem;
+    }
+
+    .wideButton {
+        width: 19.5rem;
+        height: 3.33rem;
+        margin-top: 0.6rem;
+        margin-bottom: 0.6rem;
+        font-size: 107.5%;
+    }
+}
+
+@media (min-width: 750px) {
+    .paneContainer {
+        top: 3.33rem;
+        bottom: 2.9rem;
+        padding-top: 1.55rem;
+    }
+
+    .paneContainer,
+    .Modal {
+        font-size: 1.05rem;
+    }
+
+    .wideButton {
+        width: 20.5rem;
+        height: 3rem;
+        margin-top: 0.65rem;
+        margin-bottom: 0.65rem;
+        font-size: 107.5%;
+    }
+}
+
+@media (min-width: 1000px) {
+    .paneContainer {
+        top: 3.5rem;
+        bottom: 3.1rem;
+        padding-top: 1.85rem;
+    }
+
+    .paneContainer,
+    .Modal {
+        font-size: 1.1rem;
+    }
+
+    .wideButton {
+        width: 21.33rem;
+        height: 3.25rem;
+        margin-top: 0.7rem;
+        margin-bottom: 0.7rem;
+        font-size: 110%;
+    }
+}
+
+@media (min-width: 1250px) {
+    .paneContainer {
+        top: 3.8rem;
+        bottom: 3.1rem;
+        padding: 1.85rem;
+    }
+
+    .paneContainer,
+    .Modal {
+        font-size: 1.2rem;
+    }
+
+    .wideButton {
+        width: 23.5rem;
+        height: 3.25rem;
+        margin-top: 0.7rem;
+        margin-bottom: 0.7rem;
+        font-size: 110%;
+    }
+}
+
+@media (min-width: 1500px) {
+    .paneContainer {
+        top: 4.3rem;
+        bottom: 3.1rem;
+        max-width: 80rem;
+        padding: 2.25rem 2rem 2rem 2rem;
+    }
+
+    .paneContainer,
+    .Modal {
+        font-size: 1.3rem;
+    }
+
+    .wideButton {
+        width: 25rem;
+        height: 3.25rem;
+        margin-top: 0.7rem;
+        margin-bottom: 0.7rem;
+        font-size: 110%;
+    }
+}
+
+@media (min-width: 1750px) {
+    .paneContainer {
+        top: 4.9rem;
+        bottom: 3.1rem;
+    }
+
+    .paneContainer,
+    .Modal {
+        font-size: 1.4rem;
+    }
+
+    .wideButton {
+        width: 27.5rem;
+        height: 3.25rem;
+        margin-top: 0.7rem;
+        margin-bottom: 0.7rem;
+        font-size: 110%;
+    }
+}
+
+@media (min-width: 2000px) {
+    .paneContainer {
+        top: 5.4rem;
+        bottom: 3.1rem;
+    }
+
+    .paneContainer,
+    .Modal {
+        font-size: 1.475rem;
+    }
+
+    .wideButton {
+        width: 39rem;
+        height: 3.25rem;
+        margin-top: 0.7rem;
+        margin-bottom: 0.7rem;
+        font-size: 110%;
+    }
+}
+
+.centerHorizontallyRelative {
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.centerVerticallyRelative {
+    position: relative;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.centerHorizontallyAndVerticallyRelative {
+    position: relative;
+    margin: auto;
+}
+
+.centerHorizontallyAbsolute {
+    position: absolute;
+    left: 50%;
+    -webkit-transform: translateX(-50%);
+    -moz-transform: translateX(-50%);
+    -o-transform: translateX(-50%);
+    transform: translateX(-50%);
+}
+
+.centerVerticallyAbsolute {
+    position: absolute;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+    -o-transform: translateY(-50%);
+    transform: translateY(-50%);   
+}
+
+.centerHorizontallyAndVerticallyAbsolute {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);   
+}
+
+.hidden {
+    display: none !important;
 }

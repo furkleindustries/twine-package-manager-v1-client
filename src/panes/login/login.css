@@ -1,0 +1,100 @@
+.Login-container:not(:first-of-type) {
+	margin-top: 0.67rem;
+}
+
+.Login-label {
+	margin-right: 0.5rem;
+}
+
+.Login-input {
+	position: relative;
+	top: -0.18rem;
+}
+
+@media (min-width: 0px) {
+	.Login-button {
+		width: 9rem;
+	}
+
+	.Login-passwordLabel {
+		margin-left: 0.1rem;
+	}
+}
+
+@media (min-width: 250px) {
+	.Login-button {
+		width: 12rem;
+	}
+
+	.Login-passwordLabel {
+		margin-left: 0.1rem;
+	}
+}
+
+@media (min-width: 300px) {
+	.Login-button {
+		width: 16rem;
+	}
+
+	.Login-passwordLabel {
+		margin-left: 0.2rem;
+	}
+}
+
+@media (min-width: 350px) {
+	.Login-button {
+		width: 19rem;
+	}
+
+	.Login-passwordLabel {
+		margin-left: 0.2rem;
+	}
+}
+
+@media (min-width: 400px) {
+	.Login-button {
+		width: 20.5rem;
+	}
+
+	.Login-passwordLabel {
+		margin-left: 0.25rem;
+	}
+}
+
+@media (min-width: 450px) {
+	.Login-button {
+		width: 22rem;
+	}
+}
+
+@media (min-width: 500px) {
+	.Login-button {
+		width: 23.5rem;
+	}
+}
+
+@media (min-width: 550px) {
+	.Login-button {
+		width: 24.5rem;
+	}
+}
+
+@media (min-width: 750px) {
+	.Login-button {
+		width: 26rem;
+	}
+
+	.Login-passwordLabel {
+		padding-right: 0.4rem;
+	}
+}
+
+@media (min-width: 1000px) {
+	.Login-button {
+		width: 25rem;
+	}
+
+	.Login-passwordLabel {
+		padding-right: 0.4rem;
+	}
+}
