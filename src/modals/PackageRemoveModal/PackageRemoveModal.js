@@ -1,3 +1,5 @@
+import 'whatwg-fetch';
+
 // react
 import React, { Component } from 'react';
 
@@ -9,7 +11,6 @@ import {
 } from '../../panes/profile/profileActions';
 
 // modules
-import makeRequest from '../../modules/makeRequest';
 import deepCopy from '../../modules/deepCopy';
 
 // css

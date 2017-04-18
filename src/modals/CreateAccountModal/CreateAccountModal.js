@@ -1,8 +1,10 @@
-import React, { Component } from 'react';
-import './CreateAccountModal.css';
+import 'whatwg-fetch';
 
-// modules
-import makeRequest from '../../modules/makeRequest.js';
+// react
+import React, { Component } from 'react';
+
+// css
+import './CreateAccountModal.css';
 
 class CreateAccountModal extends Component {
 	constructor() {
@@ -125,17 +127,13 @@ class CreateAccountModal extends Component {
 	}
 
 	doCreateAccount() {
-		makeRequest({
+		fetch('https://furkleindustries.com/hypercomp/register.php', {
 			method: 'POST',
-			url: 'https://furkleindustries.com/hypercomp/register.php',
-			params: {
+			body: new FormData({
 				username: this.state.username,
 				password: this.state.password,
 				email: this.state.email,
-			},
-			headers: {
-				'Content-type': 'application/x-www-form-urlencoded',
-			},
+			}),
 		}).catch(xhr => {
 			try {
 				const responseObj = JSON.parse(xhr.responseText);
@@ -169,7 +167,9 @@ class CreateAccountModal extends Component {
 
 			// don't allow execution to continue
 			return Promise.reject();
-		}).then(xhr => {
+		}).then(response => {
+			return response.json();
+		}).then(() => {
 			// clear both input elements
 			this.clearInputs();
 

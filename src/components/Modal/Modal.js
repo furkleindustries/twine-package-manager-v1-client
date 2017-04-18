@@ -1,27 +1,24 @@
+// react
 import React, { Component } from 'react';
+
+// modules
+import modalClose from '../../modules/modalClose';
+
+// css
 import './Modal.css';
 
 class Modal extends Component {
 	render() {
-		const content = React.cloneElement(this.props.content, {
-			closeModal: this.props.closeModal,
-		});
-
 		return (
 			<div className="Modal">
 				<button
 					className="Modal-close"
-					onClick={this.props.closeModal}>
+					onClick={modalClose}>
 					✖
 				</button>
 				<div
-					className="Modal-contentContainer"
-					onKeyDown={e => {
-						if (e.keyCode === 27 || e === 'manual') {
-							this.props.closeModal();
-						}
-					}}>
-					{content}
+					className="Modal-contentContainer">
+					{this.props.content}
 				</div>
 			</div>
 		);

@@ -1,25 +1,22 @@
 // react
-import React, { Component } from 'react';
+import React, { Component, } from 'react';
 
 // redux
+import { connect, } from 'react-redux';
 import store from '../../store';
-import { setUsername, setPassword } from './loginActions';
-
-import './login.css';
+import { setUsername, setPassword, } from './loginActions';
 
 // components
 import CreateAccountModal from '../../modals/CreateAccountModal/CreateAccountModal.js';
 
+// modules
+import appLogin from '../../modules/appLogin';
+import modalCreateCreateAccount from '../../modules/modalCreateCreateAccount';
+
+// css
+import './login.css';
+
 class LoginPane extends Component {
-	constructor() {
-		super();
-
-		this.onUsernameChange = this.onUsernameChange.bind(this);
-		this.onPasswordChange = this.onPasswordChange.bind(this);
-		this.doLogin = this.doLogin.bind(this);
-		this.createAccountModal = this.createAccountModal.bind(this);
-	}
-
 	render() {
 		return (
 			<div className="Login paneContainer">
@@ -34,10 +31,13 @@ class LoginPane extends Component {
 						id="Login-username"
 						value={this.props.username}
 						ref={input => this.usernameInput = input}
-						onChange={this.onUsernameChange} 
+						onChange={e => store.dispatch(setUsername(e.target.value))} 
 						onKeyDown={e => {
 							if (e.keyCode === 13) {
-								this.doLogin();
+								appLogin(this.props.username, this.props.password);
+
+								// set the focus to the username
+								this.usernameInput.focus();
 							}
 						}} />
 				</div>
@@ -53,23 +53,31 @@ class LoginPane extends Component {
 						className="Login-passwordInput Login-input subheader"
 						id="Login-password"
 						value={this.props.password}
-						onChange={this.onPasswordChange}
+						onChange={e => store.dispatch(setPassword(e.target.value))}
 						onKeyDown={e => {
 							if (e.keyCode === 13) {
-								this.doLogin();
+								appLogin(this.props.username, this.props.password);
+
+								// set the focus to the username
+								this.usernameInput.focus();
 							}
 						}} />
 				</div>
 
 				<button
 					className="Login-doLogin Login-button centerHorizontallyRelative wideButton"
-					onClick={this.doLogin}>
+					onClick={() => {
+						appLogin(this.props.username, this.props.password);
+
+						// set the focus to the username
+						this.usernameInput.focus();
+					}}>
 					<span>Login</span>
 				</button>
 
 				<button
 					className="Login-createAccount Login-button centerHorizontallyRelative wideButton"
-					onClick={this.createAccountModal}>
+					onClick={modalCreateCreateAccount}>
 					<span>Create Account</span>
 				</button>
 
@@ -81,31 +89,19 @@ class LoginPane extends Component {
 	}
 
 	componentDidMount() {
-		if (location.hash === '#register') {
-			this.createAccountModal();
+		if (location.hash === '#createAccount') {
+			modalCreateCreateAccount();
 		}
-	}
-
-	onUsernameChange(e) {
-		store.dispatch(setUsername(e.target.value));
-	}
-
-	onPasswordChange(e) {
-		store.dispatch(setPassword(e.target.value));
-	}
-
-	doLogin() {
-		this.props.appLogin(this.props.username, this.props.password, this);
-
-		// set the focus to the username
-		this.usernameInput.focus();
-	}
-
-	createAccountModal() {
-		location.hash = 'register';
-
-		this.props.createModal(<CreateAccountModal />);		
 	}
 }
 
-export default LoginPane;
+function mapStateToProps() {
+	const state = store.getState();
+
+	return {
+		username: state.username,
+		password: state.password,
+	};
+}
+
+export default connect(mapStateToProps)(LoginPane);

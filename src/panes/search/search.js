@@ -1,3 +1,5 @@
+import 'whatwg-fetch';
+
 // react
 import React, { Component, } from 'react';
 
@@ -26,7 +28,6 @@ import {
 import Result from '../../components/Result/Result';
 
 // modules
-import makeRequest from '../../modules/makeRequest';
 import deepCopy from '../../modules/deepCopy';
 import unixTimeToSettingsTime from '../../modules/unixTimeToSettingsTime';
 import onlyFirstLetterCapitalized from '../../modules/onlyFirstLetterCapitalized';
@@ -664,10 +665,7 @@ class SearchPane extends Component {
 			paramStr += '&subtype=' + encodeURIComponent(this.props.subtype);
 		}
 
-		makeRequest({
-			url: 'https://furkleindustries.com/twinepm/search/' + paramStr,
-			method: 'GET',
-		}).catch(xhr => {
+		fetch(`https://furkleindustries.com/twinepm/search/${paramStr}`).catch(xhr => {
 			try {
 				const responseObj = JSON.parse(xhr.responseText);
 
@@ -700,9 +698,10 @@ class SearchPane extends Component {
 
 				return Promise.reject();
 			}
-		}).then(xhr => {
+		}).then(response => {
+			return response.json();
+		}).then(responseObj => {
 			try {
-				const responseObj = JSON.parse(xhr.responseText);
 				let error = responseObj.error;
 				if (error) {
 					store.dispatch(setSearchError(error));

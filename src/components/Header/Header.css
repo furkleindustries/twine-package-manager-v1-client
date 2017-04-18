@@ -1,5 +1,4 @@
 .Header {
-    display: flex;
     align-items: center;
     position: fixed;
     width: 100%;
@@ -35,7 +34,8 @@
 
 @media (min-width: 0px) {
     .Header {
-        height: 1.25rem;
+        height: 2.5rem;
+        display: block;
     }
 
     .Header-title {
@@ -46,18 +46,19 @@
 
 @media (min-width: 250px) {
     .Header {
-        height: 1.5rem;
+        height: 2.5rem;
     }
 
     .Header-title {
-        font-size: 45%;
+        font-size: 40%;
         margin-right: 0.5rem;
     }
 }
 
 @media (min-width: 300px) {
     .Header {
-        height: 2.35rem;
+        display: flex;
+        height: 1.5rem;
     }
 
     .Header-title {
@@ -68,7 +69,7 @@
 
 @media (min-width: 350px) {
     .Header {
-        height: 2.35rem;
+        height: 1.75rem;
     }
 
     .Header-title {
@@ -79,7 +80,7 @@
 
 @media (min-width: 400px) {
     .Header {
-        height: 2.5rem;
+        height: 2rem;
     }
 
     .Header-title {
@@ -90,7 +91,7 @@
 
 @media (min-width: 450px) {
     .Header {
-        height: 2.7rem;
+        height: 2.25rem;
     }
 
     .Header-title {
@@ -101,7 +102,7 @@
 
 @media (min-width: 500px) {
     .Header {
-        height: 2.75rem;
+        height: 2.5rem;
     }
 
     .Header-title {
@@ -111,7 +112,7 @@
 
 @media (min-width: 550px) {
     .Header {
-        height: 2.85rem;
+        height: 2.75rem;
     }
 
     .Header-title {
@@ -122,7 +123,7 @@
 
 @media (min-width: 750px) {
     .Header {
-        height: 3.33rem;
+        height: 3rem;
     }
 
     .Header-title {
@@ -133,7 +134,7 @@
 
 @media (min-width: 1000px) {
     .Header {
-        height: 3.5rem;
+        height: 3.25rem;
     }
 
     .Header-title {
@@ -144,7 +145,7 @@
 
 @media (min-width: 1250px) {
     .Header {
-        height: 3.85rem;
+        height: 3.5rem;
     }
 
     .Header-title {
@@ -155,7 +156,7 @@
 
 @media (min-width: 1500px) {
     .Header {
-        height: 4.3rem;
+        height: 3.75rem;
     }
 
     .Header-title {
@@ -166,7 +167,7 @@
 
 @media (min-width: 1750px) {
     .Header {
-        height: 4.9rem;
+        height: 4rem;
     }
 
     .Header-title {
@@ -177,7 +178,7 @@
 
 @media (min-width: 2000px) {
     .Header {
-        height: 5.4rem;
+        height: 4.25rem;
     }
 
     .Header-title {

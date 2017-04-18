@@ -124,8 +124,8 @@ body,
 
 @media (min-width: 0px) {
     .paneContainer {
-        top: 1.25rem;
-        bottom: 1.7rem;
+        top: 2.5rem;
+        bottom: 5rem;
         padding-top: 0.9rem;
     }
 
@@ -139,14 +139,14 @@ body,
         height: 1rem;
         margin-top: 0.25rem;
         margin-bottom: 0.25rem;
-        font-size: 110%;
+        font-size: 100%;
     }
 }
 
 @media (min-width: 250px) {
     .paneContainer {
-        top: 1.5rem;
-        bottom: 2rem;
+        top: 2.5rem;
+        bottom: 3.25rem;
         padding-top: 0.95rem;
     }
 
@@ -166,8 +166,8 @@ body,
 
 @media (min-width: 300px) {
     .paneContainer {
-        top: 2.35rem;
-        bottom: 2.3rem;
+        top: 1.5rem;
+        bottom: 3rem;
         padding-top: 1rem;
     }
 
@@ -181,13 +181,13 @@ body,
         height: 1.67rem;
         margin-top: 0.35rem;
         margin-bottom: 0.35rem;
-        font-size: 112.5%;
+        font-size: 112%;
     }
 }
 
 @media (min-width: 350px) {
     .paneContainer {
-        top: 2.35rem;
+        top: 1.75rem;
         bottom: 2.5rem;
         padding-top: 1.05rem;
     }
@@ -202,14 +202,14 @@ body,
         height: 2rem;
         margin-top: 0.4rem;
         margin-bottom: 0.4rem;
-        font-size: 110%;
+        font-size: 107.5%;
     }
 }
 
 @media (min-width: 400px) {
     .paneContainer {
         top: 2.5rem;
-        bottom: 3.1rem;
+        bottom: 2.25rem;
         padding-top: 1.1rem;
     }
 

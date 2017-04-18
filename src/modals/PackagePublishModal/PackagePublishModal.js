@@ -1,3 +1,5 @@
+import 'whatwg-fetch';
+
 // react
 import React, { Component } from 'react';
 
@@ -12,7 +14,6 @@ import {
 } from '../../components/PackageOwned/PackageOwnedActions';
 
 // modules
-import makeRequest from '../../modules/makeRequest';
 import deepCopy from '../../modules/deepCopy';
 
 // css
@@ -95,20 +96,15 @@ class PackagePublishModal extends Component {
 			return;
 		}
 
-		makeRequest({
-			'url': 'https://furkleindustries.com/twinepm/package/',
+		fetch('https://furkleindustries.com/twinepm/package/', {
 			method: 'POST',
-			withCredentials: true,
+			credentials: 'include',
 
-			params: {
+			body: new FormData({
 				id: this.props.id,
 				csrfToken: this.props.csrfToken,
 				published: !this.props.published,
-			},
-
-			headers: {
-				'Content-type': 'application/x-www-form-urlencoded',
-			},
+			}),
 		}).catch(xhr => {
 			let error = 'Unknown error publishing package.';
 			try {
@@ -130,44 +126,29 @@ class PackagePublishModal extends Component {
 			}, 6000);
 
 			return Promise.reject();
-		}).then(xhr => {
-			try {
-				const responseObj = JSON.parse(xhr.responseText);
+		}).then(response => {
+			return response.json();
+		}).catch(e => {
+			const error = 'Unknown error deserializing package ' +
+				'publishing object. Please contact webmaster.';
+			store.dispatch(setPackagePublishingError(error));
 
-				if (responseObj.error) {
-					let error = responseObj.error;
-					if (!responseObj.error) {
-						error = 'The publishing response object\'s error ' +
-							'field was set, but there was no content in the ' +
-							'field.';
-					}
-
-					store.dispatch(setPackagePublishingError(error));
-
-					setTimeout(() => {
-						if (this.props.error === error) {
-							store.dispatch(setPackagePublishingError(''));
-						}
-					}, 6000);
-
-					return;
-				} else if (responseObj.status !== 200) {
-					const error = 'Unknown error: publishing response ' +
-						'object status was not 200, but there was no error. Please ' +
-						'contact webmaster.';
-					store.dispatch(setPackagePublishingError(error));
-
-					setTimeout(() => {
-						if (this.props.error === error) {
-							store.dispatch(setPackagePublishingError(''));
-						}
-					}, 6000);
-
-					return;
+			setTimeout(() => {
+				if (this.props.error === error) {
+					store.dispatch(setPackagePublishingError(''));
 				}
-			} catch (e) {
-				const error = 'Unknown error deserializing package ' +
-					'publishing object. Please contact webmaster.';
+			}, 6000);
+
+			return Promise.reject();
+		}).then(responseObj => {
+			if (responseObj.error) {
+				let error = responseObj.error;
+				if (!responseObj.error) {
+					error = 'The publishing response object\'s error ' +
+						'field was set, but there was no content in the ' +
+						'field.';
+				}
+
 				store.dispatch(setPackagePublishingError(error));
 
 				setTimeout(() => {
@@ -176,7 +157,20 @@ class PackagePublishModal extends Component {
 					}
 				}, 6000);
 
-				return;
+				return Promise.reject();
+			} else if (responseObj.status !== 200) {
+				const error = 'Unknown error: publishing response ' +
+					'object status was not 200, but there was no error. Please ' +
+					'contact webmaster.';
+				store.dispatch(setPackagePublishingError(error));
+
+				setTimeout(() => {
+					if (this.props.error === error) {
+						store.dispatch(setPackagePublishingError(''));
+					}
+				}, 6000);
+
+				return Promise.reject();
 			}
 
 			store.dispatch(setProfilePackages(packages));

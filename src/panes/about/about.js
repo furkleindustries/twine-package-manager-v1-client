@@ -4,16 +4,13 @@ import React, { Component } from 'react';
 // modals
 import RulesModal from '../../modals/RulesModal/RulesModal.js';
 
+// modules
+import modalCreate from '../../modules/modalCreate';
+
 // css
 import './about.css';
 
 class AboutPane extends Component {
-	constructor() {
-		super();
-
-		this.createRulesModal = this.createRulesModal.bind(this);
-	}
-
 	render() {
 		return (
 			<div className="About paneContainer">
@@ -34,7 +31,7 @@ class AboutPane extends Component {
 				<p className="subheader">
 					<button
 						className="wideButton"
-						onClick={this.createRulesModal}>
+						onClick={this.modalCreateRules}>
 						<span>Rules</span>
 					</button>
 				</p>
@@ -48,12 +45,12 @@ class AboutPane extends Component {
 
 	componentDidMount() {
 		if (location.hash === '#rules') {
-			this.createRulesModal();
+			this.modalCreateRules();
 		}
 	}
 
-	createRulesModal() {
-		this.props.createModal(<RulesModal />);
+	modalCreateRules() {
+		modalCreate(<RulesModal />);
 		location.hash = 'rules';
 	}
 }

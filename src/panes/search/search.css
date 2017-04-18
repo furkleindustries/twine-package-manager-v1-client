@@ -2,6 +2,7 @@
 	width: 50%;
 	height: 2rem;
 	box-sizing: border-box;
+	font-size: 80%;
 }
 
 .Search-options,
@@ -189,6 +190,10 @@
 }
 
 @media (min-width: 750px) {
+	.Search-bar {
+		font-size: 140%;
+	}
+
 	.Search-bar {
 		width: 60%;
 		height: 2rem;

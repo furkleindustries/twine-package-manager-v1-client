@@ -1,19 +1,25 @@
+// react
 import React, { Component } from 'react';
 import { Link } from 'react-router';
+
+// redux
+import store from '../../store';
+import { setSelectedPane } from '../../appActions';
+
+// css
 import './NavBar.css';
 
 class NavBar extends Component {
 	render() {
 		const list = [];
 		Object.getOwnPropertyNames(this.props.panes).forEach(name => {
-			const active = this.props.selectedPane === name;
 			list.push(
 				<NavBarItem id={name}
 					key={name}
 					title={this.props.panes[name].title}
-					active={active ? "true" : ""}
-					visible={this.props.panes[name].visible}
-					navBarItemClick={this.props.navBarItemClick } />);
+					active={this.props.selectedPane === name}
+					visible={this.props.panes[name].visible} />
+			);
 		});
 
 		return (
@@ -40,7 +46,7 @@ class NavBarItem extends Component {
 				className={"NavBarItem" +
 					(this.props.active ? " active" : "") +
 					(this.props.visible ? "" : " hidden")}
-				onClick={e => { this.props.navBarItemClick(e.target.id); }}>
+				onClick={e => store.dispatch(setSelectedPane(e.target.id))}>
 				{this.props.title}
 			</Link>
 		);

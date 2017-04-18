@@ -1,3 +1,5 @@
+import 'whatwg-fetch';
+
 // react
 import React, { Component, } from 'react';
 
@@ -21,7 +23,6 @@ import {
 } from '../../components/PackageOwned/PackageOwnedActions';
 
 // modules
-import makeRequest from '../../modules/makeRequest';
 import deepCopy from '../../modules/deepCopy';
 import unixTimeToSettingsTime from '../../modules/unixTimeToSettingsTime';
 
@@ -255,12 +256,10 @@ class PackageEditModal extends Component {
 	}
 
 	confirm() {
-		makeRequest({
-			url: 'https://furkleindustries.com/twinepm/package/',
+		fetch('https://furkleindustries.com/twinepm/package/', {
 			method: 'POST',
-			withCredentials: true,
-
-			params: {
+			credentials: 'include',
+			body: new FormData({
 				id: this.props.id,
 				name: this.props.name,
 				version: this.props.version,
@@ -271,11 +270,7 @@ class PackageEditModal extends Component {
 				keywords: this.props.keywords,
 				tag: this.props.tag,
 				csrfToken: this.props.csrfToken,
-			},
-
-			headers: {
-				'Content-type': 'application/x-www-form-urlencoded',
-			},
+			}),
 		}).catch(xhr => {
 			try {
 				const responseObj = JSON.parse(xhr.responseText);
@@ -306,82 +301,80 @@ class PackageEditModal extends Component {
 
 			// don't allow execution to continue
 			return Promise.reject();
-		}).then(xhr => {
-			try {
-				const responseObj = JSON.parse(xhr.responseText);
+		}).then(response => {
+			return response.json();
+		}).catch(e => {
+			const error = 'Error deserializing update response ' +
+				'object. Please contact webmaster.';
+			store.dispatch(setPackageEditingError(error));
 
-				if (responseObj.error) {
-					store.dispatch(setPackageEditingError(responseObj.error));
-
-					setTimeout(() => {
-						if (this.props.error === responseObj.error) {
-							store.dispatch(setPackageEditingError(''));
-						}
-					}, 6000);
-
-					return;
-				} else if (responseObj.status !== 200) {
-					const error = 'The response object did not reflect a ' +
-						'200 status, but an error was not returned. Please ' +
-						'contact webmaster.';
-					store.dispatch(setPackageEditingError(error));
-
-					setTimeout(() => {
-						if (this.props.error === error) {
-							store.dispatch(setPackageEditingError(error));
-						}
-					}, 6000);
-
-					return;
+			setTimeout(() => {
+				if (this.props.loginError === error) {
+					store.dispatch(setPackageEditingError(''));
 				}
+			}, 6000);
 
-				const dateModified = responseObj.dateModified;
-				store.dispatch(setPackageEditingDateModified(dateModified));
-
-				const newPkg = {
-					id: this.props.id,
-					name: this.props.name,
-					version: this.props.version,
-					description: this.props.description,
-					homepage: this.props.homepage,
-					js: this.props.js,
-					css: this.props.css,
-					keywords: this.props.keywords,
-					tag: this.props.tag,
-				};
-
-				let packages = store.getState().profile.packages;
-				packages = deepCopy(packages).map(oldPkg => {
-					if (oldPkg.id === this.props.id) {
-						return newPkg;
-					} else {
-						return oldPkg;
-					}
-				});
-
-				store.dispatch(setProfilePackages(packages));
-
-				const notError = 'Package updated successfully.';
-				store.dispatch(setPackageEditingError(notError));
+			return Promise.reject();
+		}).then(responseObj => {
+			if (responseObj.error) {
+				store.dispatch(setPackageEditingError(responseObj.error));
 
 				setTimeout(() => {
-					if (this.props.error === notError) {
-						store.dispatch(setPackageEditingError(''));
-					}
-				}, 6000);
-			} catch (e) {
-				const error = 'Error deserializing update response ' +
-					'object. Please contact webmaster.';
-				store.dispatch(setPackageEditingError(error));
-
-				setTimeout(() => {
-					if (this.props.loginError === error) {
+					if (this.props.error === responseObj.error) {
 						store.dispatch(setPackageEditingError(''));
 					}
 				}, 6000);
 
 				return;
+			} else if (responseObj.status !== 200) {
+				const error = 'The response object did not reflect a ' +
+					'200 status, but an error was not returned. Please ' +
+					'contact webmaster.';
+				store.dispatch(setPackageEditingError(error));
+
+				setTimeout(() => {
+					if (this.props.error === error) {
+						store.dispatch(setPackageEditingError(error));
+					}
+				}, 6000);
+
+				return;
 			}
+
+			const dateModified = responseObj.dateModified;
+			store.dispatch(setPackageEditingDateModified(dateModified));
+
+			const newPkg = {
+				id: this.props.id,
+				name: this.props.name,
+				version: this.props.version,
+				description: this.props.description,
+				homepage: this.props.homepage,
+				js: this.props.js,
+				css: this.props.css,
+				keywords: this.props.keywords,
+				tag: this.props.tag,
+			};
+
+			let packages = store.getState().profile.packages;
+			packages = deepCopy(packages).map(oldPkg => {
+				if (oldPkg.id === this.props.id) {
+					return newPkg;
+				} else {
+					return oldPkg;
+				}
+			});
+
+			store.dispatch(setProfilePackages(packages));
+
+			const notError = 'Package updated successfully.';
+			store.dispatch(setPackageEditingError(notError));
+
+			setTimeout(() => {
+				if (this.props.error === notError) {
+					store.dispatch(setPackageEditingError(''));
+				}
+			}, 6000);
 		});
 	}
 
