@@ -3,6 +3,9 @@ import 'whatwg-fetch';
 // react
 import React, { Component } from 'react';
 
+// modules
+import modalClose from '../../modules/modalClose';
+
 // css
 import './CreateAccountModal.css';
 
@@ -127,18 +130,39 @@ class CreateAccountModal extends Component {
 	}
 
 	doCreateAccount() {
-		fetch('https://furkleindustries.com/hypercomp/register.php', {
+		const formData = new FormData();
+		formData.append('name', this.state.username);
+		formData.append('password', this.state.password);
+		formData.append('email', this.state.email);
+
+		fetch('https://furkleindustries.com/twinepm/login/createAccount.php', {
 			method: 'POST',
-			body: new FormData({
-				username: this.state.username,
-				password: this.state.password,
-				email: this.state.email,
-			}),
-		}).catch(xhr => {
-			try {
-				const responseObj = JSON.parse(xhr.responseText);
+			body: formData,
+		}).then(response => {
+			return response.json();
+		}).catch(e => {
+			const error = 'Unknown error.'
+			this.setState({
+				error,
+			});
+
+			setTimeout(() => {
+				if (this.state.error === error) {
+					this.setState({
+						error: '',
+					});
+				}
+			}, 6000);
+
+			// set the focus to the username
+			this.usernameInput.focus();
+
+			// don't allow execution to continue
+			return Promise.reject();
+		}).then(responseObj => {
+			if (responseObj.error) {
 				this.setState({
-					error: responseObj.error || 'Unknown error.',
+					error: responseObj.error,
 				});
 
 				setTimeout(() => {
@@ -148,39 +172,39 @@ class CreateAccountModal extends Component {
 						});
 					}
 				}, 6000);
-			} catch (err) {
+
+				return Promise.reject();
+			} else if (responseObj.status !== 200) {
+				const error = 'The request did not succeed, but there was ' +
+					'error message received.';
 				this.setState({
-					error: 'Unknown error.',
+					error,
 				});
 
 				setTimeout(() => {
-					if (this.state.error === 'Unknown error.') {
+					if (this.state.error === error) {
 						this.setState({
 							error: '',
 						});
 					}
 				}, 6000);
+
+				return Promise.reject();
 			}
 
-			// set the focus to the username
-			this.usernameInput.focus();
-
-			// don't allow execution to continue
-			return Promise.reject();
-		}).then(response => {
-			return response.json();
-		}).then(() => {
 			// clear both input elements
 			this.clearInputs();
 
 			this.setState({
 				error: 'Please check your e-mail (including the spam ' +
 					'folder) for the validation e-mail, then follow the ' +
-					'link therein.',
+					'link therein. Your username will be reserved for 24 ' +
+					'hours, after which it will become available to everyone ' +
+					'again.',
 			});
 
 			setTimeout(() => {
-				this.props.closeModal();
+				modalClose();
 			}, 6000)
 		});
 	}

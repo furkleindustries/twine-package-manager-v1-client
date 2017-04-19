@@ -15,7 +15,7 @@ export default function appLogin(username, password) {
     formData.append('username', username);
     formData.append('password', password);
 
-    fetch('https://furkleindustries.com/twinepm/login/login.php', {
+    fetch('https://furkleindustries.com/twinepm/login/', {
         method: 'POST',
         body: formData,
         credentials: 'include',
