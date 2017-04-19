@@ -26,7 +26,7 @@ class CreateAccountModal extends Component {
 	render() {
 		return (
 			<div className="CreateAccountModal">
-				<h1 className="header">Create Account</h1>
+				<h1 className="subheader">Create Account</h1>
 				<div className="CreateAccount-usernameContainer CreateAccount-container centerHorizontallyRelative">
 					<label
 						className="CreateAccount-usernameLabel CreateAccount-label"

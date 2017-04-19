@@ -30,6 +30,11 @@ import {
     packageRemovingErrorReducer,
 } from './components/PackageOwned/PackageOwnedReducers';
 
+import {
+    packageCreatingReducer,
+    packageCreatingErrorReducer,
+} from './modals/PackageCreateModal/PackageCreateModalReducers';
+
 const indexReducer = combineReducers({
 	panes: panesReducer,
 	selectedPane: selectedPaneReducer,
@@ -42,11 +47,13 @@ const indexReducer = combineReducers({
     packagePublishing: packagePublishingReducer,
     packageEditing: packageEditingReducer,
     packageRemoving: packageRemovingReducer,
+    packageCreating: packageCreatingReducer,
     loginError: loginErrorReducer,
     createAccountError: createAccountErrorReducer,
     packagePublishingError: packagePublishingErrorReducer,
     packageEditingError: packageEditingErrorReducer,
     packageRemovingError: packageRemovingErrorReducer,
+    packageCreatingError: packageCreatingErrorReducer,
 });
 
 export default indexReducer;

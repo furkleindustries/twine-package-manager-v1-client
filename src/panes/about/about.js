@@ -15,26 +15,18 @@ class AboutPane extends Component {
 		return (
 			<div className="About paneContainer">
 				<p className="About-opener subheader">
-					Have you ever wanted to create a story that responds to its user?
+					A package manager made specifically for Twine.
 				</p>
 
 				<p className="body">
-					One which branches outwardly, or distantly, depending on which links are
-					clicked by the user or where they've been before? Do you want to join others
-					in a competition for new, groundbreaking hypertext fiction?
+					Features macros for Sugarcane, Sugarcube, Harlowe, and Gately.
 				</p>
 
-				<p className="subheader">
-					Welcome to HYPERCOMP.
-				</p>
-
-				<p className="subheader">
-					<button
-						className="wideButton"
-						onClick={this.modalCreateRules}>
-						<span>Rules</span>
-					</button>
-				</p>
+				<button
+					className="wideButton"
+					onClick={this.modalCreateRules}>
+					<span>Rules</span>
+				</button>
 				
 				<p className="About-attribution body">
 					A Furkle Industries production.

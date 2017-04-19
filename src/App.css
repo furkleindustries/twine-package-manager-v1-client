@@ -208,7 +208,7 @@ body,
 
 @media (min-width: 400px) {
     .paneContainer {
-        top: 2.5rem;
+        top: 2rem;
         bottom: 2.25rem;
         padding-top: 1.1rem;
     }
@@ -229,8 +229,8 @@ body,
 
 @media (min-width: 450px) {
     .paneContainer {
-        top: 2.7rem;
-        bottom: 3.3rem;
+        top: 2.25rem;
+        bottom: 2.35rem;
         padding-top: 1.15rem;
     }
 
@@ -250,8 +250,8 @@ body,
 
 @media (min-width: 500px) {
     .paneContainer {
-        top: 2.75rem;
-        bottom: 2.5rem;
+        top: 2.5rem;
+        bottom: 2.45rem;
         padding-top: 1.2rem;
     }
 
@@ -271,8 +271,8 @@ body,
 
 @media (min-width: 550px) {
     .paneContainer {
-        top: 2.85rem;
-        bottom: 3.6rem;
+        top: 2.75rem;
+        bottom: 2.55rem;
         padding-top: 1.25rem;
     }
 
@@ -292,8 +292,8 @@ body,
 
 @media (min-width: 750px) {
     .paneContainer {
-        top: 3.33rem;
-        bottom: 2.9rem;
+        top: 3rem;
+        bottom: 2.65rem;
         padding-top: 1.55rem;
     }
 
@@ -313,8 +313,8 @@ body,
 
 @media (min-width: 1000px) {
     .paneContainer {
-        top: 3.5rem;
-        bottom: 3.1rem;
+        top: 3.25rem;
+        bottom: 3rem;
         padding-top: 1.85rem;
     }
 
@@ -334,8 +334,8 @@ body,
 
 @media (min-width: 1250px) {
     .paneContainer {
-        top: 3.8rem;
-        bottom: 3.1rem;
+        top: 3.5rem;
+        bottom: 3rem;
         padding: 1.85rem;
     }
 
@@ -355,8 +355,8 @@ body,
 
 @media (min-width: 1500px) {
     .paneContainer {
-        top: 4.3rem;
-        bottom: 3.1rem;
+        top: 3.75rem;
+        bottom: 3rem;
         max-width: 80rem;
         padding: 2.25rem 2rem 2rem 2rem;
     }
@@ -377,8 +377,8 @@ body,
 
 @media (min-width: 1750px) {
     .paneContainer {
-        top: 4.9rem;
-        bottom: 3.1rem;
+        top: 4rem;
+        bottom: 3rem;
     }
 
     .paneContainer,
@@ -397,8 +397,8 @@ body,
 
 @media (min-width: 2000px) {
     .paneContainer {
-        top: 5.4rem;
-        bottom: 3.1rem;
+        top: 4.25rem;
+        bottom: 3rem;
     }
 
     .paneContainer,

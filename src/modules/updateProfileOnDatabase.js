@@ -1,4 +1,4 @@
-import fetch from 'whatwg-fetch';
+import 'whatwg-fetch';
 
 // redux
 import store from '../store';
@@ -9,9 +9,14 @@ import {
 } from '../panes/profile/profileActions';
 
 export default function updateProfile(params) {
+    const formData = new FormData();
+    for (let name in params) {
+        formData.append(name, params[name]);
+    }
+
     fetch('https://furkleindustries.com/twinepm/userdata/', {
         method: 'POST',
-        body: JSON.stringify(params),
+        body: formData,
         credentials: 'include',
     }).catch(xhr => {
         let error = 'Unknown error updating profile. Please contact ' +
@@ -29,7 +34,7 @@ export default function updateProfile(params) {
         store.dispatch(setProfileError(error));
 
         setTimeout(() => {
-            if (this.props.error === error) {
+            if (store.getState().profileError === error) {
                 store.dispatch(setProfileError(''));
             }
         }, 6000);
@@ -43,7 +48,7 @@ export default function updateProfile(params) {
         store.dispatch(setProfileError(error));
 
         setTimeout(() => {
-            if (this.props.error === error) {
+            if (store.getState().profileError === error) {
                 store.dispatch(setProfileError(''));
             }
         }, 6000);
@@ -56,7 +61,7 @@ export default function updateProfile(params) {
             store.dispatch(setProfileError(error));
 
             setTimeout(() => {
-                if (this.props.error === error) {
+                if (store.getState().profileError === error) {
                     store.dispatch(setProfileError(''));
                 }
             }, 6000);
@@ -68,7 +73,7 @@ export default function updateProfile(params) {
         store.dispatch(setProfileError(error));
 
         setTimeout(() => {
-            if (this.props.error === error) {
+            if (store.getState().profileError === error) {
                 store.dispatch(setProfileError(''));
             }
         }, 6000);

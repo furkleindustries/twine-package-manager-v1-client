@@ -47,6 +47,13 @@ export function setPackageEditingName(name) {
     };
 }
 
+export function setPackageEditingType(editingType) {
+    return {
+        editingType,
+        type: 'setPackageEditingType',
+    };
+}
+
 export function setPackageEditingVersion(version) {
     return {
         version,

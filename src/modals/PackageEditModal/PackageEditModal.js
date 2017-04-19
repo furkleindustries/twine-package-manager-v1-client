@@ -12,6 +12,7 @@ import { setProfilePackages, } from '../../panes/profile/profileActions';
 import {
 	setPackageEditingDateModified,
 	setPackageEditingName,
+	setPackageEditingType,
 	setPackageEditingVersion,
 	setPackageEditingDescription,
 	setPackageEditingHomepage,
@@ -25,6 +26,8 @@ import {
 // modules
 import deepCopy from '../../modules/deepCopy';
 import unixTimeToSettingsTime from '../../modules/unixTimeToSettingsTime';
+import modalClose from '../../modules/modalClose';
+import onlyFirstLetterCapitalized from '../../modules/onlyFirstLetterCapitalized';
 
 // css
 import './PackageEditModal.css';
@@ -44,6 +47,13 @@ class PackageEditModal extends Component {
 			autoCorrect: 'off',
 			autoCapitalize: 'off',
 		};
+
+		let type = onlyFirstLetterCapitalized(this.props.type);
+		if (type === 'Storythemes') {
+			type = 'Story Themes';
+		} else if (type === 'Passagethemes') {
+			type = 'Passage Themes';
+		}
 
 		return (
 			<div className="PackageEditModal">				
@@ -97,6 +107,27 @@ class PackageEditModal extends Component {
 						value={this.props.name}
 						onChange={e => this.setPackageEditingName(e.target.value)}
 						{ ...opts }/>
+				</div>
+
+				<div className="PackageEditModal-infoPair">
+					<label
+						className="PackageEditModal-label body"
+						htmlFor="PackageEditModal-type">
+						Package Type:
+					</label>
+
+					<select
+						id="PackageEditModal-type"
+						className="PackageEditModal-input body"
+						value={type}
+						onChange={e => this.setPackageEditingType(e.target.value.replace(/ /g, '').toLowerCase())}
+						{ ...opts }>
+						<option>Macros</option>
+						<option>Scripts</option>
+						<option>Styles</option>
+						<option>Story Themes</option>
+						<option>Passage Themes</option>
+					</select>
 				</div>
 
 				<div className="PackageEditModal-infoPair">
@@ -227,6 +258,10 @@ class PackageEditModal extends Component {
 		store.dispatch(setPackageEditingName(value));
 	}
 
+	setPackageEditingType(value) {
+		store.dispatch(setPackageEditingType(value));
+	}
+
 	setPackageEditingVersion(value) {
 		store.dispatch(setPackageEditingVersion(value));
 	}
@@ -256,21 +291,22 @@ class PackageEditModal extends Component {
 	}
 
 	confirm() {
+		const formData = new FormData();
+		formData.append('id', this.props.id);
+		formData.append('name', this.props.name);
+		formData.append('version', this.props.version);
+		formData.append('description', this.props.description);
+		formData.append('homepage', this.props.homepage);
+		formData.append('js', this.props.js);
+		formData.append('css', this.props.css);
+		formData.append('keywords', this.props.keywords);
+		formData.append('tag', this.props.tag);
+		formData.append('csrfToken', this.props.csrfToken);
+
 		fetch('https://furkleindustries.com/twinepm/package/', {
 			method: 'POST',
 			credentials: 'include',
-			body: new FormData({
-				id: this.props.id,
-				name: this.props.name,
-				version: this.props.version,
-				description: this.props.description,
-				homepage: this.props.homepage,
-				js: this.props.js,
-				css: this.props.css,
-				keywords: this.props.keywords,
-				tag: this.props.tag,
-				csrfToken: this.props.csrfToken,
-			}),
+			body: formData,
 		}).catch(xhr => {
 			try {
 				const responseObj = JSON.parse(xhr.responseText);
@@ -347,6 +383,7 @@ class PackageEditModal extends Component {
 			const newPkg = {
 				id: this.props.id,
 				name: this.props.name,
+				type: this.props.type,
 				version: this.props.version,
 				description: this.props.description,
 				homepage: this.props.homepage,
@@ -372,6 +409,7 @@ class PackageEditModal extends Component {
 
 			setTimeout(() => {
 				if (this.props.error === notError) {
+					modalClose();
 					store.dispatch(setPackageEditingError(''));
 				}
 			}, 6000);

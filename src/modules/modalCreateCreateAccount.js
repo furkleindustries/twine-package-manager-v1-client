@@ -8,7 +8,7 @@ import CreateAccountModal from '../modals/CreateAccountModal/CreateAccountModal'
 import modalCreate from './modalCreate';
 
 export default function modalCreateCreateAccount() {
-    location.hash = 'register';
+    location.hash = 'createAccount';
 
     modalCreate(<CreateAccountModal />);
 }

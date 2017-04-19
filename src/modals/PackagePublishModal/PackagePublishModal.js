@@ -15,6 +15,7 @@ import {
 
 // modules
 import deepCopy from '../../modules/deepCopy';
+import modalClose from '../../modules/modalClose';
 
 // css
 import './PackagePublishModal.css';
@@ -96,15 +97,15 @@ class PackagePublishModal extends Component {
 			return;
 		}
 
+		const formData = new FormData();
+		formData.append('id', this.props.id);
+		formData.append('csrfToken', this.props.csrfToken);
+		formData.append('published', !this.props.published);
+
 		fetch('https://furkleindustries.com/twinepm/package/', {
 			method: 'POST',
 			credentials: 'include',
-
-			body: new FormData({
-				id: this.props.id,
-				csrfToken: this.props.csrfToken,
-				published: !this.props.published,
-			}),
+			body: formData,
 		}).catch(xhr => {
 			let error = 'Unknown error publishing package.';
 			try {
@@ -181,7 +182,7 @@ class PackagePublishModal extends Component {
 			setTimeout(() => {
 				if (this.props.error === notError) {
 					store.dispatch(setPackagePublishingError(''));
-					this.props.closeModal();
+					modalClose();
 				}
 			}, 6000);
 		});

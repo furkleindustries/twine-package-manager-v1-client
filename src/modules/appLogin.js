@@ -11,19 +11,21 @@ import {
 import renderLogin from './renderLogin';
 
 export default function appLogin(username, password) {
+    const formData = new FormData();
+    formData.append('username', username);
+    formData.append('password', password);
+
     fetch('https://furkleindustries.com/twinepm/login/login.php', {
         method: 'POST',
-        body: JSON.stringify({
-            username,
-            password,
-        }),
+        body: formData,
+        credentials: 'include',
     }).catch(xhr => {
         try {
             const responseObj = JSON.parse(xhr.responseText);
             store.dispatch(setLoginError(responseObj.error || 'Unknown error.'));
 
             setTimeout(() => {
-                const loginError = this.props.loginError;
+                const loginError = store.getState().loginError;
                 if (loginError === responseObj.error ||
                     loginError === 'Unknown error')
                 {
@@ -34,7 +36,7 @@ export default function appLogin(username, password) {
             store.dispatch(setLoginError('Unknown error.'));
 
             setTimeout(() => {
-                if (this.props.loginError === 'Unknown error.') {
+                if (store.getState().loginError === 'Unknown error.') {
                     store.dispatch(setLoginError(''));
                 }
             }, 6000);
@@ -50,7 +52,7 @@ export default function appLogin(username, password) {
         store.dispatch(setLoginError(message));
 
         setTimeout(() => {
-            if (this.props.loginError === message) {
+            if (store.getState().loginError === message) {
                 store.dispatch(setLoginError(''));
             }
         }, 6000);
@@ -62,7 +64,7 @@ export default function appLogin(username, password) {
             store.dispatch(setLoginError(message));
 
             setTimeout(() => {
-                if (this.props.loginError === message) {
+                if (store.getState().loginError === message) {
                     store.dispatch(setLoginError(''));
                 }
             }, 6000);

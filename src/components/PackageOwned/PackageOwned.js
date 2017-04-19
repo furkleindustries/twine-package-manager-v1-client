@@ -22,7 +22,7 @@ class PackageOwned extends Component {
                 */}
                 <button
                     className="PackageOwned-remove PackageOwned-button body"
-                    onClick={() => modalCreateRemovePackage(this.props.id)}>
+                    onClick={() => modalCreateRemovePackage(this.props.id, this.props.name)}>
                     Remove
                 </button>
 
@@ -51,20 +51,20 @@ class PackageOwned extends Component {
     componentDidMount() {
         let re = /^#togglePackagePublish-(\d+)$/;
         let match = location.hash.match(re);
-        if (match && match[1] && this.props.id === Number(match[1])) {
+        if (match && match[1] && Number(match[1]) === this.props.id) {
             modalCreateTogglePackagePublish(this.props.id);
         }
 
         re = /^#editPackage-(\d+)$/;
         match = location.hash.match(re);
-        if (match && match[1] && this.props.id === Number(match[1])) {
+        if (match && match[1] && Number(match[1]) === this.props.id) {
             modalCreateEditPackage(this.props.id);
         }
 
         re = /^#removePackage-(\d+)$/;
         match = location.hash.match(re);
-        if (match && match[1] && this.props.id === Number(match[1])) {
-            modalCreateRemovePackage(this.props.id);
+        if (match && match[1] && Number(match[1]) === this.props.id) {
+            modalCreateRemovePackage(this.props.id, this.props.name);
         }
     }
 }

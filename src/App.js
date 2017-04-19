@@ -18,6 +18,7 @@ import createModal from './modules/modalCreate';
 import modalCreateEditPackage from './modules/modalCreateEditPackage';
 import modalCreateRemovePackage from './modules/modalCreateRemovePackage';
 import modalCreateTogglePackagePublish from './modules/modalCreateTogglePackagePublish';
+import modalCreateCreatePackage from './modules/modalCreateCreatePackage';
 
 // components
 import Header from './components/Header/Header';
@@ -26,6 +27,7 @@ import Footer from './components/Footer/Footer';
 // modals
 import RulesModal from './modals/RulesModal/RulesModal';
 import CreateAccountModal from './modals/CreateAccountModal/CreateAccountModal';
+import PackageCreateModal from './modals/PackageCreateModal/PackageCreateModal';
 
 // css
 import './App.css';
@@ -91,18 +93,25 @@ export class App extends Component {
                 let match = location.hash.match(re);
                 if (match && match[1]) {
                     modalCreateTogglePackagePublish(Number(match[1]));
+                    return;
                 }
 
                 re = /^#editPackage-(\d+)$/;
                 match = location.hash.match(re);
                 if (match && match[1]) {
                     modalCreateEditPackage(Number(match[1]));
+                    return;
                 }
 
                 re = /^#removePackage-(\d+)$/;
                 match = location.hash.match(re);
                 if (match && match[1]) {
                     modalCreateRemovePackage(Number(match[1]));
+                    return;
+                }
+
+                if (location.hash === '#createNewPackage') {
+                    modalCreateCreatePackage();
                 }
             }
         };

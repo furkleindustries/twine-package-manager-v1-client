@@ -80,6 +80,17 @@ describe('PackageOwned action unit tests', () => {
         expect(actions.setPackageEditingName(name)).toEqual(object);
     });
 
+    it('creates a valid setPackageEditingType action', () => {
+        const editingType = 'macros';
+
+        const object = {
+            editingType,
+            type: 'setPackageEditingType',
+        };
+
+        expect(actions.setPackageEditingType(editingType)).toEqual(object);
+    });
+
     it('creates a valid setPackageEditingVersion action', () => {
         const version = '1.2.test';
 

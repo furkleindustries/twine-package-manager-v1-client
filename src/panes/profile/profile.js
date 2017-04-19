@@ -31,6 +31,11 @@ import PackageOwned from '../../components/PackageOwned/PackageOwned';
 import unixTimeToSettingsTime from '../../modules/unixTimeToSettingsTime';
 import updateProfileOnDatabase from '../../modules/updateProfileOnDatabase';
 import appLogout from '../../modules/appLogout';
+// no idea why i need .js                                                   here
+import modalCreateCreatePackage from '../../modules/modalCreateCreatePackage.js';
+import modalCreateTogglePackagePublish from '../../modules/modalCreateTogglePackagePublish';
+import modalCreateEditPackage from '../../modules/modalCreateEditPackage';
+import modalCreateRemovePackage from '../../modules/modalCreateRemovePackage';
 
 // css
 import './profile.css';
@@ -286,6 +291,12 @@ export class ProfilePane extends Component {
                     {list.length ? list : "No packages."}
                 </div>
 
+                <button
+                    className="Profile-newPackage wideButton"
+                    onClick={modalCreateCreatePackage}>
+                    Create New Package
+                </button>
+
                 <hr className="Profile-newSection" />
 
                 <button
@@ -303,6 +314,10 @@ export class ProfilePane extends Component {
         if (!localStorage.twinepmCSRFToken) {
             store.dispatch(setSelectedPane('login'));
             browserHistory.push(baseUrl + '/login');
+        }
+
+        if (location.hash === '#createNewPackage') {
+            modalCreateCreatePackage();
         }
     }
 }

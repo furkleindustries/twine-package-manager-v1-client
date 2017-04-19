@@ -1,42 +1,41 @@
-.PackageEditModal {
+.PackageCreateModal {
 	text-align: left;
 }
 
-.PackageEditModal-title {
+.PackageCreateModal-title {
 	margin-top: 0;
 	text-align: center;
 }
 
-#PackageEditModal-id,
-#PackageEditModal-dateCreated,
-#PackageEditModal-dateModified {
+#PackageCreateModal-dateCreated,
+#PackageCreateModal-dateModified {
 	display: inline-block;
 	border: 2px solid transparent;
 }
 
-#PackageEditModal-js,
-#PackageEditModal-css,
-#PackageEditModal-tag {
+#PackageCreateModal-js,
+#PackageCreateModal-css,
+#PackageCreateModal-tag {
 	height: 26rem;
 }
 
-.PackageEditModal-label {
+.PackageCreateModal-label {
 	display: inline-block;
 	margin-right: 0.5rem;
 	font-weight: bold;
 }
 
-.PackageEditModal-input {
+.PackageCreateModal-input {
 	width: 95%;
 	margin-bottom: 1.25rem;
 	padding: 0.25rem;
 }
 
-.PackageEditModal-textarea {
+.PackageCreateModal-textarea {
 	height: 4rem;
 	resize: none;
 }
 
-.PackageEditModal-error {
+.PackageCreateModal-error {
 	text-align: center;
 }

@@ -101,6 +101,7 @@ function mapStateToProps() {
 	return {
 		username: state.username,
 		password: state.password,
+		error: state.loginError,
 	};
 }
 

@@ -11,10 +11,13 @@ import PackageRemoveModal from '../modals/PackageRemoveModal/PackageRemoveModal'
 // modules
 import modalCreate from './modalCreate';
 
-export default function modalCreateRemovePackage(id) {
+export default function modalCreateRemovePackage(id, name) {
     location.hash = 'removePackage-' + id;
 
-    store.dispatch(setPackageRemoving({ id }));
+    store.dispatch(setPackageRemoving({
+        id,
+        name,
+    }));
     
     modalCreate(<PackageRemoveModal />);
 }

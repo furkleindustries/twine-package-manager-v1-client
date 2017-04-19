@@ -259,7 +259,7 @@ export function searchVersionRangeReducer(previous = [], action) {
 	} else if (action.type === 'setSearchOptions') {
 		if (action.searchOptions.versionRange &&
 			typeof(action.searchOptions.versionRange) === 'object' &&
-			action.versionRange.length <= 2)
+			action.searchOptions.versionRange.length <= 2)
 		{
 			return action.searchOptions.versionRange;
 		}

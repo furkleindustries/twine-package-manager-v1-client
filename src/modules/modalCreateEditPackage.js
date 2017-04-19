@@ -19,7 +19,6 @@ export default function modalCreateEditPackage(id) {
     const pkg = packages.filter(pkg => pkg.id === id)[0];
 
     if (!pkg) {
-        console.log('Could not find package with id ' + id);
         return;
     }
 
