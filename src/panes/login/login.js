@@ -20,52 +20,54 @@ class LoginPane extends Component {
 	render() {
 		return (
 			<div className="Login paneContainer">
-				<div className="Login-usernameContainer Login-container centerHorizontallyRelative">
-					<label
-						className="Login-usernameLabel Login-label subheader"
-						htmlFor="Login-username">
-						Username
-					</label>
-					<input
-						className="Login-usernameInput Login-input subheader"
-						id="Login-username"
-						value={this.props.username}
-						ref={input => this.usernameInput = input}
-						onChange={e => store.dispatch(setUsername(e.target.value))} 
-						onKeyDown={e => {
-							if (e.keyCode === 13) {
-								login(this.props.username, this.props.password);
+				<div className="Login-fieldContainer">
+					<div className="Login-infoPairContainer">
+						<label
+							className="Login-usernameLabel Login-label subheader"
+							htmlFor="Login-username">
+							Username
+						</label>
+						<input
+							className="Login-usernameInput Login-input subheader"
+							id="Login-username"
+							value={this.props.username}
+							ref={input => this.usernameInput = input}
+							onChange={e => store.dispatch(setUsername(e.target.value))} 
+							onKeyDown={e => {
+								if (e.keyCode === 13) {
+									login(this.props.username, this.props.password);
 
-								// set the focus to the username
-								this.usernameInput.focus();
-							}
-						}} />
-				</div>
+									// set the focus to the username
+									this.usernameInput.focus();
+								}
+							}} />
+					</div>
 
-				<div className="Login-passwordContainer Login-container centerHorizontallyRelative">
-					<label
-						className="Login-passwordLabel Login-label subheader"
-						htmlFor="Login-password">
-						Password
-					</label>
-					<input
-						type="password" 
-						className="Login-passwordInput Login-input subheader"
-						id="Login-password"
-						value={this.props.password}
-						onChange={e => store.dispatch(setPassword(e.target.value))}
-						onKeyDown={e => {
-							if (e.keyCode === 13) {
-								login(this.props.username, this.props.password);
+					<div className="Login-infoPairContainer">
+						<label
+							className="Login-passwordLabel Login-label subheader"
+							htmlFor="Login-password">
+							Password
+						</label>
+						<input
+							type="password" 
+							className="Login-passwordInput Login-input subheader"
+							id="Login-password"
+							value={this.props.password}
+							onChange={e => store.dispatch(setPassword(e.target.value))}
+							onKeyDown={e => {
+								if (e.keyCode === 13) {
+									login(this.props.username, this.props.password);
 
-								// set the focus to the username
-								this.usernameInput.focus();
-							}
-						}} />
+									// set the focus to the username
+									this.usernameInput.focus();
+								}
+							}} />
+					</div>
 				</div>
 
 				<button
-					className="Login-doLogin Login-button centerHorizontallyRelative wideButton"
+					className="wideButton"
 					onClick={() => {
 						login(this.props.username, this.props.password);
 
@@ -76,7 +78,7 @@ class LoginPane extends Component {
 				</button>
 
 				<button
-					className="Login-createAccount Login-button centerHorizontallyRelative wideButton"
+					className="wideButton"
 					onClick={modalCreateCreateAccount}>
 					<span>Create Account</span>
 				</button>

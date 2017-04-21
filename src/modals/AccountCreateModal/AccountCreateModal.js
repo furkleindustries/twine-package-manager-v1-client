@@ -18,7 +18,7 @@ import createAccount from '../../modules/createAccount';
 // css
 import './AccountCreateModal.css';
 
-export class AccountCreateModal extends Component {
+export class AccountCreateModalModal extends Component {
 	constructor() {
 		super();
 
@@ -28,70 +28,78 @@ export class AccountCreateModal extends Component {
 	render() {
 		return (
 			<div className="AccountCreateModal">
-				<h1 className="subheader">Create Account</h1>
-				<div className="AccountCreate-usernameContainer AccountCreate-container centerHorizontallyRelative">
-					<label
-						className="AccountCreate-usernameLabel AccountCreate-label"
-						htmlFor="AccountCreate-username">
-						Username
-					</label>
-					<input
-						className="AccountCreate-usernameInput AccountCreate-input"
-						id="AccountCreate-username"
-						value={this.props.username}
-						onChange={e => store.dispatch(setAccountCreatingName(e.target.value))}
-						ref={input => this.usernameInput = input} 
-						onKeyDown={e => {
-							if (e.keyCode === 13) {
-								this.doCreateAccount();
-							}
-						}} />
-				</div>
+				<h1 className="AccountCreateModal-title header">
+					Create Account
+				</h1>
 
-				<div className="AccountCreate-passwordContainer AccountCreate-container centerHorizontallyRelative">
-					<label
-						className="AccountCreate-passwordLabel AccountCreate-label"
-						htmlFor="AccountCreate-password">
-						Password
-					</label>
-					<input
-						type="password"
-						className="AccountCreate-passwordInput AccountCreate-input"
-						id="AccountCreate-password"
-						value={this.props.password}
-						onChange={e => store.dispatch(setAccountCreatingPassword(e.target.value))}
-						onKeyDown={e => {
-							if (e.keyCode === 13) {
-								this.doCreateAccount();
-							}
-						}} />
-				</div>
+				<div className="AccountCreateModal-fieldContainer">
+					<div className="AccountCreateModal-infoPairContainer">
+						<label
+							className="AccountCreateModal-usernameLabel AccountCreateModal-label subheader"
+							htmlFor="AccountCreateModal-username">
+							Username
+						</label>
 
-				<div className="AccountCreate-emailContainer AccountCreate-container centerHorizontallyRelative">
-					<label
-						className="AccountCreate-emailLabel AccountCreate-label"
-						htmlFor="AccountCreate-email">
-						E-mail
-					</label>
-					<input
-						className="AccountCreate-emailInput AccountCreate-input"
-						id="AccountCreate-email"
-						value={this.props.email}
-						onChange={e => store.dispatch(setAccountCreatingEmail(e.target.value))}
-						onKeyDown={e => {
-							if (e.keyCode === 13) {
-								this.doCreateAccount();
-							}
-						}} />
+						<input
+							className="AccountCreateModal-usernameInput AccountCreateModal-input subheader"
+							id="AccountCreateModal-username"
+							value={this.props.username}
+							onChange={e => store.dispatch(setAccountCreatingName(e.target.value))}
+							ref={input => this.usernameInput = input} 
+							onKeyDown={e => {
+								if (e.keyCode === 13) {
+									this.doCreateAccount();
+								}
+							}} />
+					</div>
+
+					<div className="AccountCreateModal-infoPairContainer">
+						<label
+							className="AccountCreateModal-passwordLabel AccountCreateModal-label subheader"
+							htmlFor="AccountCreateModal-password">
+							Password
+						</label>
+
+						<input
+							type="password"
+							className="AccountCreateModal-passwordInput AccountCreateModal-input subheader"
+							id="AccountCreateModal-password"
+							value={this.props.password}
+							onChange={e => store.dispatch(setAccountCreatingPassword(e.target.value))}
+							onKeyDown={e => {
+								if (e.keyCode === 13) {
+									this.doCreateAccount();
+								}
+							}} />
+					</div>
+
+					<div className="AccountCreateModal-infoPairContainer">
+						<label
+							className="AccountCreateModal-emailLabel AccountCreateModal-label subheader"
+							htmlFor="AccountCreateModal-email">
+							E-mail
+						</label>
+
+						<input
+							className="AccountCreateModal-emailInput AccountCreateModal-input subheader"
+							id="AccountCreateModal-email"
+							value={this.props.email}
+							onChange={e => store.dispatch(setAccountCreatingEmail(e.target.value))}
+							onKeyDown={e => {
+								if (e.keyCode === 13) {
+									this.doCreateAccount();
+								}
+							}} />
+					</div>
 				</div>
 
 				<button
-					className="AccountCreate-button centerHorizontallyRelative"
+					className="AccountCreateModal-button wideButton"
 					onClick={this.doCreateAccount}>
 					Create Account
 				</button>
 
-				<p className="AccountCreate-error">
+				<p className="AccountCreateModal-error">
 					{this.props.error}
 				</p>
 			</div>
@@ -125,4 +133,4 @@ function mapStateToProps() {
 	};
 }
 
-export default connect(mapStateToProps)(AccountCreateModal);
+export default connect(mapStateToProps)(AccountCreateModalModal);

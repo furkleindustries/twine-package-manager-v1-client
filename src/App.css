@@ -135,7 +135,7 @@ body,
     }
 
     .wideButton {
-        width: 8rem;
+        width: 5.5rem;
         height: 1rem;
         margin-top: 0.25rem;
         margin-bottom: 0.25rem;
@@ -156,8 +156,8 @@ body,
     }
 
     .wideButton {
-        width: 10rem;
-        height: 1.33rem;
+        width: 8rem;
+        height: 1.15rem;
         margin-top: 0.3rem;
         margin-bottom: 0.3rem;
         font-size: 115%;
@@ -177,8 +177,8 @@ body,
     }
 
     .wideButton {
-        width: 12.25rem;
-        height: 1.67rem;
+        width: 10.5rem;
+        height: 1.35rem;
         margin-top: 0.35rem;
         margin-bottom: 0.35rem;
         font-size: 112%;
@@ -198,8 +198,8 @@ body,
     }
 
     .wideButton {
-        width: 15rem;
-        height: 2rem;
+        width: 13.25rem;
+        height: 1.65rem;
         margin-top: 0.4rem;
         margin-bottom: 0.4rem;
         font-size: 107.5%;
@@ -220,7 +220,7 @@ body,
 
     .wideButton {
         width: 16.5rem;
-        height: 2.33rem;
+        height: 1.85rem;
         margin-top: 0.45rem;
         margin-bottom: 0.45rem;
         font-size: 107.5%;
@@ -241,7 +241,7 @@ body,
 
     .wideButton {
         width: 17.5rem;
-        height: 2.67rem;
+        height: 2.25rem;
         margin-top: 0.5rem;
         margin-bottom: 0.5rem;
         font-size: 110%;
@@ -262,7 +262,7 @@ body,
 
     .wideButton {
         width: 18.75rem;
-        height: 3rem;
+        height: 2.5rem;
         margin-top: 0.55rem;
         margin-bottom: 0.55rem;
         font-size: 107.5%;
@@ -283,7 +283,7 @@ body,
 
     .wideButton {
         width: 19.5rem;
-        height: 3.33rem;
+        height: 2.75rem;
         margin-top: 0.6rem;
         margin-bottom: 0.6rem;
         font-size: 107.5%;
@@ -325,10 +325,6 @@ body,
 
     .wideButton {
         width: 21.33rem;
-        height: 3.25rem;
-        margin-top: 0.7rem;
-        margin-bottom: 0.7rem;
-        font-size: 110%;
     }
 }
 
@@ -346,10 +342,6 @@ body,
 
     .wideButton {
         width: 23.5rem;
-        height: 3.25rem;
-        margin-top: 0.7rem;
-        margin-bottom: 0.7rem;
-        font-size: 110%;
     }
 }
 
@@ -368,10 +360,6 @@ body,
 
     .wideButton {
         width: 25rem;
-        height: 3.25rem;
-        margin-top: 0.7rem;
-        margin-bottom: 0.7rem;
-        font-size: 110%;
     }
 }
 
@@ -388,10 +376,6 @@ body,
 
     .wideButton {
         width: 27.5rem;
-        height: 3.25rem;
-        margin-top: 0.7rem;
-        margin-bottom: 0.7rem;
-        font-size: 110%;
     }
 }
 
@@ -407,11 +391,7 @@ body,
     }
 
     .wideButton {
-        width: 39rem;
-        height: 3.25rem;
-        margin-top: 0.7rem;
-        margin-bottom: 0.7rem;
-        font-size: 110%;
+        width: 30rem;
     }
 }
 
