@@ -7,10 +7,10 @@ import store from '../../store';
 import { setUsername, setPassword, } from './loginActions';
 
 // components
-import CreateAccountModal from '../../modals/CreateAccountModal/CreateAccountModal.js';
+import AccountCreateModal from '../../modals/AccountCreateModal/AccountCreateModal.js';
 
 // modules
-import appLogin from '../../modules/appLogin';
+import login from '../../modules/login';
 import modalCreateCreateAccount from '../../modules/modalCreateCreateAccount';
 
 // css
@@ -34,7 +34,7 @@ class LoginPane extends Component {
 						onChange={e => store.dispatch(setUsername(e.target.value))} 
 						onKeyDown={e => {
 							if (e.keyCode === 13) {
-								appLogin(this.props.username, this.props.password);
+								login(this.props.username, this.props.password);
 
 								// set the focus to the username
 								this.usernameInput.focus();
@@ -56,7 +56,7 @@ class LoginPane extends Component {
 						onChange={e => store.dispatch(setPassword(e.target.value))}
 						onKeyDown={e => {
 							if (e.keyCode === 13) {
-								appLogin(this.props.username, this.props.password);
+								login(this.props.username, this.props.password);
 
 								// set the focus to the username
 								this.usernameInput.focus();
@@ -67,7 +67,7 @@ class LoginPane extends Component {
 				<button
 					className="Login-doLogin Login-button centerHorizontallyRelative wideButton"
 					onClick={() => {
-						appLogin(this.props.username, this.props.password);
+						login(this.props.username, this.props.password);
 
 						// set the focus to the username
 						this.usernameInput.focus();

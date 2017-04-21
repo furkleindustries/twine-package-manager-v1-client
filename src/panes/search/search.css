@@ -121,10 +121,6 @@
 	margin-bottom: 1rem;
 }
 
-.disabled {
-	opacity: 0.5;
-}
-
 @media (min-width: 0) {
 	.Search-bar {
 		width: 35%;

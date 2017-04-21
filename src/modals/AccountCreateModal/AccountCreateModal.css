@@ -1,0 +1,264 @@
+.AccountCreate-container {
+	position: relative;
+}
+
+.AccountCreate-passwordContainer {
+	padding-right: 0.5rem;
+}
+
+.AccountCreate-label {
+	font-size: 150%;
+	margin-right: 0.5rem;
+}
+
+.AccountCreate-input {
+	position: relative;
+	top: -0.18rem;
+	font-size: 125%;
+}
+
+.AccountCreate-button {
+	width: 23rem;
+	height: 3.25rem;
+	padding: 0.33rem;
+	margin-top: 0.5rem;
+	color: rgb(245, 245, 245);
+	font-size: 150%;
+	background: rgb(185, 0, 0);
+	border: 0.1rem solid rgb(200, 200, 200);
+	border-radius: 0.67rem;
+	cursor: pointer;
+}
+
+.AccountCreate-button:hover,
+.AccountCreate-button:active {
+	background: rgb(200, 0, 0);
+}
+
+@media (min-width: 0px) {
+	.AccountCreate-container {
+		margin-bottom: 0.2rem;
+	}
+
+	.AccountCreate-label {
+		font-size: 60%;
+	}
+
+	.AccountCreate-input {
+		top: -0.1rem;
+		font-size: 52.5%;
+		box-sizing: border-box;
+	}
+
+	.AccountCreate-passwordLabel {
+		margin-left: 0.67rem;
+	}
+
+	.AccountCreate-passwordInput {
+		margin-right: 0.05rem;
+	}
+
+	.AccountCreate-emailLabel {
+		margin-left: 1rem;
+	}
+
+	.AccountCreate-emailInput {
+		margin-left: 0.1rem;
+	}
+
+	.AccountCreate-button {
+		width: 10rem;
+		height: 2rem;
+		font-size: 100%;
+	}
+}
+
+@media (min-width: 360px) {
+	.AccountCreate-container {
+		margin-bottom: 0.4rem;
+	}
+
+	.AccountCreate-label {
+		font-size: 75%;
+	}
+
+	.AccountCreate-input {
+		top: -0.1rem;
+		font-size: 70%;
+		box-sizing: border-box;
+	}
+
+	.AccountCreate-passwordLabel {
+		margin-left: 0.67rem;
+	}
+
+	.AccountCreate-passwordInput {
+		margin-right: 0.05rem;
+	}
+
+	.AccountCreate-emailLabel {
+		margin-left: 1.2rem;
+	}
+
+	.AccountCreate-emailInput {
+		margin-left: 0.05rem;
+	}
+
+	.AccountCreate-button {
+		width: 12rem;
+		height: 2.33rem;
+		font-size: 110%;
+	}
+}
+
+@media (min-width: 412px) {
+	.AccountCreate-container {
+		margin-bottom: 0.6rem;
+	}
+
+	.AccountCreate-label {
+		font-size: 85%;
+	}
+
+	.AccountCreate-input {
+		top: -0.1rem;
+		font-size: 85%;
+		box-sizing: border-box;
+	}
+
+	.AccountCreate-passwordLabel {
+		margin-left: 0.67rem;
+	}
+
+	.AccountCreate-passwordInput {
+		margin-left: 0.1rem;
+	}
+
+	.AccountCreate-emailLabel {
+		margin-left: 1.4rem;
+	}
+
+	.AccountCreate-emailInput {
+		margin-left: 0.15rem;
+	}
+
+	.AccountCreate-button {
+		width: 15rem;
+		height: 2.67rem;
+		font-size: 120%;
+	}
+}
+
+@media (min-width: 568px) {
+	.AccountCreate-container {
+		margin-bottom: 0.8rem;
+	}
+
+	.AccountCreate-label {
+		font-size: 110%;
+	}
+
+	.AccountCreate-input {
+		top: -0.1rem;
+		font-size: 140%;
+		box-sizing: border-box;
+	}
+
+	.AccountCreate-passwordLabel {
+		margin-left: 0.67rem;
+	}
+
+	.AccountCreate-passwordInput {
+		margin-left: 0.1rem;
+	}
+
+	.AccountCreate-emailLabel {
+		margin-left: 1.8rem;
+	}
+
+	.AccountCreate-emailInput {
+		margin-left: 0.15rem;
+	}
+
+	.AccountCreate-button {
+		width: 23rem;
+		height: 3rem;
+		font-size: 130%;
+	}
+}
+
+@media (min-width: 768px) {
+	.AccountCreate-container {
+		margin-bottom: 1rem;
+	}
+
+	.AccountCreate-label {
+		font-size: 155%;
+	}
+
+	.AccountCreate-input {
+		top: -0.1rem;
+		font-size: 190%;
+		box-sizing: border-box;
+	}
+
+	.AccountCreate-passwordLabel {
+		margin-left: 0.85rem;
+	}
+
+	.AccountCreate-passwordInput {
+		margin-left: 0.1rem;
+	}
+
+	.AccountCreate-emailLabel {
+		margin-left: 2.7rem;
+	}
+
+	.AccountCreate-emailInput {
+		margin-left: 0.15rem;
+	}
+
+	.AccountCreate-button {
+		width: 31rem;
+		height: 3.33rem;
+		font-size: 140%;
+	}
+}
+
+@media (min-width: 1024px) {
+	.AccountCreate-container {
+		margin-bottom: 1.2rem;
+	}
+
+	.AccountCreate-label {
+		font-size: 175%;
+	}
+
+	.AccountCreate-input {
+		top: -0.1rem;
+		font-size: 300%;
+		box-sizing: border-box;
+	}
+
+	.AccountCreate-passwordLabel {
+		margin-left: 0.67rem;
+	}
+
+	.AccountCreate-passwordInput {
+		margin-left: 0.1rem;
+	}
+
+	.AccountCreate-emailLabel {
+		margin-left: 2.6rem;
+	}
+
+	.AccountCreate-emailInput {
+		margin-left: 0.33rem;
+	}
+
+	.AccountCreate-button {
+		width: 45rem;
+		height: 3.67rem;
+		font-size: 150%;
+	}
+}

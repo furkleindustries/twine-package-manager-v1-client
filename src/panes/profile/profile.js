@@ -30,12 +30,10 @@ import PackageOwned from '../../components/PackageOwned/PackageOwned';
 // modules
 import unixTimeToSettingsTime from '../../modules/unixTimeToSettingsTime';
 import updateProfileOnDatabase from '../../modules/updateProfileOnDatabase';
-import appLogout from '../../modules/appLogout';
+import logout from '../../modules/logout';
 // no idea why i need .js                                                   here
 import modalCreateCreatePackage from '../../modules/modalCreateCreatePackage.js';
-import modalCreateTogglePackagePublish from '../../modules/modalCreateTogglePackagePublish';
-import modalCreateEditPackage from '../../modules/modalCreateEditPackage';
-import modalCreateRemovePackage from '../../modules/modalCreateRemovePackage';
+import modalCreateDeleteAccount from '../../modules/modalCreateDeleteAccount';
 
 // css
 import './profile.css';
@@ -251,6 +249,14 @@ export class ProfilePane extends Component {
                         </span>
                     </button>
 
+                    <button
+                        className="Profile-editAccount wideButton"
+                        onClick={modalCreateDeleteAccount}>
+                        <span className="centerHorizontallyAndVerticallyAbsolute">
+                            Delete Account
+                        </span>
+                    </button>
+
                     <div className={"Profile-doubleButtonContainer wideButton" + (this.props.editing ? "" : " Profile-invisible")}>
                         <button
                             className="Profile-confirmEditAccount wideButton"
@@ -301,7 +307,7 @@ export class ProfilePane extends Component {
 
                 <button
                     className="Profile-logout wideButton"
-                    onClick={appLogout}>
+                    onClick={logout}>
                     <span>
                         Log Out
                     </span>
@@ -316,7 +322,9 @@ export class ProfilePane extends Component {
             browserHistory.push(baseUrl + '/login');
         }
 
-        if (location.hash === '#createNewPackage') {
+        if (location.hash === '#deleteAccount') {
+            modalCreateDeleteAccount();
+        } else if (location.hash === '#createNewPackage') {
             modalCreateCreatePackage();
         }
     }

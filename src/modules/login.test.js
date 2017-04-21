@@ -5,11 +5,11 @@ import store from '../store';
 import nock from 'nock';
 
 // modules
-import appLogin from './appLogin';
+import login from './login';
 
 jest.unmock('nock');
 
-describe('appLogin unit tests', () => {
+describe('login unit tests', () => {
     it('does something', () => {
         nock('https://furkleindustries.com')
             .post('/twinepm/login/login.php')
@@ -18,7 +18,7 @@ describe('appLogin unit tests', () => {
                 csrfToken: 'testToken',
             });
 
-        appLogin('usertest', 'passtest');
+        login('usertest', 'passtest');
 
         expect(store.getState().csrfToken).toEqual('testToken');
     });

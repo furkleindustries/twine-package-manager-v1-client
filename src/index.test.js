@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactTestUtils from 'react-addons-test-utils';
-import { Router, browserHistory, Route, IndexRoute } from 'react-router';
 
 import App from './App';
 import rootComponent from './rootComponent';

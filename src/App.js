@@ -15,6 +15,7 @@ import { setSearchOptions } from './panes/search/searchActions';
 // modules
 import renderLogin from './modules/renderLogin';
 import createModal from './modules/modalCreate';
+import modalCreateDeleteAccount from './modules/modalCreateDeleteAccount';
 import modalCreateEditPackage from './modules/modalCreateEditPackage';
 import modalCreateRemovePackage from './modules/modalCreateRemovePackage';
 import modalCreateTogglePackagePublish from './modules/modalCreateTogglePackagePublish';
@@ -26,7 +27,7 @@ import Footer from './components/Footer/Footer';
 
 // modals
 import RulesModal from './modals/RulesModal/RulesModal';
-import CreateAccountModal from './modals/CreateAccountModal/CreateAccountModal';
+import AccountCreateModal from './modals/AccountCreateModal/AccountCreateModal';
 import PackageCreateModal from './modals/PackageCreateModal/PackageCreateModal';
 
 // css
@@ -87,8 +88,13 @@ export class App extends Component {
             } else if (this.props.selectedPane === 'login' &&
                 location.hash === '#createAccount')
             {
-                createModal(<CreateAccountModal />);
+                createModal(<AccountCreateModal />);
             } else if (this.props.selectedPane === 'profile') {
+                if (location.hash === '#deleteAccount') {
+                    modalCreateDeleteAccount();
+                    return;
+                }
+
                 let re = /^#togglePackagePublish-(\d+)$/;
                 let match = location.hash.match(re);
                 if (match && match[1]) {
@@ -112,6 +118,7 @@ export class App extends Component {
 
                 if (location.hash === '#createNewPackage') {
                     modalCreateCreatePackage();
+                    return;
                 }
             }
         };

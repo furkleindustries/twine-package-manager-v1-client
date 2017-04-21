@@ -20,14 +20,19 @@ import {
 	setPackageEditingCss,
 	setPackageEditingKeywords,
 	setPackageEditingTag,
+	setPackageEditingNewOwner,
 	setPackageEditingError,
 } from '../../components/PackageOwned/PackageOwnedActions';
+
+// components
+import HideableMenuItem from '../../components/HideableMenuItem/HideableMenuItem';
 
 // modules
 import deepCopy from '../../modules/deepCopy';
 import unixTimeToSettingsTime from '../../modules/unixTimeToSettingsTime';
 import modalClose from '../../modules/modalClose';
 import onlyFirstLetterCapitalized from '../../modules/onlyFirstLetterCapitalized';
+import transferOwnershipOfPackage from '../../modules/transferOwnershipOfPackage';
 
 // css
 import './PackageEditModal.css';
@@ -54,6 +59,28 @@ class PackageEditModal extends Component {
 		} else if (type === 'Passagethemes') {
 			type = 'Passage Themes';
 		}
+
+		const transferOwnershipContent = (
+			<div className="PackageEditModal-transferOwnershipContainer">
+				<label
+					className="PackageEditModal-label"
+					htmlFor="PackageEditModal-transferOwnership">
+					Transfer To User
+				</label>
+
+				<input
+					id="PackageEditModal-transferOwnership"
+					className="PackageEditModal-input"
+					value={this.props.packageEditingNewOwner}
+					onChange={e => store.dispatch(setPackageEditingNewOwner(e.target.value)) }/>
+
+				<button
+					className="PackageEditModal-button wideButton"
+					onClick={() => transferOwnershipOfPackage(this.props.newOwner)}>
+					Transfer
+				</button>
+			</div>
+		);
 
 		return (
 			<div className="PackageEditModal">				
@@ -105,7 +132,7 @@ class PackageEditModal extends Component {
 						id="PackageEditModal-name"
 						className="PackageEditModal-input body"
 						value={this.props.name}
-						onChange={e => this.setPackageEditingName(e.target.value)}
+						onChange={e => store.dispatch(setPackageEditingName(e.target.value))}
 						{ ...opts }/>
 				</div>
 
@@ -120,7 +147,11 @@ class PackageEditModal extends Component {
 						id="PackageEditModal-type"
 						className="PackageEditModal-input body"
 						value={type}
-						onChange={e => this.setPackageEditingType(e.target.value.replace(/ /g, '').toLowerCase())}
+						onChange={e => {
+							const value = e.target.value.replace(/ /g, '').toLowerCase();
+
+							store.dispatch(setPackageEditingType(value));
+						}}
 						{ ...opts }>
 						<option>Macros</option>
 						<option>Scripts</option>
@@ -141,7 +172,7 @@ class PackageEditModal extends Component {
 						id="PackageEditModal-version"
 						className="PackageEditModal-input body"
 						value={this.props.version}
-						onChange={e => this.setPackageEditingVersion(e.target.value)}
+						onChange={e => store.dispatch(setPackageEditingVersion(e.target.value))}
 						{ ...opts }/>
 				</div>
 
@@ -156,7 +187,7 @@ class PackageEditModal extends Component {
 						id="PackageEditModal-description"
 						className="PackageEditModal-input PackageEditModal-textarea body"
 						value={this.props.description}
-						onChange={e => this.setPackageEditingDescription(e.target.value)}
+						onChange={e => store.dispatch(setPackageEditingDescription(e.target.value))}
 						{ ...opts } />
 				</div>
 
@@ -171,7 +202,7 @@ class PackageEditModal extends Component {
 						id="PackageEditModal-homepage"
 						className="PackageEditModal-input body"
 						value={this.props.homepage}
-						onChange={e => this.setPackageEditingHomepage(e.target.value)}
+						onChange={e => store.dispatch(setPackageEditingHomepage(e.target.value))}
 						{ ...opts } />
 				</div>
 
@@ -186,7 +217,7 @@ class PackageEditModal extends Component {
 						id="PackageEditModal-js"
 						className="PackageEditModal-input PackageEditModal-textarea body"
 						value={this.props.js}
-						onChange={e => this.setPackageEditingJs(e.target.value)}
+						onChange={e => store.dispatch(setPackageEditingJs(e.target.value))}
 						{ ...opts } />
 				</div>
 
@@ -201,7 +232,7 @@ class PackageEditModal extends Component {
 						id="PackageEditModal-css"
 						className="PackageEditModal-input PackageEditModal-textarea body"
 						value={this.props.css}
-						onChange={e => this.setPackageEditingCss(e.target.value)}
+						onChange={e => store.dispatch(setPackageEditingCss(e.target.value))}
 						{ ...opts } />
 				</div>
 
@@ -216,7 +247,7 @@ class PackageEditModal extends Component {
 						id="PackageEditModal-keywords"
 						className="PackageEditModal-input body"
 						value={this.props.keywords}
-						onChange={e => this.setPackageEditingKeywords(e.target.value)}
+						onChange={e => store.dispatch(setPackageEditingKeywords(e.target.value))}
 						{ ...opts } />
 				</div>
 
@@ -231,16 +262,20 @@ class PackageEditModal extends Component {
 						id="PackageEditModal-tag"
 						className="PackageEditModal-input PackageEditModal-textarea body"
 						value={this.props.tag}
-						onChange={e => this.setPackageEditingTag(e.target.value)}
+						onChange={e => store.dispatch(setPackageEditingTag(e.target.value))}
 						{ ...opts } />
 				</div>
+
+				<HideableMenuItem
+					title={"Transfer Ownership of " + this.props.name + ":"}
+					content={transferOwnershipContent} />
 
 				<button
 					className="wideButton"
 					onClick={this.confirm}>
 					Confirm
 				</button>
-
+				
 				<button
 					className="wideButton"
 					onClick={this.cancel}>
@@ -417,7 +452,7 @@ class PackageEditModal extends Component {
 	}
 
 	cancel() {
-		this.props.closeModal();
+		modalClose();
 	}
 }
 

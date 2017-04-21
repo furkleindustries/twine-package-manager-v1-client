@@ -10,7 +10,7 @@ import {
 // modules
 import renderLogin from './renderLogin';
 
-export default function appLogin(username, password) {
+export default function login(username, password) {
     const formData = new FormData();
     formData.append('username', username);
     formData.append('password', password);
