@@ -2,54 +2,98 @@ import * as reducers from './loginReducers';
 
 describe('login reducer unit tests', () => {
     it('should return the initial username state', () => {
-        expect(reducers.usernameReducer(undefined, {})).toEqual('');
+        expect(reducers.usernameReducer(undefined, {}))
+            .toEqual('');
     });
 
-    it('should handle setUsername', () => {
+    it('should handle setUsername with valid arguments', () => {
         expect(
           reducers.usernameReducer('', {
             type: 'setUsername',
-            username: 'testUsername'
+            username: 'mr. test',
           })
-        ).toEqual('testUsername');
+        ).toEqual('mr. test');
+    });
+
+    it('usernameReducer should reject with invalid type', () => {
+        expect(
+          reducers.usernameReducer('', {
+            type: 'setTest',
+            username: 'will fail',
+          })
+        ).toEqual('');
+    });
+
+    it('usernameReducer should reject with invalid arguments', () => {
+        expect(
+          reducers.usernameReducer('', {
+            type: 'setUsername',
+            username: 15,
+          })
+        ).toEqual('');
     });
 
     it('should return the initial password state', () => {
-        expect(reducers.passwordReducer(undefined, {})).toEqual('');
+        expect(reducers.passwordReducer(undefined, {}))
+            .toEqual('');
     });
 
-    it('should handle setPassword', () => {
+    it('should handle setPassword with valid arguments', () => {
         expect(
           reducers.passwordReducer('', {
             type: 'setPassword',
-            password: 'testPassword'
+            password: `mr. test's password`,
           })
-        ).toEqual('testPassword');
+        ).toEqual(`mr. test's password`);
     });
 
-    it('should return the initial login error state', () => {
-        expect(reducers.loginErrorReducer(undefined, {})).toEqual('');
-    });
-
-    it('should handle setLoginError', () => {
+    it('passwordReducer should reject with invalid type', () => {
         expect(
-          reducers.loginErrorReducer('', {
-            type: 'setLoginError',
-            error: 'testing login error'
+          reducers.passwordReducer('', {
+            type: 'setTest',
+            password: 'will fail',
           })
-        ).toEqual('testing login error');
+        ).toEqual('');
     });
 
-    it('should return the initial create account error state', () => {
-        expect(reducers.createAccountErrorReducer(undefined, {})).toEqual('');
-    });
-
-    it('should handle setCreateAccountError', () => {
+    it('passwordReducer should reject with invalid arguments', () => {
         expect(
-          reducers.createAccountErrorReducer('', {
-            type: 'setCreateAccountError',
-            error: 'testing create account error'
+          reducers.passwordReducer('', {
+            type: 'setPassword',
+            password: 16,
           })
-        ).toEqual('testing create account error');
+        ).toEqual('');
+    });
+
+    it('should return the initial login message state', () => {
+        expect(reducers.loginMessageReducer(undefined, {}))
+            .toEqual('');
+    });
+
+    it('should handle setLoginMessage with valid arguments', () => {
+        expect(
+          reducers.loginMessageReducer('', {
+            type: 'setLoginMessage',
+            message: 'mr. test is sending a message',
+          })
+        ).toEqual('mr. test is sending a message');
+    });
+
+    it('loginMessageReducer should reject with invalid type', () => {
+        expect(
+          reducers.loginMessageReducer('', {
+            type: 'setTest',
+            message: 'will fail',
+          })
+        ).toEqual('');
+    });
+
+    it('loginMessageReducer should reject with invalid arguments', () => {
+        expect(
+          reducers.loginMessageReducer('', {
+            type: 'setLoginMessage',
+            message: 18,
+          })
+        ).toEqual('');
     });
 });

@@ -1,68 +1,50 @@
 // redux
 import store from '../store';
-import { setAccountDeletingError, } from '../modals/AccountDeleteModal/AccountDeleteModalActions'; 
+import {
+	setAccountDeletingMessage,
+} from '../modals/AccountDeleteModal/AccountDeleteModalActions';
 
 // modules
+import * as _delete from './database/delete';
+import modalClose from './modals/close';
 import logout from './logout';
-import modalClose from './modalClose';
 
-export default function deleteAccount() {
-	const state = store.getState();
+export default async function deleteAccount(id, csrfToken) {
+	let responseObj;
+	try {
+		responseObj = await _delete.account(id, csrfToken);
+	} catch (e) {
+		console.log(e);
+	}
 
-	const params = {
-		id: state.profile.id,
-		csrfToken: state.csrfToken,
-	};
+	let message = '';
+	let succeeded = false;
+	if (!responseObj) {
+		message = 'Unknown error receiving or deserializing server response.';
+	} else if (responseObj.error) {
+		message = responseObj.error;
+	} else if (responseObj.status !== 200) {
+		message = 'The request did not succeed, but an error was not ' +
+			'included.';
+	} else {
+		message = 'Your account has been deleted.';
+		succeeded = true;
+	}
 
-	fetch('https://furkleindustries.com/twinepm/userdata/', {
-		method: 'DELETE',
-		body: JSON.stringify(params),
-		credentials: 'include',
-	}).then(response => {
-		return response.json();
-	}).catch(e => {
-		const error = 'Unknown error.';
-		store.dispatch(setAccountDeletingError(error));
+	store.dispatch(setAccountDeletingMessage(message));
 
+	if (succeeded) {
 		setTimeout(() => {
-			if (store.getState().accountDeletingError === error) {
-				store.dispatch(setAccountDeletingError(''))
+			logout();
+			store.dispatch(setAccountDeletingMessage(''));
+		}, 2000);
+	} else {
+		setTimeout(() => {
+			if (store.getState().accountDeletingMessage === message) {
+				store.dispatch(setAccountDeletingMessage(''));
 			}
 		}, 6000);
+	}
 
-		// don't allow execution to continue
-		return Promise.reject();
-	}).then(responseObj => {
-		if (responseObj.error) {
-			store.dispatch(setAccountDeletingError(responseObj.error));
-
-			setTimeout(() => {
-				if (store.getState().accountDeletingError === responseObj.error) {
-					store.dispatch(setAccountDeletingError(''));
-				}
-			}, 6000);
-
-			return Promise.reject();
-		} else if (responseObj.status !== 200) {
-			const error = 'The request did not succeed, but there was ' +
-				'error message received.';
-			store.dispatch(setAccountDeletingError(error));
-
-			setTimeout(() => {
-				if (store.getState().accountDeletingError === error) {
-					store.dispatch(setAccountDeletingError(''));
-				}
-			}, 6000);
-
-			return Promise.reject();
-		}
-
-		store.dispatch(setAccountDeletingError('Your account has been deleted.'));
-
-		setTimeout(() => {
-			modalClose();
-			logout();
-			store.dispatch(setAccountDeletingError(''));
-		}, 2000)
-	});
+	return succeeded;
 }

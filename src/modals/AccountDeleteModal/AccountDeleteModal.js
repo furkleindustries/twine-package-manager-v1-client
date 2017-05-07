@@ -9,7 +9,7 @@ import { setAccountDeletingEnteredId, } from './AccountDeleteModalActions';
 
 // modules
 import deleteAccount from '../../modules/deleteAccount';
-import modalClose from '../../modules/modalClose';
+import modalClose from '../../modules/modals/close';
 
 // css
 import './AccountDeleteModal.css';
@@ -31,21 +31,33 @@ export class AccountDeleteModal extends Component {
 				</p>
 
 				<p className="body">
-					Type the id of your account, <strong>{this.props.id}</strong>,
-					into the input below. 
+					Type the id of your account,
+					<strong>{` ${this.props.id}`}</strong>{", "}
+					into the input below.
 				</p>
 
 				<input
 					className="AccountDeleteModal-input body"
 					value={this.props.enteredId}
 					onChange={e => {
-						store.dispatch(setAccountDeletingEnteredId(e.target.value));
+						const value = e.target.value;
+						const action = setAccountDeletingEnteredId(value);
+						store.dispatch(action);
 					}} />
 
 				<button
 					className={"AccountDeleteModal-button wideButton" +
 						(this.props.id === this.props.enteredId ? "" : " disabled")}
-					onClick={deleteAccount}>
+					onClick={async () => {
+						const success = await deleteAccount(
+							(Number)(this.props.id), 
+							this.props.csrfToken);
+						if (success) {
+							setTimeout(() => {
+								modalClose();
+							}, 2000);
+						}
+					}}>
 					Delete Account
 				</button>
 
@@ -55,8 +67,8 @@ export class AccountDeleteModal extends Component {
 					Cancel
 				</button> 
 
-				<p className="AccountDeleteModal-error">
-					{this.props.error}
+				<p className="AccountDeleteModal-message">
+					{this.props.message}
 				</p>
 			</div>
 		);
@@ -68,8 +80,9 @@ function mapStateToProps() {
 
 	return {
 		id: (String)(state.profile.id || ''),
-		error: state.accountDeletingError,
 		enteredId: state.accountDeletingEnteredId,
+		csrfToken: state.csrfToken,
+		message: state.accountDeletingMessage,
 	};
 }
 

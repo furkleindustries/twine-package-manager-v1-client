@@ -1,11 +1,72 @@
 import * as reducers from './PackageOwnedReducers';
 
 describe('PackageOwned reducer unit tests', () => {
-    it('should return the initial package publishing state', () => {
-        expect(reducers.packagePublishingReducer(undefined, {})).toEqual(null);
+    it('should return the initial packageEditing state', () => { 
+        const object = {
+            id: null,
+            dateCreated: 0,
+            dateModified: 0,
+            name: '',
+            type: 'macros',
+            version: '',
+            description: '',
+            homepage: '',
+            js: '',
+            css: '',
+            keywords: '',
+            tag: '',
+        };
+
+        expect(reducers.packageEditingReducer(undefined, {}))
+            .toEqual(object);
     });
 
-    it('should handle setPackagePublishing', () => {
+    it('should handle setPackageEditing with valid arguments', () => {     
+        const previous = { 
+            id: null,
+            dateCreated: 0,
+            dateModified: 0,
+            name: '',
+            type: 'macros',
+            version: '',
+            description: '',
+            homepage: '',
+            js: '',
+            css: '',
+            keywords: '',
+            tag: '',
+        };
+
+        const object = {
+            id: 12,
+            dateCreated: 14,
+            dateModified: 16,
+            name: 'testerson',
+            type: 'scripts',
+            version: '1',
+            description: 'test description',
+            homepage: 'testerson.com',
+            js: 'test js',
+            css: 'test css',
+            keywords: 'one two three',
+            tag: 'test tag',
+        };
+
+        const action = {
+            type: 'setPackageEditing',
+            editing: object,
+        };
+
+        expect(reducers.packageEditingReducer(previous, action))
+            .toEqual(object);
+    });
+
+    it('should return the initial packagePublishing state', () => {
+        expect(reducers.packagePublishingReducer(undefined, {}))
+            .toEqual(null);
+    });
+
+    it('should handle setPackagePublishing with valid arguments', () => {
         expect(
           reducers.packagePublishingReducer('', {
             type: 'setPackagePublishing',
@@ -17,95 +78,191 @@ describe('PackageOwned reducer unit tests', () => {
         ).toEqual({ id: 201, publishing: true });
     });
 
-    it('should return the initial package publishing error state', () => {
-        expect(reducers.packagePublishingErrorReducer(undefined, {}))
+    it('packagePublishingReducer should reject with invalid type', () => {
+        expect(
+          reducers.packagePublishingReducer('', {
+            type: 'setPackageTest',
+            publishing: {},
+          })
+        ).toEqual('');
+    });
+
+    it('packagePublishingReducer should reject with invalid arguments', () => {
+        expect(
+          reducers.packagePublishingReducer('', {
+            type: 'setPackagePublishing',
+            publishing: 23,
+          })
+        ).toEqual('');
+    });
+
+    it('should return the initial packagePublishingMessage state', () => {
+        expect(reducers.packagePublishingMessageReducer(undefined, {}))
             .toEqual('');
     });
 
-    it('should handle setPackagePublishingError', () => {
+    it('should handle setPackagePublishingMessage with valid arguments', () => {
         expect(
-          reducers.packagePublishingErrorReducer('', {
-            type: 'setPackagePublishingError',
-            error: 'this is a test error',
+          reducers.packagePublishingMessageReducer('', {
+            type: 'setPackagePublishingMessage',
+            message: 'testing messages',
           })
-        ).toEqual('this is a test error');
+        ).toEqual('testing messages');
     });
 
-    it('should return the initial package editing error state', () => {
-        expect(reducers.packageEditingErrorReducer(undefined, {})).toEqual('');
-    });
-
-    it('should handle setPackageEditingError', () => {
+    it('packagePublishingMessageReducer should reject with invalid type', () => {
         expect(
-          reducers.packageEditingErrorReducer('', {
-            type: 'setPackageEditingError',
-            error: 'this is also a test error',
+          reducers.packagePublishingMessageReducer('', {
+            type: 'setPackageTest',
+            message: 'this will fail',
           })
-        ).toEqual('this is also a test error');
+        ).toEqual('');
     });
 
-    it('should return the initial package editing id state', () => {
+    it('packagePublishingMessageReducer should reject with invalid arguments', () => {
+        expect(
+          reducers.packagePublishingMessageReducer('', {
+            type: 'setPackagePublishingMessage',
+            message: 56,
+          })
+        ).toEqual('');
+    });
+
+
+    it('should return the initial packageEditingId state', () => {
         expect(reducers.packageEditingIdReducer(undefined, {}))
             .toEqual(null);
     });
 
-    it('should handle setPackageEditingId', () => {
+    it('should handle setPackageEditingId with valid arguments', () => {
         expect(
           reducers.packageEditingIdReducer('', {
             type: 'setPackageEditingId',
-            id: 245,
+            id: 567,
           })
-        ).toEqual(245);
+        ).toEqual(567);
     });
 
-    it('should return the initial package editing date created state', () => {
+    it('packageEditingIdReducer should reject with invalid type', () => {
+        expect(
+          reducers.packageEditingIdReducer('', {
+            type: 'setPackageTest',
+            id: 4688,
+          })
+        ).toEqual('');
+    });
+
+    it('packageEditingIdReducer should reject with invalid arguments', () => {
+        expect(
+          reducers.packageEditingIdReducer('', {
+            type: 'setPackageEditingId',
+            id: 'foo bar baz',
+          })
+        ).toEqual('');
+    });
+
+    it('should return the initial packageEditingDateCreated state', () => {
         expect(reducers.packageEditingDateCreatedReducer(undefined, {}))
             .toEqual(0);
     });
 
-    it('should handle setPackageEditingDateCreated', () => {
+    it('should handle setPackageEditingDateCreated with valid arguments', () => {
         expect(
           reducers.packageEditingDateCreatedReducer('', {
             type: 'setPackageEditingDateCreated',
-            dateCreated: 60000,
+            dateCreated: 1235,
           })
-        ).toEqual(60000);
+        ).toEqual(1235);
     });
 
-    it('should return the initial package editing date modified state', () => {
+    it('packageEditingDateCreatedReducer should reject with invalid type', () => {
+        expect(
+          reducers.packageEditingDateCreatedReducer('', {
+            type: 'setPackageTest',
+            dateCreated: 4790,
+          })
+        ).toEqual('');
+    });
+
+    it('packageEditingDateCreatedReducer should reject with invalid arguments', () => {
+        expect(
+          reducers.packageEditingDateCreatedReducer('', {
+            type: 'setPackageEditingDateCreated',
+            dateCreated: 'failing argument',
+          })
+        ).toEqual('');
+    });
+
+    it('should return the initial packageEditingDateModified state', () => {
         expect(reducers.packageEditingDateModifiedReducer(undefined, {}))
             .toEqual(0);
     });
 
-    it('should handle setPackageEditingDateModified', () => {
+    it('should handle setPackageEditingDateModified with valid arguments', () => {
         expect(
           reducers.packageEditingDateModifiedReducer('', {
             type: 'setPackageEditingDateModified',
-            dateModified: 60001,
+            dateModified: 1236,
           })
-        ).toEqual(60001);
+        ).toEqual(1236);
     });
 
-    it('should return the initial package editing name state', () => {
+    it('packageEditingDateModifiedReducer should reject with invalid type', () => {
+        expect(
+          reducers.packageEditingDateModifiedReducer('', {
+            type: 'setPackageTest',
+            dateModified: 4791,
+          })
+        ).toEqual('');
+    });
+
+    it('packageEditingDateModifiedReducer should reject with invalid arguments', () => {
+        expect(
+          reducers.packageEditingDateModifiedReducer('', {
+            type: 'setPackageEditingDateModified',
+            dateModified: 'failing argument',
+          })
+        ).toEqual('');
+    });
+
+    it('should return the initial packageEditingName state', () => {
         expect(reducers.packageEditingNameReducer(undefined, {}))
             .toEqual('');
     });
 
-    it('should handle setPackageEditingName', () => {
+    it('should handle setPackageEditingName with valid arguments', () => {
         expect(
           reducers.packageEditingNameReducer('', {
             type: 'setPackageEditingName',
-            name: 'test testerson',
+            name: 'tester',
           })
-        ).toEqual('test testerson');
+        ).toEqual('tester');
     });
 
-    it('should return the initial package editing type state', () => {
+    it('packageEditingNameReducer should reject with invalid type', () => {
+        expect(
+          reducers.packageEditingNameReducer('', {
+            type: 'setPackageTest',
+            name: 'terster',
+          })
+        ).toEqual('');
+    });
+
+    it('packageEditingNameReducer should reject with invalid arguments', () => {
+        expect(
+          reducers.packageEditingNameReducer('', {
+            type: 'setPackageEditingName',
+            name: 12,
+          })
+        ).toEqual('');
+    });
+
+    it('should return the initial packageEditingType state', () => {
         expect(reducers.packageEditingTypeReducer(undefined, {}))
             .toEqual('macros');
     });
 
-    it('should handle setPackageEditingType', () => {
+    it('should handle setPackageEditingType with valid arguments', () => {
         expect(
           reducers.packageEditingTypeReducer('', {
             type: 'setPackageEditingType',
@@ -114,26 +271,69 @@ describe('PackageOwned reducer unit tests', () => {
         ).toEqual('scripts');
     });
 
-    it('should return the initial package editing version state', () => {
+    it('packageEditingTypeReducer should reject with invalid type', () => {
+        expect(
+          reducers.packageEditingTypeReducer('', {
+            type: 'setPackageTest',
+            editingType: 'storythemes',
+          })
+        ).toEqual('');
+    });
+
+    it('packageEditingTypeReducer should reject with invalid arguments', () => {
+        expect(
+          reducers.packageEditingTypeReducer('', {
+            type: 'setPackageEditingType',
+            editingType: 12,
+          })
+        ).toEqual('');
+
+        expect(
+          reducers.packageEditingTypeReducer('', {
+            type: 'setPackageEditingType',
+            editingType: 'bad arg',
+          })
+        ).toEqual('');
+    });
+
+    it('should return the initial packageEditingVersion state', () => {
         expect(reducers.packageEditingVersionReducer(undefined, {}))
             .toEqual('');
     });
 
-    it('should handle setPackageEditingVersion', () => {
+    it('should handle setPackageEditingVersion with valid arguments', () => {
         expect(
           reducers.packageEditingVersionReducer('', {
             type: 'setPackageEditingVersion',
-            version: '1.2.4',
+            version: '1.5.7',
           })
-        ).toEqual('1.2.4');
+        ).toEqual('1.5.7');
     });
 
-    it('should return the initial package editing description state', () => {
+    it('packageEditingVersionReducer should reject with invalid type', () => {
+        expect(
+          reducers.packageEditingVersionReducer('', {
+            type: 'setPackageTest',
+            version: '1.6.0',
+          })
+        ).toEqual('');
+    });
+
+    it('packageEditingVersionReducer should reject with invalid arguments', () => {
+        expect(
+          reducers.packageEditingVersionReducer('', {
+            type: 'setPackageEditingVersion',
+            version: 18,
+          })
+        ).toEqual('');
+    });
+
+    it('should return the initial packageEditingDescription state', () => {
         expect(reducers.packageEditingDescriptionReducer(undefined, {}))
             .toEqual('');
     });
 
-    it('should handle setPackageEditingDescription', () => {
+    it('should handle setPackageEditingDescription with valid arguments', () => {
         expect(
           reducers.packageEditingDescriptionReducer('', {
             type: 'setPackageEditingDescription',
@@ -142,96 +342,277 @@ describe('PackageOwned reducer unit tests', () => {
         ).toEqual('this is a test description');
     });
 
-    it('should return the initial package editing homepage state', () => {
+    it('packageEditingDescriptionReducer should reject with invalid type', () => {
+        expect(
+          reducers.packageEditingDescriptionReducer('', {
+            type: 'setPackageTest',
+            description: 'this will fail',
+          })
+        ).toEqual('');
+    });
+
+    it('packageEditingDescriptionReducer should reject with invalid arguments', () => {
+        expect(
+          reducers.packageEditingDescriptionReducer('', {
+            type: 'setPackageEditingDescription',
+            description: 21,
+          })
+        ).toEqual('');
+    });
+
+    it('should return the initial packageEditingHomepage state', () => {
         expect(reducers.packageEditingHomepageReducer(undefined, {}))
             .toEqual('');
     });
 
-    it('should handle setPackageEditingHomepage', () => {
+    it('should handle setPackageEditingHomepage with valid arguments', () => {
         expect(
           reducers.packageEditingHomepageReducer('', {
             type: 'setPackageEditingHomepage',
-            homepage: 'test.testing.com',
+            homepage: 'homepage.com',
           })
-        ).toEqual('test.testing.com');
+        ).toEqual('homepage.com');
     });
 
-    it('should return the initial package editing js state', () => {
-        expect(reducers.packageEditingJsReducer(undefined, {})).toEqual('');
-    });
-
-    it('should handle setPackageEditingJs', () => {
+    it('packageEditingHomepageReducer should reject with invalid type', () => {
         expect(
-          reducers.packageEditingJsReducer('', {
-            type: 'setPackageEditingJs',
-            js: 'const test = "testing";',
+          reducers.packageEditingHomepageReducer('', {
+            type: 'setPackageTest',
+            homepage: 'this will fail also',
           })
-        ).toEqual('const test = "testing";');
+        ).toEqual('');
     });
 
-    it('should return the initial package editing css state', () => {
-        expect(reducers.packageEditingCssReducer(undefined, {})).toEqual('');
-    });
-
-    it('should handle setPackageEditingCss', () => {
+    it('packageEditingHomepageReducer should reject with invalid arguments', () => {
         expect(
-          reducers.packageEditingCssReducer('', {
-            type: 'setPackageEditingCss',
-            css: '.test { display: block; }',
+          reducers.packageEditingHomepageReducer('', {
+            type: 'setPackageEditingHomepage',
+            homepage: 68,
           })
-        ).toEqual('.test { display: block; }');
+        ).toEqual('');
     });
 
-    it('should return the initial package editing keywords state', () => {
-        expect(reducers.packageEditingKeywordsReducer(undefined, {})).toEqual('');
-    });
-
-    it('should handle setPackageEditingKeywords', () => {
-        expect(
-          reducers.packageEditingKeywordsReducer('', {
-            type: 'setPackageEditingKeywords',
-            keywords: 'test testing tests',
-          })
-        ).toEqual('test testing tests');
-    });
-
-    it('should return the initial package editing tag state', () => {
-        expect(reducers.packageEditingTagReducer(undefined, {})).toEqual('');
-    });
-
-    it('should handle setPackageEditingTag', () => {
-        expect(
-          reducers.packageEditingTagReducer('', {
-            type: 'setPackageEditingTag',
-            tag: 'testtag',
-          })
-        ).toEqual('testtag');
-    });
-
-    it('should return the initial package removing state', () => {
-        expect(reducers.packageRemovingReducer(undefined, {})).toEqual(null);
-    });
-
-    it('should handle setPackageRemoving', () => {
-        expect(
-          reducers.packageRemovingReducer('', {
-            type: 'setPackageRemoving',
-            removing: {},
-          })
-        ).toEqual({});
-    });
-
-    it('should return the initial package removing error state', () => {
-        expect(reducers.packageRemovingErrorReducer(undefined, {}))
+    it('should return the initial packageEditingJs state', () => {
+        expect(reducers.packageEditingJsReducer(undefined, {}))
             .toEqual('');
     });
 
-    it('should handle setPackageRemovingError', () => {
+    it('should handle setPackageEditingJs with valid arguments', () => {
         expect(
-          reducers.packageRemovingErrorReducer('', {
-            type: 'setPackageRemovingError',
-            error: 'this, too, is a test error',
+          reducers.packageEditingJsReducer('', {
+            type: 'setPackageEditingJs',
+            js: 'testing js',
           })
-        ).toEqual('this, too, is a test error');
+        ).toEqual('testing js');
+    });
+
+    it('packageEditingJsReducer should reject with invalid type', () => {
+        expect(
+          reducers.packageEditingJsReducer('', {
+            type: 'setPackageTest',
+            js: 'this will fail too',
+          })
+        ).toEqual('');
+    });
+
+    it('packageEditingJsReducer should reject with invalid arguments', () => {
+        expect(
+          reducers.packageEditingJsReducer('', {
+            type: 'setPackageEditingJs',
+            js: 79,
+          })
+        ).toEqual('');
+    });
+
+    it('should return the initial packageEditingCss state', () => {
+        expect(reducers.packageEditingCssReducer(undefined, {}))
+            .toEqual('');
+    });
+
+    it('should handle setPackageEditingCss with valid arguments', () => {
+        expect(
+          reducers.packageEditingCssReducer('', {
+            type: 'setPackageEditingCss',
+            css: 'testing css',
+          })
+        ).toEqual('testing css');
+    });
+
+    it('packageEditingCssReducer should reject with invalid type', () => {
+        expect(
+          reducers.packageEditingCssReducer('', {
+            type: 'setPackageTest',
+            css: 'this will fail too',
+          })
+        ).toEqual('');
+    });
+
+    it('packageEditingCssReducer should reject with invalid arguments', () => {
+        expect(
+          reducers.packageEditingCssReducer('', {
+            type: 'setPackageEditingCss',
+            css: 79,
+          })
+        ).toEqual('');
+    });
+
+    it('should return the initial packageEditingKeywords state', () => {
+        expect(reducers.packageEditingKeywordsReducer(undefined, {}))
+            .toEqual('');
+    });
+
+    it('should handle setPackageEditingKeywords with valid arguments', () => {
+        expect(
+          reducers.packageEditingKeywordsReducer('', {
+            type: 'setPackageEditingKeywords',
+            keywords: 'test tester testing',
+          })
+        ).toEqual('test tester testing');
+    });
+
+    it('packageEditingKeywordsReducer should reject with invalid type', () => {
+        expect(
+          reducers.packageEditingKeywordsReducer('', {
+            type: 'setPackageTest',
+            keywords: 'this will fail likewise',
+          })
+        ).toEqual('');
+    });
+
+    it('packageEditingKeywordsReducer should reject with invalid arguments', () => {
+        expect(
+          reducers.packageEditingKeywordsReducer('', {
+            type: 'setPackageEditingKeywords',
+            keywords: 84,
+          })
+        ).toEqual('');
+    });
+
+    it('should return the initial packageEditingTag state', () => {
+        expect(reducers.packageEditingTagReducer(undefined, {}))
+            .toEqual('');
+    });
+
+    it('should handle setPackageEditingTag with valid arguments', () => {
+        expect(
+          reducers.packageEditingTagReducer('', {
+            type: 'setPackageEditingTag',
+            tag: 'a test tag',
+          })
+        ).toEqual('a test tag');
+    });
+
+    it('packageEditingTagReducer should reject with invalid type', () => {
+        expect(
+          reducers.packageEditingTagReducer('', {
+            type: 'setPackageTest',
+            tag: 'this will fail for sure',
+          })
+        ).toEqual('');
+    });
+
+    it('packageEditingTagReducer should reject with invalid arguments', () => {
+        expect(
+          reducers.packageEditingTagReducer('', {
+            type: 'setPackageEditingTag',
+            tag: 217,
+          })
+        ).toEqual('');
+    });
+
+    it('should return the initial packageEditingMessage state', () => {
+        expect(reducers.packageEditingMessageReducer(undefined, {}))
+            .toEqual('');
+    });
+
+    it('should handle setPackageEditingMessage with valid arguments', () => {
+        expect(
+          reducers.packageEditingMessageReducer('', {
+            type: 'setPackageEditingMessage',
+            message: 'testing edit message',
+          })
+        ).toEqual('testing edit message');
+    });
+
+    it('packageEditingMessageReducer should reject with invalid type', () => {
+        expect(
+          reducers.packageEditingMessageReducer('', {
+            type: 'setPackageTest',
+            message: 'this will fail',
+          })
+        ).toEqual('');
+    });
+
+    it('packageEditingMessageReducer should reject with invalid arguments', () => {
+        expect(
+          reducers.packageEditingMessageReducer('', {
+            type: 'setPackageEditingMessage',
+            message: 56,
+          })
+        ).toEqual('');
+    });
+
+    it('should return the initial packageDeleting state', () => {
+        expect(reducers.packageDeletingReducer(undefined, {}))
+            .toEqual(null);
+    });
+
+    it('should handle setPackageDeleting with valid arguments', () => {
+        expect(
+          reducers.packageDeletingReducer('', {
+            type: 'setPackageDeleting',
+            deleting: { foo: 'bar', },
+          })
+        ).toEqual({ foo: 'bar', });
+    });
+
+    it('packageDeletingReducer should reject with invalid type', () => {
+        expect(
+          reducers.packageDeletingReducer('', {
+            type: 'setPackageTest',
+            deleting: {},
+          })
+        ).toEqual('');
+    });
+
+    it('packageDeletingReducer should reject with invalid arguments', () => {
+        expect(
+          reducers.packageDeletingReducer('', {
+            type: 'setPackageDeleting',
+            deleting: 457,
+          })
+        ).toEqual('');
+    });
+
+    it('should return the initial packageDeletingMessage state', () => {
+        expect(reducers.packageDeletingMessageReducer(undefined, {}))
+            .toEqual('');
+    });
+
+    it('should handle setPackageDeletingMessage with valid arguments', () => {
+        expect(
+          reducers.packageDeletingMessageReducer('', {
+            type: 'setPackageDeletingMessage',
+            message: 'testing message',
+          })
+        ).toEqual('testing message');
+    });
+
+    it('packageDeletingMessageReducer should reject with invalid type', () => {
+        expect(
+          reducers.packageDeletingMessageReducer('', {
+            type: 'setPackageTest',
+            message: 'will fail',
+          })
+        ).toEqual('');
+    });
+
+    it('packageDeletingMessageReducer should reject with invalid arguments', () => {
+        expect(
+          reducers.packageDeletingMessageReducer('', {
+            type: 'setPackageDeletingMessage',
+            message: 812,
+          })
+        ).toEqual('');
     });
 });

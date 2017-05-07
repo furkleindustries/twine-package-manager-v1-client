@@ -57,6 +57,47 @@ body,
     transform: translateX(-50%);
 }
 
+.sideBar {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 10%;
+    border-left: 0.1rem solid rgba(0, 0, 0, 0.25);
+    background: rgba(255, 255, 255, 0.9);
+    font-family: Helvetica;
+}
+
+.sideBar .NavBarItem {
+    display: block;
+    width: 100%;
+    height: 1.5rem;
+    margin: -0.1rem auto auto auto;
+    border: 0;
+    border-top: 0.1rem solid rgba(25, 25, 25, 0.5);
+    border-bottom: 0.1rem solid rgba(25, 25, 25, 0.5);
+    color: black;
+    text-decoration: none;
+    background: transparent;
+    cursor: pointer;
+}
+
+.sideBar .NavBarItem:first-of-type {
+    margin-top: 1rem;
+}
+
+.sideBar .NavBarItem:not(.active):active,
+.sideBar .NavBarItem:not(.active):hover {
+    border-radius: 0;
+    color: white;
+}
+
+.sideBar .NavBarItem.active {
+    border-radius: 0;
+    background: rgb(200, 0, 0);
+    color: rgb(250, 250, 250);
+    text-shadow: 0;
+}
+
 .Modal-container {
     position: absolute;
     left: 0;
@@ -123,9 +164,17 @@ body,
 }
 
 @media (min-width: 0px) {
+    .paneContainer,
+    .sideBar {
+        top: 1.5rem;
+        bottom: 2rem;
+    }
+
+    .sideBar .NavBarItem {
+        font-size: 20%;
+    }
+
     .paneContainer {
-        top: 2.5rem;
-        bottom: 5rem;
         padding-top: 0.9rem;
     }
 
@@ -144,9 +193,17 @@ body,
 }
 
 @media (min-width: 250px) {
+    .paneContainer,
+    .sideBar {
+        top: 1.5rem;
+        bottom: 1.75rem;
+    }
+
+    .sideBar .NavBarItem {
+        font-size: 25%;
+    }
+
     .paneContainer {
-        top: 2.5rem;
-        bottom: 3.25rem;
         padding-top: 0.95rem;
     }
 
@@ -165,9 +222,17 @@ body,
 }
 
 @media (min-width: 300px) {
-    .paneContainer {
+    .paneContainer,
+    .sideBar {
         top: 1.5rem;
-        bottom: 3rem;
+        bottom: 1.8rem;
+    }
+
+    .sideBar .NavBarItem {
+        font-size: 35%;
+    }
+
+    .paneContainer {
         padding-top: 1rem;
     }
 
@@ -186,9 +251,13 @@ body,
 }
 
 @media (min-width: 350px) {
-    .paneContainer {
+    .paneContainer,
+    .sideBar {
         top: 1.75rem;
         bottom: 2.5rem;
+    }
+
+    .paneContainer {
         padding-top: 1.05rem;
     }
 
@@ -207,9 +276,13 @@ body,
 }
 
 @media (min-width: 400px) {
-    .paneContainer {
+    .paneContainer,
+    .sideBar {
         top: 2rem;
         bottom: 2.25rem;
+    }
+
+    .paneContainer {
         padding-top: 1.1rem;
     }
 
@@ -228,9 +301,13 @@ body,
 }
 
 @media (min-width: 450px) {
-    .paneContainer {
+    .paneContainer,
+    .sideBar {
         top: 2.25rem;
         bottom: 2.35rem;
+    }
+
+    .paneContainer {
         padding-top: 1.15rem;
     }
 
@@ -249,9 +326,13 @@ body,
 }
 
 @media (min-width: 500px) {
-    .paneContainer {
+    .paneContainer,
+    .sideBar {
         top: 2.5rem;
         bottom: 2.45rem;
+    }
+
+    .paneContainer {
         padding-top: 1.2rem;
     }
 
@@ -270,9 +351,13 @@ body,
 }
 
 @media (min-width: 550px) {
-    .paneContainer {
+    .paneContainer,
+    .sideBar {
         top: 2.75rem;
         bottom: 2.55rem;
+    }
+
+    .paneContainer {
         padding-top: 1.25rem;
     }
 
@@ -291,9 +376,13 @@ body,
 }
 
 @media (min-width: 750px) {
-    .paneContainer {
+    .paneContainer,
+    .sideBar {
         top: 3rem;
         bottom: 2.65rem;
+    }
+
+    .paneContainer {
         padding-top: 1.55rem;
     }
 
@@ -312,9 +401,13 @@ body,
 }
 
 @media (min-width: 1000px) {
-    .paneContainer {
+    .paneContainer,
+    .sideBar {
         top: 3.25rem;
         bottom: 3rem;
+    }
+
+    .paneContainer {
         padding-top: 1.85rem;
     }
 
@@ -329,9 +422,13 @@ body,
 }
 
 @media (min-width: 1250px) {
-    .paneContainer {
+    .paneContainer,
+    .sideBar {
         top: 3.5rem;
         bottom: 3rem;
+    }
+
+    .paneContainer {
         padding: 1.85rem;
     }
 
@@ -346,9 +443,13 @@ body,
 }
 
 @media (min-width: 1500px) {
-    .paneContainer {
+    .paneContainer,
+    .sideBar {
         top: 3.75rem;
         bottom: 3rem;
+    }
+
+    .paneContainer {
         max-width: 80rem;
         padding: 2.25rem 2rem 2rem 2rem;
     }
@@ -364,7 +465,8 @@ body,
 }
 
 @media (min-width: 1750px) {
-    .paneContainer {
+    .paneContainer,
+    .sideBar {
         top: 4rem;
         bottom: 3rem;
     }
@@ -380,7 +482,8 @@ body,
 }
 
 @media (min-width: 2000px) {
-    .paneContainer {
+    .paneContainer,
+    .sideBar {
         top: 4.25rem;
         bottom: 3rem;
     }

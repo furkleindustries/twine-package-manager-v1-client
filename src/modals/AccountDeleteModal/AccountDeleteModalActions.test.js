@@ -12,14 +12,14 @@ describe('AccountDeleteModal action unit tests', () => {
         expect(actions.setAccountDeletingEnteredId(enteredId)).toEqual(object);
     });
 
-    it('creates a valid setAccountDeletingError action', () => {
-        const error = 'this is a test error';
+    it('creates a valid setAccountDeletingMessage action', () => {
+        const message = 'this is a test message';
 
         const object = {
-            error,
-            type: 'setAccountDeletingError',
+            message,
+            type: 'setAccountDeletingMessage',
         };
 
-        expect(actions.setAccountDeletingError(error)).toEqual(object);
+        expect(actions.setAccountDeletingMessage(message)).toEqual(object);
     });
 });

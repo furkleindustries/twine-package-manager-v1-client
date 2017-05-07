@@ -25,6 +25,11 @@
 	background: rgb(200, 0, 0);
 }
 
+.Login-message {
+	height: 1rem;
+	text-align: center;
+}
+
 @media (min-width: 0px) {
 	.Login-input {
 		width: 100%;

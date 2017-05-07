@@ -1,33 +1,72 @@
 import * as reducers from './appReducers';
-import panesSource from './panesSource';
+import panesSourceApp from './panesSourceApp';
 
 describe('app reducer unit tests', () => {
-    it('should return the initial panes state', () => {
-        expect(reducers.panesReducer(undefined, {}))
-            .toEqual(panesSource);
+    it('should return the initial app panes state', () => {
+        expect(reducers.appPanesReducer(undefined, {}))
+            .toEqual(panesSourceApp);
     });
 
-    it('should handle setPanes', () => {
+    it('should handle setAppPanes', () => {
         expect(
-          reducers.panesReducer('', {
-            type: 'setPanes',
+          reducers.appPanesReducer('', {
+            type: 'setAppPanes',
             panes: {a: 'b'},
           })
         ).toEqual({a: 'b'});
     });
 
-    it('should return the initial selectedPane state', () => {
-        expect(reducers.selectedPaneReducer(undefined, {}))
-            .toEqual('home');
+    it('should return the initial appSelectedPane state', () => {
+        expect(reducers.appSelectedPaneReducer(undefined, {})).toEqual('home');
     });
 
-    it('should handle setSelectedPane', () => {
+    it('should handle setAppSelectedPane', () => {
         expect(
-          reducers.selectedPaneReducer('', {
-            type: 'setSelectedPane',
+          reducers.appSelectedPaneReducer('', {
+            type: 'setAppSelectedPane',
             selectedPane: 'login',
           })
         ).toEqual('login');
+    });
+
+    it('should return the initial sidebar visible state', () => {
+        expect(reducers.sideBarVisibleReducer(undefined, {})).toEqual(false);
+    });
+
+    it('should handle setSideBarVisible', () => {
+        expect(
+          reducers.sideBarVisibleReducer('', {
+            type: 'setSideBarVisible',
+            visible: true,
+          })
+        ).toEqual(true);
+    });
+
+    it('should return the initial sidebar panes state', () => {
+        expect(reducers.sideBarPanesReducer(undefined, {})).toEqual(null);
+    });
+
+    it('should handle setSideBarPanes', () => {
+        expect(
+          reducers.sideBarPanesReducer('', {
+            type: 'setSideBarPanes',
+            panes: {a: 'b'},
+          })
+        ).toEqual({a: 'b'});
+    });
+
+    it('should return the initial sideBarSelectedPane state', () => {
+        expect(reducers.sideBarSelectedPaneReducer(undefined, {}))
+            .toEqual(null);
+    });
+
+    it('should handle setSideBarSelectedPane', () => {
+        expect(
+          reducers.sideBarSelectedPaneReducer('', {
+            type: 'setSideBarSelectedPane',
+            selectedPane: 'testing',
+          })
+        ).toEqual('testing');
     });
 
     it('should return the initial csrfToken state', () => {

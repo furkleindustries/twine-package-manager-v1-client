@@ -6,6 +6,7 @@ import React, { Component, } from 'react';
 // redux
 import { connect, } from 'react-redux';
 import store from '../../store';
+import { setSideBarVisible, } from '../../appActions';
 import {
 	setSearchedYet,
 	setSearchQuery,
@@ -125,7 +126,7 @@ class SearchPane extends Component {
 				</button>
 
 				<div className="Search-status body">
-					{this.props.error}
+					{this.props.message}
 				</div>
 
 				<div className="Search-resultsContainer">
@@ -468,6 +469,10 @@ class SearchPane extends Component {
 		); 
 	}
 
+	componentDidMount() {
+		store.dispatch(setSideBarVisible(false));
+	}
+
 	autocomplete() {
 
 	}
@@ -496,7 +501,7 @@ class SearchPane extends Component {
 		delete searchObj.searchedYet;
 		delete searchObj.query;
 		delete searchObj.results;
-		delete searchObj.error;
+		delete searchObj.message;
 		delete searchObj.optionsVisible;
 
 		localStorage.twinepmSearchOptions = JSON.stringify(searchObj);
@@ -779,7 +784,7 @@ function mapStateToProps() {
 		dateModifiedRange: search.dateModifiedRange,
 		versionRange: search.versionRange,
 		subtype: search.subtype,
-		error: search.error,
+		message: search.message,
 	};
 }
 

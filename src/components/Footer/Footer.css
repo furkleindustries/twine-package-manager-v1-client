@@ -7,6 +7,7 @@
     width: 100%;
     padding: 0.33rem;
     background-color: rgb(170, 0, 0);
+    font-family: Helvetica;
     color: white;
     box-shadow: 0 0 1rem rgba(20, 20, 20, 0.67);
     box-sizing: border-box;
@@ -38,7 +39,7 @@
 
 @media (min-width: 0px) {
     .Footer {
-        height: 5rem;
+        height: 2rem;
         font-size: 35%;
     }
 
@@ -50,7 +51,7 @@
 
 @media (min-width: 250px) {
     .Footer {
-        height: 3.25rem;
+        height: 1.75rem;
         font-size: 40%;
     }
 
@@ -62,7 +63,7 @@
 
 @media (min-width: 300px) {
     .Footer {
-        height: 3rem;
+        height: 1.8rem;
     }
 
     .Footer-icon {

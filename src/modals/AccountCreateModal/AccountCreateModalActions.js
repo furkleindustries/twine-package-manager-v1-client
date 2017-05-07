@@ -19,9 +19,9 @@ export function setAccountCreatingEmail(email) {
 	};
 }
 
-export function setAccountCreatingError(error) {
+export function setAccountCreatingMessage(message) {
 	return {
-		error,
-		type: 'setAccountCreatingError',
+		message,
+		type: 'setAccountCreatingMessage',
 	}
 }

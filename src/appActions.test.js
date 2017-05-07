@@ -8,21 +8,56 @@ describe('app action unit tests', () => {
 
         const object = {
             panes,
-            type: 'setPanes',
+            type: 'setAppPanes',
         };
 
-        expect(actions.setPanes(panes)).toEqual(object);
+        expect(actions.setAppPanes(panes)).toEqual(object);
     });
 
-    it('creates a valid setSelectedPane action', () => {
+    it('creates a valid setAppSelectedPane action', () => {
         const selectedPane = 'testing';
 
         const object = {
             selectedPane,
-            type: 'setSelectedPane',
+            type: 'setAppSelectedPane',
         };
 
-        expect(actions.setSelectedPane(selectedPane)).toEqual(object);
+        expect(actions.setAppSelectedPane(selectedPane)).toEqual(object);
+    });
+
+    it('creates a valid setAppSelectedPane action', () => {
+        const selectedPane = 'testing';
+
+        const object = {
+            selectedPane,
+            type: 'setAppSelectedPane',
+        };
+
+        expect(actions.setAppSelectedPane(selectedPane)).toEqual(object);
+    });
+
+    it('creates a valid setSideBarPanes action', () => {
+        const panes = {
+            testing: 'test',
+        };
+
+        const object = {
+            panes,
+            type: 'setSideBarPanes',
+        };
+
+        expect(actions.setSideBarPanes(panes)).toEqual(object);
+    });
+
+    it('creates a valid setSideBarSelectedPane action', () => {
+        const selectedPane = 'test';
+
+        const object = {
+            selectedPane,
+            type: 'setSideBarSelectedPane',
+        };
+
+        expect(actions.setSideBarSelectedPane(selectedPane)).toEqual(object);
     });
 
     it('creates a valid setModal action', () => {

@@ -1,76 +1,86 @@
 // redux
-import { combineReducers } from 'redux';
+import { combineReducers, } from 'redux';
 
 // reducers
 import {
-	panesReducer,
-	selectedPaneReducer,
-	profileReducer,
+	appPanesReducer,
+    appSelectedPaneReducer,
+    sideBarVisibleReducer,
+    sideBarPanesReducer,
+    sideBarSelectedPaneReducer,
 	csrfTokenReducer,
 	modalReducer,
 } from './appReducers';
 
 import {
-	searchReducer,
+	searchOptionsReducer,
 } from './panes/search/searchReducers';
 
 import {
 	usernameReducer,
 	passwordReducer,
-	loginErrorReducer,
-	createAccountErrorReducer,
+	loginMessageReducer,
 } from './panes/login/loginReducers';
+
+import {
+    profileReducer,
+} from './panes/profile/profileReducers';
 
 import {
     accountCreatingNameReducer,
     accountCreatingPasswordReducer,
     accountCreatingEmailReducer,
-    accountCreatingErrorReducer,
+    accountCreatingMessageReducer,
 } from './modals/AccountCreateModal/AccountCreateModalReducers';
 
 import {
     accountDeletingEnteredIdReducer,
-    accountDeletingErrorReducer,
+    accountDeletingMessageReducer,
 } from './modals/AccountDeleteModal/AccountDeleteModalReducers';
+
+import { profileMessageReducer, } from './panes/profile/profileReducers';
 
 import {
     packagePublishingReducer,
+    packagePublishingMessageReducer,
     packageEditingReducer,
-    packageRemovingReducer,
-    packagePublishingErrorReducer,
-    packageEditingErrorReducer,
-    packageRemovingErrorReducer,
+    packageEditingMessageReducer,
+    packageDeletingReducer,
+    packageDeletingMessageReducer,
 } from './components/PackageOwned/PackageOwnedReducers';
 
 import {
     packageCreatingReducer,
-    packageCreatingErrorReducer,
+    packageCreatingMessageReducer,
 } from './modals/PackageCreateModal/PackageCreateModalReducers';
 
 const indexReducer = combineReducers({
-    panes: panesReducer,
-    selectedPane: selectedPaneReducer,
-    search: searchReducer,
+    appPanes: appPanesReducer,
+    appSelectedPane: appSelectedPaneReducer,
+    sideBarVisible: sideBarVisibleReducer,
+    sideBarPanes: sideBarPanesReducer,
+    sideBarSelectedPane: sideBarSelectedPaneReducer,
+    search: searchOptionsReducer,
     username: usernameReducer,
     password: passwordReducer,
     csrfToken: csrfTokenReducer,
-    loginError: loginErrorReducer,
+    loginMessage: loginMessageReducer,
     profile: profileReducer,
+    profileMessage: profileMessageReducer,
     accountCreatingName: accountCreatingNameReducer,
     accountCreatingPassword: accountCreatingPasswordReducer,
     accountCreatingEmail: accountCreatingEmailReducer,
-    accountCreatingError: accountCreatingErrorReducer,
+    accountCreatingMessage: accountCreatingMessageReducer,
     accountDeletingEnteredId: accountDeletingEnteredIdReducer,
-    accountDeletingError: accountDeletingErrorReducer,
+    accountDeletingMessage: accountDeletingMessageReducer,
     packagePublishing: packagePublishingReducer,
     packageEditing: packageEditingReducer,
-    packageRemoving: packageRemovingReducer,
+    packageDeleting: packageDeletingReducer,
     packageCreating: packageCreatingReducer,
-    createAccountError: createAccountErrorReducer,
-    packagePublishingError: packagePublishingErrorReducer,
-    packageEditingError: packageEditingErrorReducer,
-    packageRemovingError: packageRemovingErrorReducer,
-    packageCreatingError: packageCreatingErrorReducer,
+    packagePublishingMessage: packagePublishingMessageReducer,
+    packageEditingMessage: packageEditingMessageReducer,
+    packageDeletingMessage: packageDeletingMessageReducer,
+    packageCreatingMessage: packageCreatingMessageReducer,
     modal: modalReducer,
 });
 

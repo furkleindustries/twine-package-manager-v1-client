@@ -1,156 +1,362 @@
 import * as reducers from './profileReducers';
 
 describe('profile reducer unit tests', () => {
-    it('should return the initial profile ID state', () => {
-        expect(reducers.profileIdReducer(undefined, {})).toEqual(null);
+    it('should return the initial profile state', () => {
+        const object = {
+            id: null,
+            dateCreated: null,
+            dateCreatedVisible: false,
+            name: '',
+            nameVisible: false,
+            email: '',
+            emailVisible: false,
+            description: '',
+            homepage: '',
+            dateStyle: 'mmdd',
+            timeStyle: '12h',
+            rollback: null,
+            packages: [],
+        };
+
+        expect(reducers.profileReducer(undefined, {}))
+            .toEqual(object);
     });
 
-    it('should handle setProfileId', () => {
+    it('should handle setProfile with valid arguments', () => {
+        const previous = {
+            id: null,
+            dateCreated: null,
+            dateCreatedVisible: false,
+            name: '',
+            nameVisible: false,
+            email: '',
+            emailVisible: false,
+            description: '',
+            homepage: '',
+            dateStyle: 'mmdd',
+            timeStyle: '12h',
+            rollback: null,
+            packages: [],
+        };
+
+        const object = {
+            id: 15,
+            dateCreated: 16878,
+            dateCreatedVisible: true,
+            name: 'foobar',
+            nameVisible: true,
+            email: 'bazbar@buxbaz.com',
+            emailVisible: true,
+            description: 'test description',
+            homepage: 'testing.com',
+            dateStyle: 'ddmm',
+            timeStyle: '24h',
+            rollback: { foo: 'bar', },
+            packages: [6, 8, 9],
+        };
+
+        const action = {
+            type: 'setProfile',
+            profile: object,
+        };
+
+        expect(reducers.profileReducer(previous, action)).toEqual(object);
+    });
+
+    it('should return the initial profileId state', () => {
+        expect(reducers.profileIdReducer(undefined, {}))
+            .toEqual(null);
+    });
+
+    it('should handle setProfileId with valid arguments', () => {
         expect(
           reducers.profileIdReducer('', {
             type: 'setProfileId',
-            id: 64,
+            id: 12,
           })
-        ).toEqual(64);
+        ).toEqual(12);
     });
 
-    it('should return the initial profile name state', () => {
-        expect(reducers.profileNameReducer(undefined, {})).toEqual('');
+    it('profileIdReducer should reject with invalid type', () => {
+        expect(
+          reducers.profileIdReducer('', {
+            type: 'setProfileTest',
+            id: 'will fail',
+          })
+        ).toEqual('');
     });
 
-    it('should handle setProfileName', () => {
+    it('profileIdReducer should reject with invalid arguments', () => {
+        expect(
+          reducers.profileIdReducer('', {
+            type: 'setProfileId',
+            id: 'not a number',
+          })
+        ).toEqual('');
+    });
+
+    it('should return the initial profileName state', () => {
+        expect(reducers.profileNameReducer(undefined, {}))
+            .toEqual('');
+    });
+
+    it('should handle setProfileName with valid arguments', () => {
         expect(
           reducers.profileNameReducer('', {
             type: 'setProfileName',
-            name: 'test testerson',
+            name: 'ms. tester',
           })
-        ).toEqual('test testerson');
+        ).toEqual('ms. tester');
     });
 
-    it('should return the initial profile name visible state', () => {
+    it('profileNameReducer should reject with invalid type', () => {
+        expect(
+          reducers.profileNameReducer('', {
+            type: 'setProfileTest',
+            name: 'must fail',
+          })
+        ).toEqual('');
+    });
+
+    it('profileNameReducer should reject with invalid arguments', () => {
+        expect(
+          reducers.profileNameReducer('', {
+            type: 'setProfileName',
+            id: 447,
+          })
+        ).toEqual('');
+    });
+
+    it('should return the initial profileNameVisible state', () => {
         expect(reducers.profileNameVisibleReducer(undefined, {}))
             .toEqual(false);
     });
 
-    it('should handle setProfileNameVisible', () => {
+    it('should handle setProfileNameVisible with valid arguments', () => {
         expect(
           reducers.profileNameVisibleReducer('', {
             type: 'setProfileNameVisible',
-            nameVisible: true,
+            visible: true,
           })
         ).toEqual(true);
     });
 
-    it('should return the initial profile description state', () => {
-        expect(reducers.profileDescriptionReducer(undefined, {})).toEqual('');
+    it('profileNameVisibleReducer should reject with invalid type', () => {
+        expect(
+          reducers.profileNameVisibleReducer('', {
+            type: 'setProfileTest',
+            visible: false,
+          })
+        ).toEqual('');
     });
 
-    it('should handle setProfileDescription', () => {
+    it('profileNameVisibleReducer should reject with invalid arguments', () => {
+        expect(
+          reducers.profileNameVisibleReducer('', {
+            type: 'setProfileId',
+            visible: 'not a boolean',
+          })
+        ).toEqual('');
+    });
+
+    it('should return the initial profileDescription state', () => {
+        expect(reducers.profileDescriptionReducer(undefined, {}))
+            .toEqual('');
+    });
+
+    it('should handle setProfileDescription with valid arguments', () => {
         expect(
           reducers.profileDescriptionReducer('', {
             type: 'setProfileDescription',
-            description: 'this is a test description',
+            description: 'test description',
           })
-        ).toEqual('this is a test description');
+        ).toEqual('test description');
     });
 
-    it('should return the initial profile description state', () => {
-        expect(reducers.profileDescriptionReducer(undefined, {})).toEqual('');
+    it('profileDescriptionReducer should reject with invalid type', () => {
+        expect(
+          reducers.profileDescriptionReducer('', {
+            type: 'setProfileTest',
+            description: 'will fail',
+          })
+        ).toEqual('');
     });
 
-    it('should handle setProfileDescription', () => {
+    it('profileDescriptionReducer should reject with invalid arguments', () => {
         expect(
           reducers.profileDescriptionReducer('', {
             type: 'setProfileDescription',
-            description: 'this is a test description',
+            description: 4498,
           })
-        ).toEqual('this is a test description');
+        ).toEqual('');
     });
 
-    it('should return the initial profile dateCreated state', () => {
-        expect(reducers.profileDateCreatedReducer(undefined, {})).toEqual(null);
+    it('should return the initial profileDateCreated state', () => {
+        expect(reducers.profileDateCreatedReducer(undefined, {}))
+            .toEqual(null);
     });
 
-    it('should handle setProfileDateCreated', () => {
+    it('should handle setProfileDateCreated with valid arguments', () => {
         expect(
           reducers.profileDateCreatedReducer('', {
             type: 'setProfileDateCreated',
-            dateCreated: 60000,
+            dateCreated: 19,
           })
-        ).toEqual(60000);
+        ).toEqual(19);
     });
 
-    it('should return the initial profile description state', () => {
-        expect(reducers.profileDescriptionReducer(undefined, {})).toEqual('');
-    });
-
-    it('should handle setProfileDescription', () => {
+    it('profileDateCreatedReducer should reject with invalid type', () => {
         expect(
-          reducers.profileDescriptionReducer('', {
-            type: 'setProfileDescription',
-            description: 'this is a test description',
+          reducers.profileDateCreatedReducer('', {
+            type: 'setProfileTest',
+            dateCreated: 1246,
           })
-        ).toEqual('this is a test description');
+        ).toEqual('');
     });
 
-    it('should return the initial profile dateCreatedVisible state', () => {
+    it('profileDateCreatedReducer should reject with invalid arguments', () => {
+        expect(
+          reducers.profileDateCreatedReducer('', {
+            type: 'setProfileDateCreated',
+            dateCreated: 'not a number',
+          })
+        ).toEqual('');
+    });
+
+    it('should return the initial profileDateCreatedVisible state', () => {
         expect(reducers.profileDateCreatedVisibleReducer(undefined, {}))
             .toEqual(false);
     });
 
-    it('should handle setProfileDateVisibleCreated', () => {
+    it('should handle setProfileDateCreatedVisible with valid arguments', () => {
         expect(
           reducers.profileDateCreatedVisibleReducer('', {
             type: 'setProfileDateCreatedVisible',
-            dateCreatedVisible: true,
+            visible: true,
           })
         ).toEqual(true);
     });
 
-    it('should return the initial profile email state', () => {
-        expect(reducers.profileEmailReducer(undefined, {})).toEqual('');
+    it('profileDateCreatedVisibleReducer should reject with invalid type', () => {
+        expect(
+          reducers.profileDateCreatedVisibleReducer('', {
+            type: 'setProfileTest',
+            visible: false,
+          })
+        ).toEqual('');
     });
 
-    it('should handle setProfileEmail', () => {
+    it('profileDateCreatedVisibleReducer should reject with invalid arguments', () => {
+        expect(
+          reducers.profileDateCreatedVisibleReducer('', {
+            type: 'setProfileDateCreatedVisible',
+            visible: 'not a boolean',
+          })
+        ).toEqual('');
+    });
+
+    it('should return the initial profileEmail state', () => {
+        expect(reducers.profileEmailReducer(undefined, {}))
+            .toEqual('');
+    });
+
+    it('should handle setProfileEmail with valid arguments', () => {
         expect(
           reducers.profileEmailReducer('', {
             type: 'setProfileEmail',
-            email: 'test@testerson.test',
+            email: 'email@email.com',
           })
-        ).toEqual('test@testerson.test');
+        ).toEqual('email@email.com');
     });
 
-    it('should return the initial profile email visible state', () => {
-        expect(reducers.profileEmailVisibleReducer(undefined, {})).toEqual(false);
+    it('profileEmailReducer should reject with invalid type', () => {
+        expect(
+          reducers.profileEmailReducer('', {
+            type: 'setProfileTest',
+            email: 'will@fail.com',
+          })
+        ).toEqual('');
     });
 
-    it('should handle setProfileEmailVisible', () => {
+    it('profileEmailReducer should reject with invalid arguments', () => {
+        expect(
+          reducers.profileEmailReducer('', {
+            type: 'setProfileEmail',
+            email: 124,
+          })
+        ).toEqual('');
+    });
+
+    it('should return the initial profileEmailVisible state', () => {
+        expect(reducers.profileEmailVisibleReducer(undefined, {}))
+            .toEqual(false);
+    });
+
+    it('should handle setProfileEmailVisible with valid arguments', () => {
         expect(
           reducers.profileEmailVisibleReducer('', {
             type: 'setProfileEmailVisible',
-            emailVisible: true,
+            visible: true,
           })
         ).toEqual(true);
     });
 
-    it('should return the initial profile homepage state', () => {
-        expect(reducers.profileHomepageReducer(undefined, {})).toEqual('');
+    it('profileEmailVisibleReducer should reject with invalid type', () => {
+        expect(
+          reducers.profileEmailVisibleReducer('', {
+            type: 'setProfileTest',
+            visible: false,
+          })
+        ).toEqual('');
     });
 
-    it('should handle setProfileHomepage', () => {
+    it('profileEmailVisibleReducer should reject with invalid arguments', () => {
+        expect(
+          reducers.profileEmailVisibleReducer('', {
+            type: 'setProfileEmailVisible',
+            visible: 'not a boolean either',
+          })
+        ).toEqual('');
+    });
+
+    it('should return the initial profileHomepage state', () => {
+        expect(reducers.profileHomepageReducer(undefined, {}))
+            .toEqual('');
+    });
+
+    it('should handle setProfileHomepage with valid arguments', () => {
         expect(
           reducers.profileHomepageReducer('', {
             type: 'setProfileHomepage',
-            homepage: 'testerson.com/testing',
+            homepage: 'test.com',
           })
-        ).toEqual('testerson.com/testing');
+        ).toEqual('test.com');
     });
 
-    it('should return the initial profile dateStyle state', () => {
-        expect(reducers.profileDateStyleReducer(undefined, {})).toEqual('mmdd');
+    it('profileHomepageReducer should reject with invalid type', () => {
+        expect(
+          reducers.profileHomepageReducer('', {
+            type: 'setProfileTest',
+            homepage: 'will fail too',
+          })
+        ).toEqual('');
     });
 
-    it('should handle setProfileDateStyle', () => {
+    it('profileHomepageReducer should reject with invalid arguments', () => {
+        expect(
+          reducers.profileHomepageReducer('', {
+            type: 'setProfileHomepage',
+            homepage: 16,
+          })
+        ).toEqual('');
+    });
+
+    it('should return the initial profileDateStyle state', () => {
+        expect(reducers.profileDateStyleReducer(undefined, {}))
+            .toEqual('mmdd');
+    });
+
+    it('should handle setProfileDateStyle with valid arguments', () => {
         expect(
           reducers.profileDateStyleReducer('', {
             type: 'setProfileDateStyle',
@@ -159,11 +365,37 @@ describe('profile reducer unit tests', () => {
         ).toEqual('ddmm');
     });
 
-    it('should return the initial profile timeStyle state', () => {
-        expect(reducers.profileTimeStyleReducer(undefined, {})).toEqual('12h');
+    it('profileDateStyleReducer should reject with invalid type', () => {
+        expect(
+          reducers.profileDateStyleReducer('', {
+            type: 'setProfileTest',
+            dateStyle: 'will fail',
+          })
+        ).toEqual('');
     });
 
-    it('should handle setProfileTimeStyle', () => {
+    it('profileDateStyleReducer should reject with invalid arguments', () => {
+        expect(
+          reducers.profileDateStyleReducer('', {
+            type: 'setProfileDateStyle',
+            dateStyle: 1443,
+          })
+        ).toEqual('');
+
+        expect(
+          reducers.profileDateStyleReducer('', {
+            type: 'setProfileDateStyle',
+            dateStyle: 'foobaz',
+          })
+        ).toEqual('');
+    });
+
+    it('should return the initial profileTimeStyle state', () => {
+        expect(reducers.profileTimeStyleReducer(undefined, {}))
+            .toEqual('12h');
+    });
+
+    it('should handle setProfileTimeStyle with valid arguments', () => {
         expect(
           reducers.profileTimeStyleReducer('', {
             type: 'setProfileTimeStyle',
@@ -172,11 +404,37 @@ describe('profile reducer unit tests', () => {
         ).toEqual('24h');
     });
 
-    it('should return the initial profile packages state', () => {
-        expect(reducers.profilePackagesReducer(undefined, {})).toEqual([]);
+    it('profileTimeStyleReducer should reject with invalid type', () => {
+        expect(
+          reducers.profileTimeStyleReducer('', {
+            type: 'setProfileTest',
+            timeStyle: '12h',
+          })
+        ).toEqual('');
     });
 
-    it('should handle setProfilePackages', () => {
+    it('profileTimeStyleReducer should reject with invalid arguments', () => {
+        expect(
+          reducers.profileTimeStyleReducer('', {
+            type: 'setProfileTimeStyle',
+            timeStyle: 1444,
+          })
+        ).toEqual('');
+
+        expect(
+          reducers.profileTimeStyleReducer('', {
+            type: 'setProfileTimeStyle',
+            timeStyle: 'bazbar',
+          })
+        ).toEqual('');
+    });
+
+    it('should return the initial profilePackages` state', () => {
+        expect(reducers.profilePackagesReducer(undefined, {}))
+            .toEqual([]);
+    });
+
+    it('should handle setProfilePackages with valid arguments', () => {
         expect(
           reducers.profilePackagesReducer('', {
             type: 'setProfilePackages',
@@ -185,42 +443,91 @@ describe('profile reducer unit tests', () => {
         ).toEqual([1, 2, 3]);
     });
 
-    it('should return the initial profile editing state', () => {
-        expect(reducers.profileEditingReducer(undefined, {})).toEqual(false);
-    });
-
-    it('should handle setProfileEditing', () => {
+    it('profilePackagesReducer should reject with invalid type', () => {
         expect(
-          reducers.profileEditingReducer('', {
-            type: 'setProfileEditing',
-            editing: true,
+          reducers.profilePackagesReducer('', {
+            type: 'setProfileTest',
+            packages: [4, 5, 6],
           })
-        ).toEqual(true);
+        ).toEqual('');
     });
 
-    it('should return the initial profile error state', () => {
-        expect(reducers.profileErrorReducer(undefined, {})).toEqual('');
-    });
-
-    it('should handle setProfileError', () => {
+    it('profilePackagesReducer should reject with invalid arguments', () => {
         expect(
-          reducers.profileErrorReducer('', {
-            type: 'setProfileError',
-            error: 'this is a testing error',
+          reducers.profilePackagesReducer('', {
+            type: 'setProfilePackages',
+            packages: 1447,
           })
-        ).toEqual('this is a testing error');
+        ).toEqual('');
+
+        expect(
+          reducers.profileDateStyleReducer('', {
+            type: 'setProfileDateStyle',
+            packages: {},
+          })
+        ).toEqual('');
     });
 
-    it('should return the initial profile rollback state', () => {
+    it('should return the initial profileMessage state', () => {
+        expect(reducers.profileMessageReducer(undefined, {}))
+            .toEqual('');
+    });
+
+    it('should handle setProfileMessage with valid arguments', () => {
+        expect(
+          reducers.profileMessageReducer('', {
+            type: 'setProfileMessage',
+            message: 'foo bar basz',
+          })
+        ).toEqual('foo bar basz');
+    });
+
+    it('profileMessage should reject with invalid type', () => {
+        expect(
+          reducers.profileMessageReducer('', {
+            type: 'setProfileTest',
+            message: 'will fail',
+          })
+        ).toEqual('');
+    });
+
+    it('profileMessageReducer should reject with invalid arguments', () => {
+        expect(
+          reducers.profileMessageReducer('', {
+            type: 'setProfileMessage',
+            message: 1447,
+          })
+        ).toEqual('');
+    });
+
+    it('should return the initial profileRollback state', () => {
         expect(reducers.profileRollbackReducer(undefined, {})).toEqual(null);
     });
 
-    it('should handle setProfileRollback', () => {
+    it('should handle setProfileRollback with valid arguments', () => {
         expect(
           reducers.profileRollbackReducer('', {
             type: 'setProfileRollback',
-            rollback: {},
+            rollback: { foo: 'bar', },
           })
-        ).toEqual({});
+        ).toEqual({ foo: 'bar', });
+    });
+
+    it('profileRollbackReducer should reject with invalid type', () => {
+        expect(
+          reducers.profileRollbackReducer('', {
+            type: 'setProfileTest',
+            rollback: { foo: 'bar', },
+          })
+        ).toEqual('');
+    });
+
+    it('profileRollbackReducer should reject with invalid arguments', () => {
+        expect(
+          reducers.profileRollbackReducer('', {
+            type: 'setProfileRollback',
+            rollback: 1448,
+          })
+        ).toEqual('');
     });
 });

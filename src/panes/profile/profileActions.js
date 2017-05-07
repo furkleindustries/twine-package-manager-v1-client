@@ -18,9 +18,9 @@ export function setProfileDateCreated(dateCreated) {
 	};
 }
 
-export function setProfileDateCreatedVisible(dateCreatedVisible) {
+export function setProfileDateCreatedVisible(visible) {
 	return {
-		dateCreatedVisible,
+		visible,
 		type: 'setProfileDateCreatedVisible',
 	};
 }
@@ -32,9 +32,9 @@ export function setProfileName(name) {
 	};
 }
 
-export function setProfileNameVisible(nameVisible) {
+export function setProfileNameVisible(visible) {
 	return {
-		nameVisible,
+		visible,
 		type: 'setProfileNameVisible',
 	};
 }
@@ -53,9 +53,9 @@ export function setProfileEmail(email) {
 	};
 }
 
-export function setProfileEmailVisible(emailVisible) {
+export function setProfileEmailVisible(visible) {
 	return {
-		emailVisible,
+		visible,
 		type: 'setProfileEmailVisible',
 	};
 }
@@ -88,17 +88,10 @@ export function setProfileTimeStyle(timeStyle) {
 	};
 }
 
-export function setProfileEditing(editing) {
+export function setProfileMessage(message) {
 	return {
-		editing,
-		type: 'setProfileEditing',
-	};
-}
-
-export function setProfileError(error) {
-	return {
-		error,
-		type: 'setProfileError',
+		message,
+		type: 'setProfileMessage',
 	};
 }
 

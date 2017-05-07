@@ -1,6 +1,6 @@
-export function setPackageCreating(Creating) {
+export function setPackageCreating(creating) {
     return {
-        Creating,
+        creating,
         type: 'setPackageCreating',
     };
 }
@@ -89,9 +89,9 @@ export function setPackageCreatingTag(tag) {
     }
 }
 
-export function setPackageCreatingError(error) {
+export function setPackageCreatingMessage(message) {
     return {
-        error,
-        type: 'setPackageCreatingError',
+        message,
+        type: 'setPackageCreatingMessage',
     };
 }

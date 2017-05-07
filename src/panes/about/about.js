@@ -1,11 +1,15 @@
 // react
-import React, { Component } from 'react';
+import React, { Component, } from 'react';
+
+// redux
+import store from '../../store';
+import { setSideBarVisible, } from '../../appActions';
 
 // modals
 import RulesModal from '../../modals/RulesModal/RulesModal.js';
 
 // modules
-import modalCreate from '../../modules/modalCreate';
+import create from '../../modules/modals/create';
 
 // css
 import './about.css';
@@ -36,13 +40,15 @@ class AboutPane extends Component {
 	}
 
 	componentDidMount() {
+        store.dispatch(setSideBarVisible(false));
+
 		if (location.hash === '#rules') {
 			this.modalCreateRules();
 		}
 	}
 
 	modalCreateRules() {
-		modalCreate(<RulesModal />);
+		create(<RulesModal />);
 		location.hash = 'rules';
 	}
 }

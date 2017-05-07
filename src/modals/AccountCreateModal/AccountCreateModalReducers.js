@@ -1,6 +1,6 @@
 export function accountCreatingNameReducer(previous = '', action) {
 	if (action.type === 'setAccountCreatingName') {
-		if (typeof(action.name) === 'string') {
+		if (typeof action.name === 'string') {
 			return action.name;
 		}
 	}
@@ -10,7 +10,7 @@ export function accountCreatingNameReducer(previous = '', action) {
 
 export function accountCreatingPasswordReducer(previous = '', action) {
 	if (action.type === 'setAccountCreatingPassword') {
-		if (typeof(action.password) === 'string') {
+		if (typeof action.password === 'string') {
 			return action.password;
 		}
 	}
@@ -20,7 +20,7 @@ export function accountCreatingPasswordReducer(previous = '', action) {
 
 export function accountCreatingEmailReducer(previous = '', action) {
 	if (action.type === 'setAccountCreatingEmail') {
-		if (typeof(action.email) === 'string') {
+		if (typeof action.email === 'string') {
 			return action.email;
 		}
 	}
@@ -28,10 +28,10 @@ export function accountCreatingEmailReducer(previous = '', action) {
 	return previous;
 }
 
-export function accountCreatingErrorReducer(previous = '', action) {
-	if (action.type === 'setAccountCreatingError') {
-		if (typeof(action.error) === 'string') {
-			return action.error;
+export function accountCreatingMessageReducer(previous = '', action) {
+	if (action.type === 'setAccountCreatingMessage') {
+		if (typeof action.message === 'string') {
+			return action.message;
 		}
 	}
 

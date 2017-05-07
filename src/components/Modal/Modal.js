@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 
 // modules
-import modalClose from '../../modules/modalClose';
+import modalClose from '../../modules/modals/close';
 
 // css
 import './Modal.css';

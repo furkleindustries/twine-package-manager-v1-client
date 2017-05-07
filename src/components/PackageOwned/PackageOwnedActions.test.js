@@ -12,15 +12,15 @@ describe('PackageOwned action unit tests', () => {
         expect(actions.setPackagePublishing(publishing)).toEqual(object);
     });
 
-    it('creates a valid setPackagePublishingError action', () => {
-        const error = 'test error';
+    it('creates a valid setPackagePublishingMessage action', () => {
+        const message = 'test message';
 
         const object = {
-            error,
-            type: 'setPackagePublishingError',
+            message,
+            type: 'setPackagePublishingMessage',
         };
 
-        expect(actions.setPackagePublishingError(error)).toEqual(object);
+        expect(actions.setPackagePublishingMessage(message)).toEqual(object);
     });
 
     it('creates a valid setPackageEditing action', () => {
@@ -168,36 +168,36 @@ describe('PackageOwned action unit tests', () => {
         expect(actions.setPackageEditingTag(tag)).toEqual(object);
     });
 
-    it('creates a valid setPackageEditingError action', () => {
-        const error = 'testing error';
+    it('creates a valid setPackageEditingMessage action', () => {
+        const message = 'testing message';
 
         const object = {
-            error,
-            type: 'setPackageEditingError',
+            message,
+            type: 'setPackageEditingMessage',
         };
 
-        expect(actions.setPackageEditingError(error)).toEqual(object);
+        expect(actions.setPackageEditingMessage(message)).toEqual(object);
     });
 
-    it('creates a valid setPackageRemoving action', () => {
-        const removing = {};
+    it('creates a valid setPackageDeleting action', () => {
+        const deleting = {};
 
         const object = {
-            removing,
-            type: 'setPackageRemoving',
+            deleting,
+            type: 'setPackageDeleting',
         };
 
-        expect(actions.setPackageRemoving(removing)).toEqual(object);
+        expect(actions.setPackageDeleting(deleting)).toEqual(object);
     });
 
-    it('creates a valid setPackageRemovingError action', () => {
-        const error = 'error for test';
+    it('creates a valid setPackageDeletingMessage action', () => {
+        const message = 'message for test';
 
         const object = {
-            error,
-            type: 'setPackageRemovingError',
+            message,
+            type: 'setPackageDeletingMessage',
         };
 
-        expect(actions.setPackageRemovingError(error)).toEqual(object);
+        expect(actions.setPackageDeletingMessage(message)).toEqual(object);
     });
 });

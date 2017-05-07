@@ -23,25 +23,14 @@ describe('login action unit tests', () => {
         expect(actions.setPassword(password)).toEqual(object);
     });
 
-    it('creates a valid setLoginError action', () => {
-        const error = 'test error';
+    it('creates a valid setLoginMessage action', () => {
+        const message = 'test message';
 
         const object = {
-            error,
-            type: 'setLoginError',
+            message,
+            type: 'setLoginMessage',
         };
 
-        expect(actions.setLoginError(error)).toEqual(object);
-    });
-
-    it('creates a valid setCreateAccountError action', () => {
-        const error = 'testing error';
-
-        const object = {
-            error,
-            type: 'setCreateAccountError',
-        };
-
-        expect(actions.setCreateAccountError(error)).toEqual(object);
+        expect(actions.setLoginMessage(message)).toEqual(object);
     });
  });

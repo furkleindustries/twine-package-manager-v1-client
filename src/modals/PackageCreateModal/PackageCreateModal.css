@@ -36,6 +36,7 @@
 	resize: none;
 }
 
-.PackageCreateModal-error {
+.PackageCreateModal-message {
+	height: 1rem;
 	text-align: center;
 }

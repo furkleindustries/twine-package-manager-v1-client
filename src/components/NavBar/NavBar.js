@@ -2,14 +2,10 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router';
 
-// redux
-import store from '../../store';
-import { setSelectedPane } from '../../appActions';
-
 // css
 import './NavBar.css';
 
-class NavBar extends Component {
+export class NavBar extends Component {
 	render() {
 		const list = [];
 		Object.getOwnPropertyNames(this.props.panes).forEach(name => {
@@ -18,39 +14,51 @@ class NavBar extends Component {
 					key={name}
 					title={this.props.panes[name].title}
 					active={this.props.selectedPane === name}
-					visible={this.props.panes[name].visible} />
+					visible={this.props.panes[name].visible}
+					useRouterLink={this.props.useRouterLink}
+					navBarItemClick={this.props.navBarItemClick} />
 			);
 		});
 
 		return (
-			<div className="NavBar">
+			<div className={"NavBar" +
+				(this.props.class ? " " + this.props.class : "") +
+				(this.props.visible ? "" : " hidden")}>
 				{list}
 			</div>
 		);
 	}
 }
 
-class NavBarItem extends Component {
+export class NavBarItem extends Component {
 	render() {
 		const baseUrl = process.env.PUBLIC_URL;
 		
-		let to = this.props.id;
-		if (to === 'home') {
-			to = '';
-		}
+		const to = this.props.id === 'home' ? '' : this.props.id;
 
-		return (
-			<Link
-				to={baseUrl + '/' + to}
-				id={this.props.id}
-				className={"NavBarItem" +
-					(this.props.active ? " active" : "") +
-					(this.props.visible ? "" : " hidden")}
-				onClick={e => store.dispatch(setSelectedPane(e.target.id))}>
-				{this.props.title}
-			</Link>
-		);
+		if (this.props.useRouterLink !== false) {
+			return (
+				<Link
+					to={`${baseUrl}/${to}`}
+					id={this.props.id}
+					className={"NavBarItem" +
+						(this.props.active ? " active" : "") +
+						(this.props.visible ? "" : " hidden")}
+					onClick={this.props.navBarItemClick}>
+					{this.props.title}
+				</Link>
+			);
+		} else {
+			return (
+				<button
+					id={this.props.id}
+					className={"NavBarItem" +
+						(this.props.active ? " active" : "") +
+						(this.props.visible ? "" : " hidden")}
+					onClick={this.props.navBarItemClick}>
+					{this.props.title}
+				</button>
+			);
+		}
 	}
 }
-
-export { NavBar, NavBarItem };

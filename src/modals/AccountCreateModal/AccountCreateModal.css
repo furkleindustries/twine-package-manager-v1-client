@@ -25,6 +25,11 @@
 	background: rgb(200, 0, 0);
 }
 
+.AccountCreateModal-message {
+	text-align: center;
+	height: 1rem;
+}
+
 @media (min-width: 0px) {
 	.AccountCreateModal-input {
 		width: 100%;

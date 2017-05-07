@@ -36,15 +36,15 @@ describe('search action unit tests', () => {
         expect(actions.setSearchResults(results)).toEqual(object);
     });
 
-    it('creates a valid setSearchError action', () => {
-        const error = 'test';
+    it('creates a valid setSearchMessage action', () => {
+        const message = 'test';
 
         const object = {
-            error,
-            type: 'setSearchError',
+            message,
+            type: 'setSearchMessage',
         };
 
-        expect(actions.setSearchError(error)).toEqual(object);
+        expect(actions.setSearchMessage(message)).toEqual(object);
     });
 
     it('creates a valid setSearchOptions action', () => {
@@ -68,7 +68,8 @@ describe('search action unit tests', () => {
             type: 'setSearchOptionsVisible',
         };
 
-        expect(actions.setSearchOptionsVisible(optionsVisible)).toEqual(object);
+        expect(actions.setSearchOptionsVisible(optionsVisible))
+            .toEqual(object);
     });
 
     it('creates a valid setSearchType action', () => {

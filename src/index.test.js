@@ -1,10 +1,11 @@
+// react
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactTestUtils from 'react-addons-test-utils';
 
-import App from './App';
+// components
+import { App, } from './App';
 import rootComponent from './rootComponent';
-
 import { NavBarItem } from './components/NavBar/NavBar';
 
 describe('end to end tests', () => {
@@ -32,7 +33,7 @@ describe('end to end tests', () => {
         const app = ReactTestUtils.findRenderedComponentWithType(
             component,
             App);
-        expect(app.selector.props.selectedPane).toEqual('home');
+        expect(app.props.appSelectedPane).toEqual('home');
     });
 
     it('has 6 NavBarItems', () => {
@@ -58,7 +59,7 @@ describe('end to end tests', () => {
             }
         });
 
-        expect(app.selector.props.selectedPane).toEqual('home');
+        expect(app.props.appSelectedPane).toEqual('home');
     });
 
     it('switches to the search pane on correct NavBarItem click', () => {
@@ -75,10 +76,10 @@ describe('end to end tests', () => {
             }
         });
 
-        expect(app.selector.props.selectedPane).toEqual('search');
+        expect(app.props.appSelectedPane).toEqual('search');
     });
 
-    it('switches to the news pane on correct NavBarItem click', () => {
+    it('switches to the forum pane on correct NavBarItem click', () => {
         const component = ReactTestUtils.renderIntoDocument(rootCopy);
         const navBarItems = ReactTestUtils.scryRenderedDOMComponentsWithClass(
             component,
@@ -87,12 +88,12 @@ describe('end to end tests', () => {
         const app = ReactTestUtils.findRenderedComponentWithType(component, App);
 
         navBarItems.forEach(navBarItem => {
-            if (navBarItem.textContent === 'News') {
+            if (navBarItem.textContent === 'Forum') {
                 ReactTestUtils.Simulate.click(navBarItem);
             }
         });
 
-        expect(app.selector.props.selectedPane).toEqual('news');
+        expect(app.props.appSelectedPane).toEqual('forum');
     });
 
     it('switches to the about pane on correct NavBarItem click', () => {
@@ -109,7 +110,7 @@ describe('end to end tests', () => {
             }
         });
 
-        expect(app.selector.props.selectedPane).toEqual('about');
+        expect(app.props.appSelectedPane).toEqual('about');
     });
 
     it('switches to the login pane on correct NavBarItem click', () => {
@@ -126,7 +127,7 @@ describe('end to end tests', () => {
             }
         });
 
-        expect(app.selector.props.selectedPane).toEqual('login');
+        expect(app.props.appSelectedPane).toEqual('login');
     });
 
     it('switches to the profile pane on correct NavBarItem click', () => {
@@ -143,6 +144,6 @@ describe('end to end tests', () => {
             }
         });
 
-        expect(app.selector.props.selectedPane).toEqual('profile');
+        expect(app.props.appSelectedPane).toEqual('profile');
     });
 });

@@ -5,10 +5,10 @@ export function setPackagePublishing(publishing) {
     };
 }
 
-export function setPackagePublishingError(error) {
+export function setPackagePublishingMessage(message) {
     return {
-        error,
-        type: 'setPackagePublishingError',
+        message,
+        type: 'setPackagePublishingMessage',
     };
 }
 
@@ -103,23 +103,23 @@ export function setPackageEditingTag(tag) {
     }
 }
 
-export function setPackageEditingError(error) {
+export function setPackageEditingMessage(message) {
     return {
-        error,
-        type: 'setPackageEditingError',
+        message,
+        type: 'setPackageEditingMessage',
     };
 }
 
-export function setPackageRemoving(removing) {
+export function setPackageDeleting(deleting) {
     return {
-        removing,
-        type: 'setPackageRemoving',
+        deleting,
+        type: 'setPackageDeleting',
     };
 }
 
-export function setPackageRemovingError(error) {
+export function setPackageDeletingMessage(message) {
     return {
-        error,
-        type: 'setPackageRemovingError',
+        message,
+        type: 'setPackageDeletingMessage',
     };
 }

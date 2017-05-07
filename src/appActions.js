@@ -1,14 +1,35 @@
-export function setPanes(panes) {
+export function setAppPanes(panes) {
     return {
         panes,
-        type: 'setPanes',
+        type: 'setAppPanes',
     };
 }
 
-export function setSelectedPane(selectedPane) {
+export function setAppSelectedPane(selectedPane) {
     return {
         selectedPane,
-        type: 'setSelectedPane',
+        type: 'setAppSelectedPane',
+    };
+}
+
+export function setSideBarVisible(visible) {
+    return {
+        visible,
+        type: 'setSideBarVisible',
+    }
+}
+
+export function setSideBarPanes(panes) {
+    return {
+        panes,
+        type: 'setSideBarPanes',
+    };
+}
+
+export function setSideBarSelectedPane(selectedPane) {
+    return {
+        selectedPane,
+        type: 'setSideBarSelectedPane',
     };
 }
 

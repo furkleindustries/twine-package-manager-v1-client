@@ -1,5 +1,3 @@
-import 'whatwg-fetch';
-
 // react
 import React, { Component } from 'react';
 
@@ -13,12 +11,13 @@ import {
 } from './AccountCreateModalActions';
 
 // modules
-import createAccount from '../../modules/createAccount';
+import accountCreate from '../../modules/accountCreate';
+import modalClose from '../../modules/modals/close';
 
 // css
 import './AccountCreateModal.css';
 
-export class AccountCreateModalModal extends Component {
+export class AccountCreateModal extends Component {
 	constructor() {
 		super();
 
@@ -43,9 +42,9 @@ export class AccountCreateModalModal extends Component {
 						<input
 							className="AccountCreateModal-usernameInput AccountCreateModal-input subheader"
 							id="AccountCreateModal-username"
-							value={this.props.username}
+							value={this.props.name}
 							onChange={e => store.dispatch(setAccountCreatingName(e.target.value))}
-							ref={input => this.usernameInput = input} 
+							ref={input => this.nameInput = input} 
 							onKeyDown={e => {
 								if (e.keyCode === 13) {
 									this.doCreateAccount();
@@ -99,26 +98,36 @@ export class AccountCreateModalModal extends Component {
 					Create Account
 				</button>
 
-				<p className="AccountCreateModal-error">
-					{this.props.error}
+				<p className="AccountCreateModal-message">
+					{this.props.message}
 				</p>
 			</div>
 		);
 	}
 
 	componentDidMount() {
-		this.usernameInput.focus();
+		this.nameInput.focus();
 	}
 
-	doCreateAccount() {
-		createAccount(this.props.name, this.props.password, this.props.email);
+	async doCreateAccount() {
+		const success = await accountCreate(
+			this.props.name,
+			this.props.password,
+			this.props.email,
+			this.props.csrfToken);
 
-		store.dispatch(setAccountCreatingName(''));
-		store.dispatch(setAccountCreatingPassword(''));
-		store.dispatch(setAccountCreatingEmail(''));
+		if (success) {
+			store.dispatch(setAccountCreatingName(''));
+			store.dispatch(setAccountCreatingPassword(''));
+			store.dispatch(setAccountCreatingEmail(''));
 
-		// set the focus to the username
-		this.usernameInput.focus();
+			modalClose();
+		} else {
+			store.dispatch(setAccountCreatingName(''));
+			store.dispatch(setAccountCreatingPassword(''));
+
+			this.nameInput.focus();
+		}
 	}
 }
 
@@ -129,8 +138,9 @@ function mapStateToProps() {
 		name: state.accountCreatingName,
 		password: state.accountCreatingPassword,
 		email: state.accountCreatingEmail,
-		error: state.accountCreatingError,
+		message: state.accountCreatingMessage,
+		csrfToken: state.csrfToken,
 	};
 }
 
-export default connect(mapStateToProps)(AccountCreateModalModal);
+export default connect(mapStateToProps)(AccountCreateModal);

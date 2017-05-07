@@ -8,7 +8,6 @@ import { connect, } from 'react-redux';
 import store from '../../store';
 
 import {
-	setPackageCreating,
 	setPackageCreatingName,
 	setPackageCreatingType,
 	setPackageCreatingVersion,
@@ -18,25 +17,17 @@ import {
 	setPackageCreatingCss,
 	setPackageCreatingKeywords,
 	setPackageCreatingTag,
-	setPackageCreatingError,
 } from './PackageCreateModalActions';
 
 // modules
-import renderLogin from '../../modules/renderLogin';
-import modalClose from '../../modules/modalClose';
+import * as post from '../../modules/database/post';
+import * as modalClose from '../../modules/modals/close';
 import onlyFirstLetterCapitalized from '../../modules/onlyFirstLetterCapitalized';
 
 // css
 import './PackageCreateModal.css';
 
 class PackageCreateModal extends Component {
-	constructor() {
-		super();
-
-		this.confirm = this.confirm.bind(this);
-		this.cancel = this.cancel.bind(this);
-	}
-
 	render() {
 		const opts = {
 			spellCheck: false,
@@ -69,7 +60,7 @@ class PackageCreateModal extends Component {
 						id="PackageCreateModal-name"
 						className="PackageCreateModal-input body"
 						value={this.props.name}
-						onChange={e => this.setPackageCreatingName(e.target.value)}
+						onChange={e => store.dispatch(setPackageCreatingName(e.target.value))}
 						{ ...opts }/>
 				</div>
 
@@ -84,7 +75,12 @@ class PackageCreateModal extends Component {
 						id="PackageEditModal-type"
 						className="PackageEditModal-input body"
 						value={type}
-						onChange={e => this.setPackageCreatingType(e.target.value.replace(/ /g, '').toLowerCase())}
+						onChange={e => {
+							const value = e.target.value
+									.replace(/ /g, '')
+									.toLowerCase();
+							store.dispatch(setPackageCreatingType(value));
+						}}
 						{ ...opts }>
 						<option>Macros</option>
 						<option>Scripts</option>
@@ -105,7 +101,7 @@ class PackageCreateModal extends Component {
 						id="PackageCreateModal-version"
 						className="PackageCreateModal-input body"
 						value={this.props.version}
-						onChange={e => this.setPackageCreatingVersion(e.target.value)}
+						onChange={e => store.dispatch(setPackageCreatingVersion(e.target.value))}
 						{ ...opts }/>
 				</div>
 
@@ -120,7 +116,7 @@ class PackageCreateModal extends Component {
 						id="PackageCreateModal-description"
 						className="PackageCreateModal-input PackageCreateModal-textarea body"
 						value={this.props.description}
-						onChange={e => this.setPackageCreatingDescription(e.target.value)}
+						onChange={e => store.dispatch(setPackageCreatingDescription(e.target.value))}
 						{ ...opts } />
 				</div>
 
@@ -135,7 +131,7 @@ class PackageCreateModal extends Component {
 						id="PackageCreateModal-homepage"
 						className="PackageCreateModal-input body"
 						value={this.props.homepage}
-						onChange={e => this.setPackageCreatingHomepage(e.target.value)}
+						onChange={e => store.dispatch(setPackageCreatingHomepage(e.target.value))}
 						{ ...opts } />
 				</div>
 
@@ -150,7 +146,7 @@ class PackageCreateModal extends Component {
 						id="PackageCreateModal-js"
 						className="PackageCreateModal-input PackageCreateModal-textarea body"
 						value={this.props.js}
-						onChange={e => this.setPackageCreatingJs(e.target.value)}
+						onChange={e => store.dispatch(setPackageCreatingJs(e.target.value))}
 						{ ...opts } />
 				</div>
 
@@ -165,7 +161,7 @@ class PackageCreateModal extends Component {
 						id="PackageCreateModal-css"
 						className="PackageCreateModal-input PackageCreateModal-textarea body"
 						value={this.props.css}
-						onChange={e => this.setPackageCreatingCss(e.target.value)}
+						onChange={e => store.dispatch(setPackageCreatingCss(e.target.value))}
 						{ ...opts } />
 				</div>
 
@@ -180,7 +176,7 @@ class PackageCreateModal extends Component {
 						id="PackageCreateModal-keywords"
 						className="PackageCreateModal-input body"
 						value={this.props.keywords}
-						onChange={e => this.setPackageCreatingKeywords(e.target.value)}
+						onChange={e => store.dispatch(setPackageCreatingKeywords(e.target.value))}
 						{ ...opts } />
 				</div>
 
@@ -195,172 +191,31 @@ class PackageCreateModal extends Component {
 						id="PackageCreateModal-tag"
 						className="PackageCreateModal-input PackageCreateModal-textarea body"
 						value={this.props.tag}
-						onChange={e => this.setPackageCreatingTag(e.target.value)}
+						onChange={e => store.dispatch(setPackageCreatingTag(e.target.value))}
 						{ ...opts } />
 				</div>
 
 				<button
 					className="wideButton"
-					onClick={this.confirm}>
+					onClick={() => {
+						post.createPackage({
+
+						});
+					}}>
 					Confirm
 				</button>
 
 				<button
 					className="wideButton"
-					onClick={this.cancel}>
+					onClick={modalClose}>
 					Cancel
 				</button>
 
-				<p className="PackageCreateModal-error">
-					{this.props.error}
+				<p className="PackageCreateModal-message">
+					{this.props.message}
 				</p>
 			</div>
 		);
-	}
-
-	setPackageCreatingName(value) {
-		store.dispatch(setPackageCreatingName(value));
-	}
-
-	setPackageCreatingType(value) {
-		store.dispatch(setPackageCreatingType(value));
-	}
-
-	setPackageCreatingVersion(value) {
-		store.dispatch(setPackageCreatingVersion(value));
-	}
-
-	setPackageCreatingDescription(value) {
-		store.dispatch(setPackageCreatingDescription(value));
-	}
-
-	setPackageCreatingHomepage(value) {
-		store.dispatch(setPackageCreatingHomepage(value));
-	}
-
-	setPackageCreatingJs(value) {
-		store.dispatch(setPackageCreatingJs(value));
-	}
-
-	setPackageCreatingCss(value) {
-		store.dispatch(setPackageCreatingCss(value));
-	}
-	
-	setPackageCreatingKeywords(value) {
-		store.dispatch(setPackageCreatingKeywords(value));
-	}
-	
-	setPackageCreatingTag(value) {
-		store.dispatch(setPackageCreatingTag(value));
-	}
-
-	confirm() {
-		const formData = new FormData();
-		formData.append('id', this.props.id);
-		formData.append('name', this.props.name);
-		formData.append('type', this.props.type);
-		formData.append('version', this.props.version);
-		formData.append('description', this.props.description);
-		formData.append('homepage', this.props.homepage);
-		formData.append('js', this.props.js);
-		formData.append('css', this.props.css);
-		formData.append('keywords', this.props.keywords);
-		formData.append('tag', this.props.tag);
-		formData.append('csrfToken', this.props.csrfToken);
-
-		fetch('https://furkleindustries.com/twinepm/package/createPackage.php', {
-			method: 'POST',
-			credentials: 'include',
-			body: formData,
-		}).catch(xhr => {
-			try {
-				const responseObj = JSON.parse(xhr.responseText);
-				store.dispatch(setPackageCreatingError(
-					responseObj.error ||
-					'Unknown error. Please contact webmaster.'
-				));
-
-				setTimeout(() => {
-					const error = this.props.error;
-					if (error === responseObj.error ||
-						error === 'Unknown error. Please contact webmaster.')
-					{
-						store.dispatch(setPackageCreatingError(''));
-					}
-				}, 6000);
-			} catch (err) {
-				const error = 'Unknown error deserializing update response ' +
-					'object. Please contact webmaster.';
-				store.dispatch(setPackageCreatingError(error));
-
-				setTimeout(() => {
-					if (this.props.error === error) {
-						store.dispatch(setPackageCreatingError(''));
-					}
-				}, 6000);
-			}
-
-			// don't allow execution to continue
-			return Promise.reject();
-		}).then(response => {
-			return response.json();
-		}).catch(e => {
-			const error = 'Error deserializing update response ' +
-				'object. Please contact webmaster.';
-			store.dispatch(setPackageCreatingError(error));
-
-			setTimeout(() => {
-				if (this.props.error === error) {
-					store.dispatch(setPackageCreatingError(''));
-				}
-			}, 6000);
-
-			return Promise.reject();
-		}).then(responseObj => {
-			if (responseObj.error) {
-				store.dispatch(setPackageCreatingError(responseObj.error));
-
-				setTimeout(() => {
-					if (this.props.error === responseObj.error) {
-						store.dispatch(setPackageCreatingError(''));
-					}
-				}, 6000);
-
-				return;
-			} else if (responseObj.status !== 200) {
-				const error = 'The response object did not reflect a ' +
-					'200 status, but an error was not returned. Please ' +
-					'contact webmaster.';
-				store.dispatch(setPackageCreatingError(error));
-
-				setTimeout(() => {
-					if (this.props.error === error) {
-						store.dispatch(setPackageCreatingError(error));
-					}
-				}, 6000);
-
-				return;
-			}
-
-			const notError = 'Package created successfully.';
-			store.dispatch(setPackageCreatingError(notError));
-
-			setTimeout(() => {
-				if (this.props.error === notError) {
-					store.dispatch(setPackageCreatingError(''));
-
-					modalClose();
-
-					// rerender the login to reflect the new package
-					renderLogin();
-				}
-			}, 6000);
-		});
-	}
-
-	cancel() {
-		store.dispatch(setPackageCreating({}));
-		modalClose();
 	}
 }
 
@@ -369,7 +224,7 @@ function mapStateToProps() {
 
 	return {
 		...state.packageCreating,
-		error: state.packageCreatingError,
+		message: state.packageCreatingMessage,
 		csrfToken: state.csrfToken,
 	};
 }

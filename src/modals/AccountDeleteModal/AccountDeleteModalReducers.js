@@ -1,6 +1,6 @@
 export function accountDeletingEnteredIdReducer(previous = '', action) {
 	if (action.type === 'setAccountDeletingEnteredId') {
-		if (typeof(action.enteredId) === 'string') {
+		if (typeof action.enteredId === 'string') {
 			return action.enteredId;
 		}
 	}
@@ -8,10 +8,10 @@ export function accountDeletingEnteredIdReducer(previous = '', action) {
 	return previous;
 }
 
-export function accountDeletingErrorReducer(previous = '', action) {
-	if (action.type === 'setAccountDeletingError') {
-		if (typeof(action.error) === 'string') {
-			return action.error;
+export function accountDeletingMessageReducer(previous = '', action) {
+	if (action.type === 'setAccountDeletingMessage') {
+		if (typeof action.message === 'string') {
+			return action.message;
 		}
 	}
 

@@ -1,8 +1,8 @@
-import { combineReducers } from 'redux';
+import { combineReducers, } from 'redux';
 
 export function packagePublishingReducer(previous = null, action) {
     if (action.type === 'setPackagePublishing') {
-        if (typeof(action.publishing) === 'object') {
+        if (typeof action.publishing === 'object') {
             return action.publishing;
         }
     }
@@ -10,10 +10,10 @@ export function packagePublishingReducer(previous = null, action) {
     return previous;
 }
 
-export function packagePublishingErrorReducer(previous = '', action) {
-    if (action.type === 'setPackagePublishingError') {
-        if (typeof(action.error) === 'string') {
-            return action.error;
+export function packagePublishingMessageReducer(previous = '', action) {
+    if (action.type === 'setPackagePublishingMessage') {
+        if (typeof action.message === 'string') {
+            return action.message;
         }
     }
 
@@ -33,17 +33,12 @@ export const packageEditingReducer = combineReducers({
     css: packageEditingCssReducer,
     keywords: packageEditingKeywordsReducer,
     tag: packageEditingTagReducer,
-    error: packageEditingErrorReducer,
 });
 
-export function packageEditingErrorReducer(previous = '', action) {
-    if (action.type === 'setPackageEditingError') {
-        if (typeof(action.error) === 'string') {
-            return action.error;
-        }
-    } else if (action.type === 'setPackageEditing') {
-        if (typeof(action.editing.error) === 'string') {
-            return action.editing.error;
+export function packageEditingMessageReducer(previous = '', action) {
+    if (action.type === 'setPackageEditingMessage') {
+        if (typeof action.message === 'string') {
+            return action.message;
         }
     }
 
@@ -94,11 +89,11 @@ export function packageEditingDateModifiedReducer(previous = 0, action) {
 
 export function packageEditingNameReducer(previous = '', action) {
     if (action.type === 'setPackageEditingName') {
-        if (typeof(action.name) === 'string') {
+        if (typeof action.name === 'string') {
             return action.name;
         }
     } else if (action.type === 'setPackageEditing') {
-        if (typeof(action.editing.name) === 'string') {
+        if (typeof action.editing.name === 'string') {
             return action.editing.name;
         }
     }
@@ -129,11 +124,11 @@ export function packageEditingTypeReducer(previous = 'macros', action) {
 
 export function packageEditingVersionReducer(previous = '', action) {
     if (action.type === 'setPackageEditingVersion') {
-        if (typeof(action.version) === 'string') {
+        if (typeof action.version === 'string') {
             return action.version;
         }
     } else if (action.type === 'setPackageEditing') {
-        if (typeof(action.editing.version) === 'string') {
+        if (typeof action.editing.version === 'string') {
             return action.editing.version;
         }
     }
@@ -143,11 +138,11 @@ export function packageEditingVersionReducer(previous = '', action) {
 
 export function packageEditingDescriptionReducer(previous = '', action) {
     if (action.type === 'setPackageEditingDescription') {
-        if (typeof(action.description) === 'string') {
+        if (typeof action.description === 'string') {
             return action.description;
         }
     } else if (action.type === 'setPackageEditing') {
-        if (typeof(action.editing.description) === 'string') {
+        if (typeof action.editing.description === 'string') {
             return action.editing.description;
         }
     }
@@ -157,11 +152,11 @@ export function packageEditingDescriptionReducer(previous = '', action) {
 
 export function packageEditingHomepageReducer(previous = '', action) {
     if (action.type === 'setPackageEditingHomepage') {
-        if (typeof(action.homepage) === 'string') {
+        if (typeof action.homepage === 'string') {
             return action.homepage;
         }
     } else if (action.type === 'setPackageEditing') {
-        if (typeof(action.editing.homepage) === 'string') {
+        if (typeof action.editing.homepage === 'string') {
             return action.editing.homepage;
         }
     }
@@ -171,11 +166,11 @@ export function packageEditingHomepageReducer(previous = '', action) {
 
 export function packageEditingJsReducer(previous = '', action) {
     if (action.type === 'setPackageEditingJs') {
-        if (typeof(action.js) === 'string') {
+        if (typeof action.js === 'string') {
             return action.js;
         }
     } else if (action.type === 'setPackageEditing') {
-        if (typeof(action.editing.js) === 'string') {
+        if (typeof action.editing.js === 'string') {
             return action.editing.js;
         }
     }
@@ -185,11 +180,11 @@ export function packageEditingJsReducer(previous = '', action) {
 
 export function packageEditingCssReducer(previous = '', action) {
     if (action.type === 'setPackageEditingCss') {
-        if (typeof(action.css) === 'string') {
+        if (typeof action.css === 'string') {
             return action.css;
         }
     } else if (action.type === 'setPackageEditing') {
-        if (typeof(action.editing.css) === 'string') {
+        if (typeof action.editing.css === 'string') {
             return action.editing.css;
         }
     }
@@ -199,11 +194,11 @@ export function packageEditingCssReducer(previous = '', action) {
 
 export function packageEditingKeywordsReducer(previous = '', action) {
     if (action.type === 'setPackageEditingKeywords') {
-        if (typeof(action.keywords) === 'string') {
+        if (typeof action.keywords === 'string') {
             return action.keywords;
         }
     } else if (action.type === 'setPackageEditing') {
-        if (typeof(action.editing.keywords) === 'string') {
+        if (typeof action.editing.keywords === 'string') {
             return action.editing.keywords;
         }
     }
@@ -213,11 +208,11 @@ export function packageEditingKeywordsReducer(previous = '', action) {
 
 export function packageEditingTagReducer(previous = '', action) {
     if (action.type === 'setPackageEditingTag') {
-        if (typeof(action.tag) === 'string') {
+        if (typeof action.tag === 'string') {
             return action.tag;
         }
     } else if (action.type === 'setPackageEditing') {
-        if (typeof(action.editing.tag) === 'string') {
+        if (typeof action.editing.tag === 'string') {
             return action.editing.tag;
         }
     }
@@ -225,20 +220,20 @@ export function packageEditingTagReducer(previous = '', action) {
     return previous;
 }
 
-export function packageRemovingReducer(previous = null, action) {
-    if (action.type === 'setPackageRemoving') {
-        if (typeof(action.removing) === 'object') {
-            return action.removing;
+export function packageDeletingReducer(previous = null, action) {
+    if (action.type === 'setPackageDeleting') {
+        if (typeof action.deleting === 'object') {
+            return action.deleting;
         }
     }
 
     return previous;
 }
 
-export function packageRemovingErrorReducer(previous = '', action) {
-    if (action.type === 'setPackageRemovingError') {
-        if (typeof(action.error) === 'string') {
-            return action.error;
+export function packageDeletingMessageReducer(previous = '', action) {
+    if (action.type === 'setPackageDeletingMessage') {
+        if (typeof action.message === 'string') {
+            return action.message;
         }
     }
 

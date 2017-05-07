@@ -1,29 +1,9 @@
-// redux
-import { combineReducers, } from 'redux';
-import {
-    profileIdReducer,
-    profileDateCreatedReducer,
-    profileDateCreatedVisibleReducer,
-    profileNameReducer,
-    profileNameVisibleReducer,
-    profileDescriptionReducer,
-    profileEmailReducer,
-    profileEmailVisibleReducer,
-    profileHomepageReducer,
-    profileDateStyleReducer,
-    profileTimeStyleReducer,
-    profilePackagesReducer,
-    profileEditingReducer,
-    profileErrorReducer,
-    profileRollbackReducer,
-} from './panes/profile/profileReducers';
+// metadata for each app pane
+import appPanesSource from './panesSourceApp';
 
-// metadata for each pane
-import panesSource from './panesSource';
-
-export function panesReducer(previous = panesSource, action) {
-    if (action.type === 'setPanes') {
-        if (action.panes && typeof(action.panes) === 'object') {
+export function appPanesReducer(previous = appPanesSource, action) {
+    if (action.type === 'setAppPanes') {
+        if (action.panes && typeof action.panes === 'object') {
             return action.panes;
         }
     }
@@ -35,9 +15,9 @@ const startPane =
     location.pathname.slice(location.pathname.lastIndexOf('/') + 1) ||
     'home';
 
-export function selectedPaneReducer(previous = startPane, action) {
-    if (action.type === 'setSelectedPane') {
-        if (action.selectedPane && typeof(action.selectedPane) === 'string') {
+export function appSelectedPaneReducer(previous = startPane, action) {
+    if (action.type === 'setAppSelectedPane') {
+        if (action.selectedPane && typeof action.selectedPane === 'string') {
             return action.selectedPane;
         }
     }
@@ -45,27 +25,43 @@ export function selectedPaneReducer(previous = startPane, action) {
     return previous;
 }
 
-export const profileReducer = combineReducers({
-    id: profileIdReducer,
-    dateCreated: profileDateCreatedReducer,
-    dateCreatedVisible: profileDateCreatedVisibleReducer,
-    name: profileNameReducer,
-    nameVisible: profileNameVisibleReducer,
-    description: profileDescriptionReducer,
-    email: profileEmailReducer,
-    emailVisible: profileEmailVisibleReducer,
-    homepage: profileHomepageReducer,
-    dateStyle: profileDateStyleReducer,
-    timeStyle: profileTimeStyleReducer,
-    packages: profilePackagesReducer,
-    editing: profileEditingReducer,
-    error: profileErrorReducer,
-    rollback: profileRollbackReducer,
-});
+export function sideBarVisibleReducer(previous = false, action) {
+    if (action.type === 'setSideBarVisible') {
+        if (typeof action.visible === 'boolean') {
+            return action.visible;
+        }
+    }
+
+    return previous;
+}
+
+export function sideBarPanesReducer(previous = null, action) {
+    if (action.type === 'setSideBarPanes') {
+        if (action.panes === null ||
+            (typeof action.panes === 'object' && action.panes))
+        {
+            return action.panes;
+        }
+    }
+
+    return previous;
+}
+
+export function sideBarSelectedPaneReducer(previous = null, action) {
+    if (action.type === 'setSideBarSelectedPane') {
+        if (action.selectedPane === null ||
+            typeof action.selectedPane === 'string')
+        {
+            return action.selectedPane;
+        }
+    }
+
+    return previous;
+}
 
 export function csrfTokenReducer(previous = null, action) {
     if (action.type === 'setCSRFToken') {
-        if (action.csrfToken && typeof(action.csrfToken) === 'string') {
+        if (action.csrfToken && typeof action.csrfToken === 'string') {
             return action.csrfToken;
         }
     }
@@ -75,7 +71,7 @@ export function csrfTokenReducer(previous = null, action) {
 
 export function modalReducer(previous = null, action) {
     if (action.type === 'setModal') {
-        if (typeof(action.modal) === 'object') {
+        if (typeof action.modal === 'object') {
             return action.modal;
         }
     }

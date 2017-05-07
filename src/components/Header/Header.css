@@ -1,8 +1,10 @@
 .Header {
+    display: flex;
     align-items: center;
     position: fixed;
     width: 100%;
     background-color: rgb(170, 0, 0);
+    font-family: Helvetica;
     color: white;
     box-shadow: 0 0 1rem rgba(20, 20, 20, 0.67);
     z-index: 1;
@@ -34,8 +36,7 @@
 
 @media (min-width: 0px) {
     .Header {
-        height: 2.5rem;
-        display: block;
+        height: 1.5rem;
     }
 
     .Header-title {
@@ -46,7 +47,7 @@
 
 @media (min-width: 250px) {
     .Header {
-        height: 2.5rem;
+        height: 1.5rem;
     }
 
     .Header-title {
@@ -57,7 +58,6 @@
 
 @media (min-width: 300px) {
     .Header {
-        display: flex;
         height: 1.5rem;
     }
 

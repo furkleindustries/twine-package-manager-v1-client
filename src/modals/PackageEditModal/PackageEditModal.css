@@ -37,6 +37,7 @@
 	resize: none;
 }
 
-.PackageEditModal-error {
+.PackageEditModal-message {
+	height: 1rem;
 	text-align: center;
 }

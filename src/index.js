@@ -11,5 +11,3 @@ ReactDOM.render(
     rootComponent,
     document.querySelector('#root')
 );
-
-export default rootComponent;

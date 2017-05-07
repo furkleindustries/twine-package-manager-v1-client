@@ -3,7 +3,7 @@ import * as reducers from './AccountDeleteModalReducers';
 describe('AccountDeleteModal reducer unit tests', () => {
     it('should return the initial accountDeletingEnteredId state', () => {
         expect(reducers.accountDeletingEnteredIdReducer(undefined, {}))
-            .toEqual(null);
+            .toEqual('');
     });
 
     it('should handle setAccountDeletingEnteredId with valid arguments', () => {
@@ -33,33 +33,34 @@ describe('AccountDeleteModal reducer unit tests', () => {
         ).toEqual('');
     });
 
-    it('should return the initial accountDeletingError state', () => {
-        expect(reducers.accountDeletingErrorReducer(undefined, {})).toEqual('');
+    it('should return the initial accountDeletingMessage state', () => {
+        expect(reducers.accountDeletingMessageReducer(undefined, {}))
+          .toEqual('');
     });
 
-    it('should handle setAccountDeletingError with valid arguments', () => {
+    it('should handle setAccountDeletingMessage with valid arguments', () => {
         expect(
-          reducers.accountDeletingErrorReducer('', {
-            type: 'setAccountDeletingError',
-            error: 'this is a test error',
+          reducers.accountDeletingMessageReducer('', {
+            type: 'setAccountDeletingMessage',
+            message: 'this is a test message',
           })
-        ).toEqual('this is a test error');
+        ).toEqual('this is a test message');
     });
 
-    it('accountDeletingErrorReducer should reject with invalid type', () => {
+    it('accountDeletingMessageReducer should reject with invalid type', () => {
         expect(
-          reducers.accountDeletingErrorReducer('', {
+          reducers.accountDeletingMessageReducer('', {
             type: 'setAccountDeletingTest',
-            error: 'this is a test error',
+            message: 'this is a test message',
           })
         ).toEqual('');
     });
 
-    it('accountDeletingErrorReducer should reject with invalid arguments', () => {
+    it('accountDeletingMessageReducer should reject with invalid arguments', () => {
         expect(
-          reducers.accountDeletingErrorReducer('', {
+          reducers.accountDeletingMessageReducer('', {
             type: 'setAccountDeletingTest',
-            error: 12,
+            message: 12,
           })
         ).toEqual('');
     });

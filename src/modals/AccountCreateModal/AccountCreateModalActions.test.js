@@ -34,14 +34,14 @@ describe('AccountCreateModal action unit tests', () => {
         expect(actions.setAccountCreatingEmail(email)).toEqual(object);
     });
 
-    it('creates a valid setAccountCreatingError action', () => {
-        const error = 'this is a test error';
+    it('creates a valid setAccountCreatingMessage action', () => {
+        const message = 'this is a test message';
 
         const object = {
-            error,
-            type: 'setAccountCreatingError',
+            message,
+            type: 'setAccountCreatingMessage',
         };
 
-        expect(actions.setAccountCreatingError(error)).toEqual(object);
+        expect(actions.setAccountCreatingMessage(message)).toEqual(object);
     });
 });

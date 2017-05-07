@@ -1,6 +1,6 @@
 export function usernameReducer(previous = '', action) {
 	if (action.type === 'setUsername') {
-		if (typeof(action.username) === 'string') {
+		if (typeof action.username === 'string') {
 			return action.username;
 		}
 	}
@@ -10,7 +10,7 @@ export function usernameReducer(previous = '', action) {
 
 export function passwordReducer(previous = '', action) {
 	if (action.type === 'setPassword') {
-		if (typeof(action.password) === 'string') {
+		if (typeof action.password === 'string') {
 			return action.password;
 		}
 	}
@@ -18,20 +18,10 @@ export function passwordReducer(previous = '', action) {
 	return previous;
 }
 
-export function loginErrorReducer(previous = '', action) {
-	if (action.type === 'setLoginError') {
-		if (typeof(action.error) === 'string') {
-			return action.error;
-		}
-	}
-
-	return previous;
-}
-
-export function createAccountErrorReducer(previous = '', action) {
-	if (action.type === 'setCreateAccountError') {
-		if (typeof(action.error) === 'string') {
-			return action.error;
+export function loginMessageReducer(previous = '', action) {
+	if (action.type === 'setLoginMessage') {
+		if (typeof action.message === 'string') {
+			return action.message;
 		}
 	}
 

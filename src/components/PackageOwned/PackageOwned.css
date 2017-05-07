@@ -33,12 +33,12 @@
 	padding: 0.33rem;
 	color: white;
 	background: rgb(185, 0, 0);
-	border: outset rgb(200, 200, 200);
+	border: 0.1rem solid rgb(200, 200, 200);
 	border-radius: 0.25rem;
 	cursor: pointer;
 }
 
-.PackageOwned-remove {
+.PackageOwned-delete {
 	clear: right;
 }
 

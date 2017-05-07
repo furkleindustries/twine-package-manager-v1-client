@@ -1,10 +1,30 @@
+// redux
+import { combineReducers, } from 'redux';
+
+export const profileReducer = combineReducers({
+    id: profileIdReducer,
+    dateCreated: profileDateCreatedReducer,
+    dateCreatedVisible: profileDateCreatedVisibleReducer,
+    name: profileNameReducer,
+    nameVisible: profileNameVisibleReducer,
+    description: profileDescriptionReducer,
+    email: profileEmailReducer,
+    emailVisible: profileEmailVisibleReducer,
+    homepage: profileHomepageReducer,
+    dateStyle: profileDateStyleReducer,
+    timeStyle: profileTimeStyleReducer,
+    packages: profilePackagesReducer,
+    rollback: profileRollbackReducer,
+});
+
 export function profileIdReducer(previous = null, action) {
     if (action.type === 'setProfileId') {
-        if (action.id > 0 || action.id === null) {
+        if ((action.id > 0 && action.id % 1 === 0) || action.id === null) {
             return action.id;
         }
     } else if (action.type === 'setProfile') {
-        if (action.profile.id > 0 || action.id === null) {
+        if ((action.profile.id > 0 && action.profile.id % 1 === 0) ||
+                action.profile.id === null) {
             return action.profile.id;
         }
     }
@@ -14,13 +34,13 @@ export function profileIdReducer(previous = null, action) {
 
 export function profileNameReducer(previous = '', action) {
     if (action.type === 'setProfileName') {
-        if (typeof(action.name) === 'string') {
+        if (typeof action.name === 'string') {
             return action.name;
         }
     } else if (action.type === 'setProfile') {
-    	if (typeof(action.profile.name) === 'string') {
-    		return action.profile.name;
-    	}
+        if (typeof action.profile.name === 'string') {
+            return action.profile.name;
+        }
     }
 
     return previous;
@@ -28,11 +48,11 @@ export function profileNameReducer(previous = '', action) {
 
 export function profileNameVisibleReducer(previous = false, action) {
     if (action.type === 'setProfileNameVisible') {
-        if (typeof(action.nameVisible) === 'boolean') {
-            return action.nameVisible;
+        if (typeof action.visible === 'boolean') {
+            return action.visible;
         }
     } else if (action.type === 'setProfile') {
-        if (typeof(action.profile.nameVisible) === 'boolean') {
+        if (typeof action.profile.nameVisible === 'boolean') {
             return action.profile.nameVisible;
         }
     }
@@ -42,11 +62,11 @@ export function profileNameVisibleReducer(previous = false, action) {
 
 export function profileDescriptionReducer(previous = '', action) {
     if (action.type === 'setProfileDescription') {
-        if (typeof(action.description) === 'string') {
+        if (typeof action.description === 'string') {
             return action.description;
         }
     } else if (action.type === 'setProfile') {
-        if (typeof(action.profile.description) === 'string') {
+        if (typeof action.profile.description === 'string') {
             return action.profile.description;
         }
     }
@@ -70,11 +90,11 @@ export function profileDateCreatedReducer(previous = null, action) {
 
 export function profileDateCreatedVisibleReducer(previous = false, action) {
     if (action.type === 'setProfileDateCreatedVisible') {
-        if (typeof(action.dateCreatedVisible) === 'boolean') {
-            return action.dateCreatedVisible;
+        if (typeof action.visible === 'boolean') {
+            return action.visible;
         }
     } else if (action.type === 'setProfile') {
-        if (typeof(action.profile.dateCreatedVisible) === 'boolean') {
+        if (typeof action.profile.dateCreatedVisible === 'boolean') {
             return action.profile.dateCreatedVisible;
         }
     }
@@ -84,13 +104,13 @@ export function profileDateCreatedVisibleReducer(previous = false, action) {
 
 export function profileEmailReducer(previous = '', action) {
     if (action.type === 'setProfileEmail') {
-        if (typeof(action.email) === 'string') {
+        if (typeof action.email === 'string') {
             return action.email;
         }
     } else if (action.type === 'setProfile') {
-    	if (typeof(action.profile.email) === 'string') {
-    		return action.profile.email;
-    	}
+        if (typeof action.profile.email === 'string') {
+            return action.profile.email;
+        }
     }
      
     return previous;
@@ -98,11 +118,11 @@ export function profileEmailReducer(previous = '', action) {
 
 export function profileEmailVisibleReducer(previous = false, action) {
     if (action.type === 'setProfileEmailVisible') {
-        if (typeof(action.emailVisible) === 'boolean') {
-            return action.emailVisible;
+        if (typeof action.visible === 'boolean') {
+            return action.visible;
         }
     } else if (action.type === 'setProfile') {
-        if (typeof(action.profile.emailVisible) === 'boolean') {
+        if (typeof action.profile.emailVisible === 'boolean') {
             return action.profile.emailVisible;
         }
     }
@@ -111,17 +131,17 @@ export function profileEmailVisibleReducer(previous = false, action) {
 }
 
 export function profileHomepageReducer(previous = '', action) {
-	if (action.type === 'setProfileHomepage') {
-		if (typeof(action.homepage) === 'string') {
-			return action.homepage;
-		}
-	} else if (action.type === 'setProfile') {
-    	if (typeof(action.profile.homepage) === 'string') {
-    		return action.profile.homepage;
-    	}
+    if (action.type === 'setProfileHomepage') {
+        if (typeof action.homepage === 'string') {
+            return action.homepage;
+        }
+    } else if (action.type === 'setProfile') {
+        if (typeof action.profile.homepage === 'string') {
+            return action.profile.homepage;
+        }
     }
 
-	return previous;
+    return previous;
 }
 
 export function profileDateStyleReducer(previous = 'mmdd', action) {
@@ -155,45 +175,27 @@ export function profileTimeStyleReducer(previous = '12h', action) {
 export function profilePackagesReducer(previous = [], action) {
     if (action.type === 'setProfilePackages') {
         if (action.packages &&
-        	typeof(action.packages) === 'object' &&
-        	'length' in action.packages)
+            typeof(action.packages) === 'object' &&
+            'length' in action.packages)
         {
             return action.packages;
         }
     } else if (action.type === 'setProfile') {
-    	if (action.profile.packages &&
-    		typeof(action.profile.packages) === 'object' &&
-    		'length' in action.profile.packages)
-    	{
-    		return action.profile.packages;
-    	}
+        if (action.profile.packages &&
+            typeof action.profile.packages === 'object' &&
+            'length' in action.profile.packages)
+        {
+            return action.profile.packages;
+        }
     }
      
     return previous;
 }
 
-export function profileEditingReducer(previous = false, action) {
-	if (action.type === 'setProfileEditing') {
-		if (typeof(action.editing) === 'boolean') {
-			return action.editing;
-		}
-	} else if (action.type === 'setProfile') {
-        if (typeof(action.profile.editing) === 'boolean') {
-            return action.profile.editing;
-        }
-    }
-
-	return previous;
-}
-
-export function profileErrorReducer(previous = '', action) {
-    if (action.type === 'setProfileError') {
-        if (typeof(action.error) === 'string') {
-            return action.error;
-        }
-    } else if (action.type === 'setProfile') {
-        if (typeof(action.profile.error) === 'string') {
-            return action.profile.error;
+export function profileMessageReducer(previous = '', action) {
+    if (action.type === 'setProfileMessage') {
+        if (typeof action.message === 'string') {
+            return action.message;
         }
     }
 
@@ -202,11 +204,11 @@ export function profileErrorReducer(previous = '', action) {
 
 export function profileRollbackReducer(previous = null, action) {
     if (action.type === 'setProfileRollback') {
-        if (typeof(action.rollback) === 'object') {
+        if (typeof action.rollback === 'object') {
             return action.rollback;
         }
     } else if (action.type === 'setProfile') {
-        if (typeof(action.profile.rollback) === 'object') {
+        if (typeof action.profile.rollback === 'object') {
             return action.profile.rollback;
         }
     }

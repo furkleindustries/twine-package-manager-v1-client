@@ -10,12 +10,12 @@ import {
 	setProfilePackages,
 } from '../../panes/profile/profileActions';
 import {
-	setPackagePublishingError,
+	setPackagePublishingMessage,
 } from '../../components/PackageOwned/PackageOwnedActions';
 
 // modules
 import deepCopy from '../../modules/deepCopy';
-import modalClose from '../../modules/modalClose';
+import * as modalClose from '../../modules/modals/close';
 
 // css
 import './PackagePublishModal.css';
@@ -25,7 +25,6 @@ class PackagePublishModal extends Component {
 		super();
 
 		this.confirm = this.confirm.bind(this);
-		this.reject = this.reject.bind(this);
 	}
 
 	render() {
@@ -61,8 +60,8 @@ class PackagePublishModal extends Component {
 					Reject
 				</button>
 
-				<p className="PackagePublishModal-error">
-					{this.props.error}
+				<p className="PackagePublishModal-message">
+					{this.props.message}
 				</p>
 			</div>
 		);
@@ -118,11 +117,11 @@ class PackagePublishModal extends Component {
 					'object.';
 			}
 
-			store.dispatch(setPackagePublishingError(error));
+			store.dispatch(setPackagePublishingMessage(error));
 
 			setTimeout(() => {
 				if (this.props.error === error) {
-					store.dispatch(setPackagePublishingError(''));
+					store.dispatch(setPackagePublishingMessage(''));
 				}
 			}, 6000);
 
@@ -132,11 +131,11 @@ class PackagePublishModal extends Component {
 		}).catch(e => {
 			const error = 'Unknown error deserializing package ' +
 				'publishing object. Please contact webmaster.';
-			store.dispatch(setPackagePublishingError(error));
+			store.dispatch(setPackagePublishingMessage(error));
 
 			setTimeout(() => {
 				if (this.props.error === error) {
-					store.dispatch(setPackagePublishingError(''));
+					store.dispatch(setPackagePublishingMessage(''));
 				}
 			}, 6000);
 
@@ -150,11 +149,11 @@ class PackagePublishModal extends Component {
 						'field.';
 				}
 
-				store.dispatch(setPackagePublishingError(error));
+				store.dispatch(setPackagePublishingMessage(error));
 
 				setTimeout(() => {
 					if (this.props.error === error) {
-						store.dispatch(setPackagePublishingError(''));
+						store.dispatch(setPackagePublishingMessage(''));
 					}
 				}, 6000);
 
@@ -163,11 +162,11 @@ class PackagePublishModal extends Component {
 				const error = 'Unknown error: publishing response ' +
 					'object status was not 200, but there was no error. Please ' +
 					'contact webmaster.';
-				store.dispatch(setPackagePublishingError(error));
+				store.dispatch(setPackagePublishingMessage(error));
 
 				setTimeout(() => {
 					if (this.props.error === error) {
-						store.dispatch(setPackagePublishingError(''));
+						store.dispatch(setPackagePublishingMessage(''));
 					}
 				}, 6000);
 
@@ -177,19 +176,15 @@ class PackagePublishModal extends Component {
 			store.dispatch(setProfilePackages(packages));
 
 			const notError = 'Package successfully updated.';
-			store.dispatch(setPackagePublishingError(notError));
+			store.dispatch(setPackagePublishingMessage(notError));
 
 			setTimeout(() => {
 				if (this.props.error === notError) {
-					store.dispatch(setPackagePublishingError(''));
+					store.dispatch(setPackagePublishingMessage(''));
 					modalClose();
 				}
 			}, 6000);
 		});
-	}
-
-	reject() {
-		this.props.closeModal();
 	}
 }
 
@@ -199,7 +194,7 @@ function mapStateToProps() {
 	return {
 		...state.packagePublishing,
 		csrfToken: state.csrfToken,
-		error: state.packagePublishingError,
+		message: state.packagePublishingMessage,
 	};
 }
 

@@ -37,15 +37,14 @@ describe('profile action unit tests', () => {
     });
 
     it('creates a valid setProfileDateCreatedVisible action', () => {
-        const dateCreatedVisible = false;
+        const visible = false;
 
         const object = {
-            dateCreatedVisible,
+            visible,
             type: 'setProfileDateCreatedVisible',
         };
 
-        expect(actions.setProfileDateCreatedVisible(dateCreatedVisible))
-            .toEqual(object);
+        expect(actions.setProfileDateCreatedVisible(visible)).toEqual(object);
     });
 
     it('creates a valid setProfileName action', () => {
@@ -60,14 +59,14 @@ describe('profile action unit tests', () => {
     });
 
     it('creates a valid setProfileNameVisible action', () => {
-        const nameVisible = false;
+        const visible = false;
 
         const object = {
-            nameVisible,
+            visible,
             type: 'setProfileNameVisible',
         };
 
-        expect(actions.setProfileNameVisible(nameVisible)).toEqual(object);
+        expect(actions.setProfileNameVisible(visible)).toEqual(object);
     });
 
     it('creates a valid setProfileDescription action', () => {
@@ -93,14 +92,14 @@ describe('profile action unit tests', () => {
     });
 
     it('creates a valid setProfileEmailVisible action', () => {
-        const emailVisible = false;
+        const visible = false;
 
         const object = {
-            emailVisible,
+            visible,
             type: 'setProfileEmailVisible',
         };
 
-        expect(actions.setProfileEmailVisible(emailVisible)).toEqual(object);
+        expect(actions.setProfileEmailVisible(visible)).toEqual(object);
     });
 
     it('creates a valid setProfileHomepage action', () => {
@@ -147,26 +146,15 @@ describe('profile action unit tests', () => {
         expect(actions.setProfileTimeStyle(timeStyle)).toEqual(object);
     });
 
-    it('creates a valid setProfileEditing action', () => {
-        const editing = true;
+    it('creates a valid setProfileMessage action', () => {
+        const message = 'this is a test message';
 
         const object = {
-            editing,
-            type: 'setProfileEditing',
+            message,
+            type: 'setProfileMessage',
         };
 
-        expect(actions.setProfileEditing(editing)).toEqual(object);
-    });
-
-    it('creates a valid setProfileError action', () => {
-        const error = 'this is a test error';
-
-        const object = {
-            error,
-            type: 'setProfileError',
-        };
-
-        expect(actions.setProfileError(error)).toEqual(object);
+        expect(actions.setProfileMessage(message)).toEqual(object);
     });
 
     it('creates a valid setProfileRollback action', () => {

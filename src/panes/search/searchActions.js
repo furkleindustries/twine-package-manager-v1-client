@@ -1,4 +1,3 @@
-
 export function setSearchedYet(searchedYet) {
 	return {
 		searchedYet,
@@ -20,10 +19,10 @@ export function setSearchResults(results) {
 	};
 }
 
-export function setSearchError(error) {
+export function setSearchMessage(message) {
 	return {
-		error,
-		type: 'setSearchError',
+		message,
+		type: 'setSearchMessage',
 	};
 }
 

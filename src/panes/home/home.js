@@ -1,10 +1,15 @@
+// react
 import React, { Component, } from 'react';
 import { Link, } from 'react-router';
 
 // redux
 import store from '../../store';
-import { setSelectedPane, } from '../../appActions';
+import {
+	setAppSelectedPane,
+	setSideBarVisible,
+} from '../../appActions';
 
+//css
 import './home.css';
 
 /* https://c2.staticflickr.com/8/7319/8730255464_529c6aea39_z.jpg */
@@ -44,7 +49,7 @@ class HomePane extends Component {
 					<Link
 						id="about"
 						to={baseUrl + "/about"}
-						onClick={e => store.dispatch(setSelectedPane(e.target.id))}>
+						onClick={e => store.dispatch(setAppSelectedPane(e.target.id))}>
 						About
 					</Link>
 					
@@ -53,7 +58,7 @@ class HomePane extends Component {
 					<Link
 						id="login"
 						to={baseUrl + "/login"}
-						onClick={e => store.dispatch(setSelectedPane(e.target.id))}>
+						onClick={e => store.dispatch(setAppSelectedPane(e.target.id))}>
 						Login
 					</Link>
 					
@@ -66,6 +71,10 @@ class HomePane extends Component {
 			</div>
 		);
 	}
+
+    componentDidMount() {
+        store.dispatch(setSideBarVisible(false));
+    }
 }
 
 export default HomePane;

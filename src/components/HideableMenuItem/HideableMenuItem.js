@@ -4,7 +4,7 @@ import React, { Component, } from 'react';
 // css
 import './HideableMenuItem.css';
 
-export default class HideableMenuItem extends React.Component {
+export default class HideableMenuItem extends Component {
 	constructor() {
 		super();
 

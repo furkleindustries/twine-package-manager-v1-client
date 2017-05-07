@@ -1,10 +1,18 @@
+// react
 import React, { Component, } from 'react';
 
-// css
-import './Header.css';
+// redux
+import { connect, } from 'react-redux';
+import store from '../../store';
 
 // components
 import { NavBar, } from '../NavBar/NavBar';
+
+// modules
+import topBarClick from '../../modules/navBar/topBarClick';
+
+// css
+import './Header.css';
 
 class Header extends Component {
 	render() {
@@ -17,12 +25,24 @@ class Header extends Component {
 				</h1>
 
 				<NavBar
+					class={"topNavBar"}
 					panes={this.props.panes}
 					selectedPane={this.props.selectedPane}
-					navBarItemClick={this.props.navBarItemClick}  />
+					visible={true}
+					useRouterLink={true}
+					navBarItemClick={topBarClick} />
 			</div>
 		);
 	}
 }
 
-export default Header;
+function mapStateToProps() {
+	const state = store.getState();
+
+    return {
+    	panes: state.appPanes,
+	    selectedPane: state.appSelectedPane,
+	};
+}
+
+export default connect(mapStateToProps)(Header);

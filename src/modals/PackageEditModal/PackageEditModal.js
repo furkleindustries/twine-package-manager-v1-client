@@ -7,10 +7,7 @@ import React, { Component, } from 'react';
 import { connect, } from 'react-redux';
 import store from '../../store';
 
-import { setProfilePackages, } from '../../panes/profile/profileActions';
-
 import {
-	setPackageEditingDateModified,
 	setPackageEditingName,
 	setPackageEditingType,
 	setPackageEditingVersion,
@@ -21,30 +18,21 @@ import {
 	setPackageEditingKeywords,
 	setPackageEditingTag,
 	setPackageEditingNewOwner,
-	setPackageEditingError,
 } from '../../components/PackageOwned/PackageOwnedActions';
 
 // components
 import HideableMenuItem from '../../components/HideableMenuItem/HideableMenuItem';
 
 // modules
-import deepCopy from '../../modules/deepCopy';
 import unixTimeToSettingsTime from '../../modules/unixTimeToSettingsTime';
-import modalClose from '../../modules/modalClose';
+import modalClose from '../../modules/modals/close';
 import onlyFirstLetterCapitalized from '../../modules/onlyFirstLetterCapitalized';
-import transferOwnershipOfPackage from '../../modules/transferOwnershipOfPackage';
+import * as post from '../../modules/database/post';
 
 // css
 import './PackageEditModal.css';
 
 class PackageEditModal extends Component {
-	constructor() {
-		super();
-
-		this.confirm = this.confirm.bind(this);
-		this.cancel = this.cancel.bind(this);
-	}
-
 	render() {
 		const opts = {
 			spellCheck: false,
@@ -76,7 +64,7 @@ class PackageEditModal extends Component {
 
 				<button
 					className="PackageEditModal-button wideButton"
-					onClick={() => transferOwnershipOfPackage(this.props.newOwner)}>
+					onClick={() => post.ownershipTransferOfPackage(this.props.newOwner)}>
 					Transfer
 				</button>
 			</div>
@@ -272,187 +260,33 @@ class PackageEditModal extends Component {
 
 				<button
 					className="wideButton"
-					onClick={this.confirm}>
+					onClick={() => {
+						post.packageUpdate({
+							id: this.props.id,
+							name: this.props.name,
+							version: this.props.version,
+							description: this.props.description,
+							homepage: this.props.homepage,
+							js: this.props.js,
+							css: this.props.css,
+							keywords: this.props.keywords,
+							tag: this.props.tag,
+						});
+					}}>
 					Confirm
 				</button>
 				
 				<button
 					className="wideButton"
-					onClick={this.cancel}>
+					onClick={modalClose}>
 					Cancel
 				</button>
 
-				<p className="PackageEditModal-error">
-					{this.props.error}
+				<p className="PackageEditModal-message">
+					{this.props.message}
 				</p>
 			</div>
 		);
-	}
-
-	setPackageEditingName(value) {
-		store.dispatch(setPackageEditingName(value));
-	}
-
-	setPackageEditingType(value) {
-		store.dispatch(setPackageEditingType(value));
-	}
-
-	setPackageEditingVersion(value) {
-		store.dispatch(setPackageEditingVersion(value));
-	}
-
-	setPackageEditingDescription(value) {
-		store.dispatch(setPackageEditingDescription(value));
-	}
-
-	setPackageEditingHomepage(value) {
-		store.dispatch(setPackageEditingHomepage(value));
-	}
-
-	setPackageEditingJs(value) {
-		store.dispatch(setPackageEditingJs(value));
-	}
-
-	setPackageEditingCss(value) {
-		store.dispatch(setPackageEditingCss(value));
-	}
-	
-	setPackageEditingKeywords(value) {
-		store.dispatch(setPackageEditingKeywords(value));
-	}
-	
-	setPackageEditingTag(value) {
-		store.dispatch(setPackageEditingTag(value));
-	}
-
-	confirm() {
-		const formData = new FormData();
-		formData.append('id', this.props.id);
-		formData.append('name', this.props.name);
-		formData.append('version', this.props.version);
-		formData.append('description', this.props.description);
-		formData.append('homepage', this.props.homepage);
-		formData.append('js', this.props.js);
-		formData.append('css', this.props.css);
-		formData.append('keywords', this.props.keywords);
-		formData.append('tag', this.props.tag);
-		formData.append('csrfToken', this.props.csrfToken);
-
-		fetch('https://furkleindustries.com/twinepm/package/', {
-			method: 'POST',
-			credentials: 'include',
-			body: formData,
-		}).catch(xhr => {
-			try {
-				const responseObj = JSON.parse(xhr.responseText);
-				store.dispatch(setPackageEditingError(
-					responseObj.error ||
-					'Unknown error. Please contact webmaster.'
-				));
-
-				setTimeout(() => {
-					const loginError = this.props.loginError;
-					if (loginError === responseObj.error ||
-						loginError === 'Unknown error. Please contact webmaster.')
-					{
-						store.dispatch(setPackageEditingError(''));
-					}
-				}, 6000);
-			} catch (err) {
-				const error = 'Unknown error deserializing update response ' +
-					'object. Please contact webmaster.';
-				store.dispatch(setPackageEditingError(error));
-
-				setTimeout(() => {
-					if (this.props.loginError === error) {
-						store.dispatch(setPackageEditingError(''));
-					}
-				}, 6000);
-			}
-
-			// don't allow execution to continue
-			return Promise.reject();
-		}).then(response => {
-			return response.json();
-		}).catch(e => {
-			const error = 'Error deserializing update response ' +
-				'object. Please contact webmaster.';
-			store.dispatch(setPackageEditingError(error));
-
-			setTimeout(() => {
-				if (this.props.loginError === error) {
-					store.dispatch(setPackageEditingError(''));
-				}
-			}, 6000);
-
-			return Promise.reject();
-		}).then(responseObj => {
-			if (responseObj.error) {
-				store.dispatch(setPackageEditingError(responseObj.error));
-
-				setTimeout(() => {
-					if (this.props.error === responseObj.error) {
-						store.dispatch(setPackageEditingError(''));
-					}
-				}, 6000);
-
-				return;
-			} else if (responseObj.status !== 200) {
-				const error = 'The response object did not reflect a ' +
-					'200 status, but an error was not returned. Please ' +
-					'contact webmaster.';
-				store.dispatch(setPackageEditingError(error));
-
-				setTimeout(() => {
-					if (this.props.error === error) {
-						store.dispatch(setPackageEditingError(error));
-					}
-				}, 6000);
-
-				return;
-			}
-
-			const dateModified = responseObj.dateModified;
-			store.dispatch(setPackageEditingDateModified(dateModified));
-
-			const newPkg = {
-				id: this.props.id,
-				name: this.props.name,
-				type: this.props.type,
-				version: this.props.version,
-				description: this.props.description,
-				homepage: this.props.homepage,
-				js: this.props.js,
-				css: this.props.css,
-				keywords: this.props.keywords,
-				tag: this.props.tag,
-			};
-
-			let packages = store.getState().profile.packages;
-			packages = deepCopy(packages).map(oldPkg => {
-				if (oldPkg.id === this.props.id) {
-					return newPkg;
-				} else {
-					return oldPkg;
-				}
-			});
-
-			store.dispatch(setProfilePackages(packages));
-
-			const notError = 'Package updated successfully.';
-			store.dispatch(setPackageEditingError(notError));
-
-			setTimeout(() => {
-				if (this.props.error === notError) {
-					modalClose();
-					store.dispatch(setPackageEditingError(''));
-				}
-			}, 6000);
-		});
-	}
-
-	cancel() {
-		modalClose();
 	}
 }
 
@@ -461,8 +295,8 @@ function mapStateToProps() {
 
 	return {
 		...state.packageEditing,
+		message: state.packageEditingMessage,
 		csrfToken: state.csrfToken,
-		error: state.packageEditingError,
 	};
 }
 

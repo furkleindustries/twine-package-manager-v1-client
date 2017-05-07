@@ -5,9 +5,9 @@ export function setAccountDeletingEnteredId(enteredId) {
 	}
 }
 
-export function setAccountDeletingError(error) {
+export function setAccountDeletingMessage(message) {
 	return {
-		error,
-		type: 'setAccountDeletingError',
+		message,
+		type: 'setAccountDeletingMessage',
 	}
 }
