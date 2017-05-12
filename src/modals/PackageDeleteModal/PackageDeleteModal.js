@@ -8,8 +8,8 @@ import store from '../../store';
 import { connect, } from 'react-redux';
 
 // modules
-import * as _delete from '../../modules/database/delete';
-import* as modalClose from '../../modules/modals/close';
+import _delete from '../../modules/database/delete';
+import modalClose from '../../modules/modals/close';
 
 // css
 import './PackageDeleteModal.css';

@@ -33,6 +33,12 @@ import { NavBar, } from './components/NavBar/NavBar';
 import './App.css';
 
 export class App extends Component {
+    constructor() {
+        super();
+
+        this.handleHashChange = this.handleHashChange.bind(this);
+    }
+
     render() {
         const id = this.props.appSelectedPane;
 
@@ -88,78 +94,78 @@ export class App extends Component {
             }
         }
 
-        window.onhashchange = () => {
-            if (this.props.selectedPane === 'about' &&
-                location.hash === '#rules')
-            {
-                modalFactories.rules();
-            } else if (this.props.selectedPane === 'login' &&
-                location.hash === '#createAccount')
-            {
-                modalFactories.accountCreate();
-            } else if (this.props.selectedPane === 'profile') {
-                if (location.hash === '#deleteAccount') {
-                    modalFactories.accountDelete();
-                    return;
-                }
+        window.onhashchange = this.handleHashChange;
+    }
 
-                let re = /^#togglePackagePublish-(\d+)$/;
-                let match = location.hash.match(re);
-                if (match && match[1]) {
-                    const id = Number(match[1]);
-                    const packages = store.getState().profile.packages;
-                    const pkg = packages.filter(pkg => pkg.id === id)[0];
-
-                    if (!pkg) {
-                        console.log(`Could not find package with id: ${id}.`);
-                        return;
-                    }
-
-                    store.dispatch(setPackagePublishing({
-                        id: pkg.id,
-                        published: pkg.published,
-                    }));
-
-                    modalFactories.togglePackagePublish(Number(match[1]));
-                    
-                    return;
-                }
-
-                re = /^#editPackage-(\d+)$/;
-                match = location.hash.match(re);
-                if (match && match[1]) {
-                    const id = Number(match[1]);
-
-                    const state = store.getState();
-                    const packages = state.profile.packages;
-                    const pkg = packages.filter(pkg => pkg.id === id)[0];
-
-                    if (!pkg) {
-                        return;
-                    }
-                    
-                    store.dispatch(setPackageEditing(pkg));
-
-                    modalFactories.packageEdit();
-
-                    return;
-                }
-
-                re = /^#deletePackage-(\d+)$/;
-                match = location.hash.match(re);
-                if (match && match[1]) {
-                    store.dispatch(setPackageDeleting(Number(match[1])));
-
-                    modalFactories.packageDelete();
-                    return;
-                }
-
-                if (location.hash === '#createNewPackage') {
-                    modalFactories.packageCreate();
-                    return;
-                }
+    handleHashChange() {
+        if (this.props.appSelectedPane === 'about' &&
+            location.hash === '#rules')
+        {
+            modalFactories.rules();
+        } else if (this.props.appSelectedPane === 'login' &&
+            location.hash === '#createAccount')
+        {
+            modalFactories.accountCreate();
+        } else if (this.props.appSelectedPane === 'profile') {
+            if (location.hash === '#deleteAccount') {
+                modalFactories.accountDelete();
+                return;
             }
-        };
+
+            let re = /^#togglePackagePublish-(\d+)$/;
+            let match = location.hash.match(re);
+            if (match && match[1]) {
+                const id = Number(match[1]);
+                const packages = this.props.profile.packages;
+                const pkg = packages.filter(pkg => pkg.id === id)[0];
+
+                if (!pkg) {
+                    console.log(`Could not find package with id: ${id}.`);
+                    return;
+                }
+
+                store.dispatch(setPackagePublishing({
+                    id: pkg.id,
+                    published: pkg.published,
+                }));
+
+                modalFactories.togglePackagePublish(Number(match[1]));
+                
+                return;
+            }
+
+            re = /^#editPackage-(\d+)$/;
+            match = location.hash.match(re);
+            if (match && match[1]) {
+                const id = Number(match[1]);
+
+                const packages = this.props.profile.packages;
+                const pkg = packages.filter(pkg => pkg.id === id)[0];
+
+                if (!pkg) {
+                    console.log(`Could not find package with id: ${id}.`);
+                    return;
+                }
+                
+                store.dispatch(setPackageEditing(pkg));
+
+                modalFactories.packageEdit();
+
+                return;
+            }
+
+            re = /^#deletePackage-(\d+)$/;
+            match = location.hash.match(re);
+            if (match && match[1]) {
+                store.dispatch(setPackageDeleting(Number(match[1])));
+
+                modalFactories.packageDelete();
+                return;
+            } else if (location.hash === '#createNewPackage') {
+                modalFactories.packageCreate();
+                return;
+            }
+        }
     }
 }
 

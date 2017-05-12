@@ -17,10 +17,10 @@ export default async function login(username, password) {
 
 	let successful = false;
 
-	if (result && result.antiCSRFToken) {
-		localStorage.twinepmCSRFToken = result.antiCSRFToken;
-		store.dispatch(setCSRFToken(result.antiCSRFToken));
-		loginRender(result.antiCSRFToken, 'gotoProfile');
+	if (result && result.csrfToken) {
+		localStorage.twinepmCSRFToken = result.csrfToken;
+		store.dispatch(setCSRFToken(result.csrfToken));
+		loginRender(result.csrfToken, 'gotoProfile');
 		successful = true;
 	} else {
 		let error;

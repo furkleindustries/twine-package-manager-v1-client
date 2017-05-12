@@ -24,7 +24,7 @@ export class ProfilePackagesPane extends Component {
                 togglePackagePublish={this.props.togglePackagePublish}
                 editPackage={this.props.editPackage}
                 removePackage={this.props.removePackage}
-                {...pkg} />;
+                package={pkg} />;
         });
 
 		return (

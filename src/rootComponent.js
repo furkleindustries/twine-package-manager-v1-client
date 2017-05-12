@@ -16,6 +16,7 @@ import Search from './panes/search/search';
 import About from './panes/about/about';
 import Login from './panes/login/login';
 import Profile from './panes/profile/profile';
+import FourOhFour from './panes/404/404';
 
 const baseUrl = process.env.PUBLIC_URL;
 
@@ -29,6 +30,7 @@ const rootComponent = (
                 <Route path={`${baseUrl}/about`} component={About} />
                 <Route path={`${baseUrl}/login`} component={Login} />
                 <Route path={`${baseUrl}/profile`} component={Profile} />
+                <Route path={`${baseUrl}/*`} component={FourOhFour} />
             </Route>
         </Router>
     </Provider>

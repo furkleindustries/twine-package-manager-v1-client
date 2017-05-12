@@ -15,6 +15,12 @@ import modalClose from '../../modules/modals/close';
 import './AccountDeleteModal.css';
 
 export class AccountDeleteModal extends Component {
+	constructor() {
+		super();
+
+		this.handleDeleteAccount = this.handleDeleteAccount.bind(this);
+	}
+
 	render() {
 		return (
 			<div className="AccountDeleteModal">
@@ -48,16 +54,7 @@ export class AccountDeleteModal extends Component {
 				<button
 					className={"AccountDeleteModal-button wideButton" +
 						(this.props.id === this.props.enteredId ? "" : " disabled")}
-					onClick={async () => {
-						const success = await deleteAccount(
-							(Number)(this.props.id), 
-							this.props.csrfToken);
-						if (success) {
-							setTimeout(() => {
-								modalClose();
-							}, 2000);
-						}
-					}}>
+					onClick={this.handleDeleteAccount}>
 					Delete Account
 				</button>
 
@@ -72,6 +69,17 @@ export class AccountDeleteModal extends Component {
 				</p>
 			</div>
 		);
+	}
+
+	handleDeleteAccount() {
+		const success = await deleteAccount(
+			(Number)(this.props.id), 
+			this.props.csrfToken);
+		if (success) {
+			setTimeout(() => {
+				modalClose();
+			}, 2000);
+		}
 	}
 }
 

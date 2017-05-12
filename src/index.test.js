@@ -1,12 +1,12 @@
 // react
 import React from 'react';
 import ReactDOM from 'react-dom';
-import ReactTestUtils from 'react-addons-test-utils';
+import ReactTestUtils from 'react-dom/test-utils';
 
 // components
 import { App, } from './App';
 import rootComponent from './rootComponent';
-import { NavBarItem } from './components/NavBar/NavBar';
+import { NavBarItem, } from './components/NavBar/NavBar';
 
 describe('end to end tests', () => {
     let rootCopy;

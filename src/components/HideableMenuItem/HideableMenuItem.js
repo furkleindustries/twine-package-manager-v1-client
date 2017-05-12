@@ -5,11 +5,16 @@ import React, { Component, } from 'react';
 import './HideableMenuItem.css';
 
 export default class HideableMenuItem extends Component {
-	constructor() {
-		super();
+	constructor(props) {
+		super(props);
+
+		let hidden = this.props.hiddenDefault;
+		if (typeof hidden === 'undefined') {
+			hidden = true;
+		}
 
 		this.state = {
-			hidden: true,
+			hidden,
 		};
 	}
 

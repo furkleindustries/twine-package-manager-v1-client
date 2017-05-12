@@ -12,7 +12,7 @@ export default class PaneControl extends Component {
 		let list = [];
 
 		if (this.props.panes) {
-			list = Object.getOwnPropertyNames(this.props.panes).map(name => {
+			list = Object.keys(this.props.panes).map(name => {
 					return (
 						<Pane
 							key={name}
@@ -24,7 +24,7 @@ export default class PaneControl extends Component {
 
 		return (
 			<div className={"PaneControl" +
-				(this.props.class ? " " + this.props.class : "")}>
+				(this.props.class ? ` ${this.props.class}` : "")}>
 				{list}
 			</div>
 		);

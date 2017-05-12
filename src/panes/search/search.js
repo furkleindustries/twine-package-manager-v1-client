@@ -22,7 +22,7 @@ import {
 	setSearchDateCreatedRange,
 	setSearchDateModifiedRange,
 	setSearchVersionRange,
-	setSearchError,
+	setSearchMessage,
 } from './searchActions';
 
 // components
@@ -680,11 +680,11 @@ class SearchPane extends Component {
 						'was received.';
 				}
 
-				store.dispatch(setSearchError(error));
+				store.dispatch(setSearchMessage(error));
 
 				setTimeout(() => {
-					if (this.props.error === error) {
-						store.dispatch(setSearchError(''));
+					if (this.props.message === error) {
+						store.dispatch(setSearchMessage(''));
 					}
 				}, 6000);
 
@@ -693,11 +693,11 @@ class SearchPane extends Component {
 				const error = 'An error was encounted, but the response ' +
 					'object could not be deserialized.';
 
-				store.dispatch(setSearchError(error));
+				store.dispatch(setSearchMessage(error));
 
 				setTimeout(() => {
-					if (this.props.error === error) {
-						store.dispatch(setSearchError(''));
+					if (this.props.message === error) {
+						store.dispatch(setSearchMessage(''));
 					}
 				}, 6000);
 
@@ -709,11 +709,11 @@ class SearchPane extends Component {
 			try {
 				let error = responseObj.error;
 				if (error) {
-					store.dispatch(setSearchError(error));
+					store.dispatch(setSearchMessage(error));
 
 					setTimeout(() => {
-						if (this.props.error === error) {
-							store.dispatch(setSearchError(''));
+						if (this.props.message === error) {
+							store.dispatch(setSearchMessage(''));
 						}
 					}, 6000);
 
@@ -721,28 +721,28 @@ class SearchPane extends Component {
 				} else if (responseObj.status !== 200) {
 					error = 'The search was performed, but the status ' +
 						'received from the server was not 200.';
-					store.dispatch(setSearchError(error));
+					store.dispatch(setSearchMessage(error));
 
 					setTimeout(() => {
-						if (this.props.error === error) {
-							store.dispatch(setSearchError(''));
+						if (this.props.message === error) {
+							store.dispatch(setSearchMessage(''));
 						}
 					}, 6000);
 
 					return;
 				} else if (!responseObj.results ||
-					typeof(responseObj.results) !== 'object' ||
+					typeof responseObj.results !== 'object' ||
 					!('length' in responseObj.results))
 			 	{
 			 		error = 'The search was performed, but the response ' +
 			 			'object either did not contain the results ' +
 			 			'property, or it was in an invalid format.';
 
-			 		store.dispatch(setSearchError(error));
+			 		store.dispatch(setSearchMessage(error));
 
 			 		setTimeout(() => {
-			 			if (this.props.error === error) {
-			 				store.dispatch(setSearchError(''));
+			 			if (this.props.message === error) {
+			 				store.dispatch(setSearchMessage(''));
 			 			}
 			 		}, 6000);
 
@@ -754,11 +754,11 @@ class SearchPane extends Component {
 			} catch (e) {
 				const error = 'The search appeared to succeed, but the ' +
 					'response object could not be deserialized.';
-				store.dispatch(setSearchError(error));
+				store.dispatch(setSearchMessage(error));
 
 				setTimeout(() => {
-					if (this.props.error === error) {
-						store.dispatch(setSearchError(''));
+					if (this.props.message === error) {
+						store.dispatch(setSearchMessage(''));
 					}
 				}, 6000);
 			}

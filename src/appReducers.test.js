@@ -2,38 +2,74 @@ import * as reducers from './appReducers';
 import panesSourceApp from './panesSourceApp';
 
 describe('app reducer unit tests', () => {
-    it('should return the initial app panes state', () => {
+    it('should return the initial appPanes state', () => {
         expect(reducers.appPanesReducer(undefined, {}))
             .toEqual(panesSourceApp);
     });
 
-    it('should handle setAppPanes', () => {
+    it('should handle setAppPanes with valid arguments', () => {
         expect(
           reducers.appPanesReducer('', {
             type: 'setAppPanes',
-            panes: {a: 'b'},
+            panes: { foo: 'baz', },
           })
-        ).toEqual({a: 'b'});
+        ).toEqual({ foo: 'baz', });
+    });
+
+    it('appPanesReducer should reject with invalid type', () => {
+        expect(
+          reducers.appPanesReducer('', {
+            type: 'setTest',
+            panes: { foo: 'will fail', },
+          })
+        ).toEqual('');
+    });
+
+    it('appPanesReducer should reject with invalid arguments', () => {
+        expect(
+          reducers.appPanesReducer('', {
+            type: 'setAppPanes',
+            panes: 15,
+          })
+        ).toEqual('');
     });
 
     it('should return the initial appSelectedPane state', () => {
         expect(reducers.appSelectedPaneReducer(undefined, {})).toEqual('home');
     });
 
-    it('should handle setAppSelectedPane', () => {
+    it('should handle setAppSelectedPane with valid arguments', () => {
         expect(
           reducers.appSelectedPaneReducer('', {
             type: 'setAppSelectedPane',
-            selectedPane: 'login',
+            selectedPane: 'testing',
           })
-        ).toEqual('login');
+        ).toEqual('testing');
     });
 
-    it('should return the initial sidebar visible state', () => {
+    it('appSelectedPaneReducer should reject with invalid type', () => {
+        expect(
+          reducers.appSelectedPaneReducer('', {
+            type: 'setTest',
+            username: 'will fail',
+          })
+        ).toEqual('');
+    });
+
+    it('appSelectedPaneReducer should reject with invalid arguments', () => {
+        expect(
+          reducers.appSelectedPaneReducer('', {
+            type: 'setAppSelectedPane',
+            selectedPane: 16,
+          })
+        ).toEqual('');
+    });
+
+    it('should return the initial sideBarVisible state', () => {
         expect(reducers.sideBarVisibleReducer(undefined, {})).toEqual(false);
     });
 
-    it('should handle setSideBarVisible', () => {
+    it('should handle setSideBarVisible with valid arguments', () => {
         expect(
           reducers.sideBarVisibleReducer('', {
             type: 'setSideBarVisible',
@@ -42,17 +78,53 @@ describe('app reducer unit tests', () => {
         ).toEqual(true);
     });
 
-    it('should return the initial sidebar panes state', () => {
+    it('sideBarVisibleReducer should reject with invalid type', () => {
+        expect(
+          reducers.sideBarVisibleReducer('', {
+            type: 'setTest',
+            visible: true,
+          })
+        ).toEqual('');
+    });
+
+    it('sideBarVisibleReducer should reject with invalid arguments', () => {
+        expect(
+          reducers.sideBarVisibleReducer('', {
+            type: 'setSideBarVisible',
+            visible: 17,
+          })
+        ).toEqual('');
+    });
+
+    it('should return the initial sideBarPanes state', () => {
         expect(reducers.sideBarPanesReducer(undefined, {})).toEqual(null);
     });
 
-    it('should handle setSideBarPanes', () => {
+    it('should handle setSideBarPanes with valid arguments', () => {
         expect(
           reducers.sideBarPanesReducer('', {
             type: 'setSideBarPanes',
-            panes: {a: 'b'},
+            panes: { bar: 'baz', },
           })
-        ).toEqual({a: 'b'});
+        ).toEqual({ bar: 'baz', });
+    });
+
+    it('sideBarPanesReducer should reject with invalid type', () => {
+        expect(
+          reducers.sideBarPanesReducer('', {
+            type: 'setTest',
+            panes: { bux: 'buzz', },
+          })
+        ).toEqual('');
+    });
+
+    it('sideBarPanesReducer should reject with invalid arguments', () => {
+        expect(
+          reducers.sideBarPanesReducer('', {
+            type: 'setSideBarPanes',
+            panes: 18,
+          })
+        ).toEqual('');
     });
 
     it('should return the initial sideBarSelectedPane state', () => {
@@ -60,38 +132,93 @@ describe('app reducer unit tests', () => {
             .toEqual(null);
     });
 
-    it('should handle setSideBarSelectedPane', () => {
+    it('should handle setSideBarSelectedPane with valid arguments', () => {
         expect(
           reducers.sideBarSelectedPaneReducer('', {
             type: 'setSideBarSelectedPane',
-            selectedPane: 'testing',
+            selectedPane: 'buzzbazz',
           })
-        ).toEqual('testing');
+        ).toEqual('buzzbazz');
+    });
+
+    it('sideBarSelectedPaneReducer should reject with invalid type', () => {
+        expect(
+          reducers.sideBarSelectedPaneReducer('', {
+            type: 'setTest',
+            selectedPane: 'buzzard',
+          })
+        ).toEqual('');
+    });
+
+    it('sideBarSelectedPaneReducer should reject with invalid arguments', () => {
+        expect(
+          reducers.sideBarSelectedPaneReducer('', {
+            type: 'setSideBarSelectedPane',
+            selectedPane: 19,
+          })
+        ).toEqual('');
     });
 
     it('should return the initial csrfToken state', () => {
-        expect(reducers.csrfTokenReducer(undefined, {})).toEqual(null);
+        expect(reducers.csrfTokenReducer(undefined, {}))
+            .toEqual(null);
     });
 
-    it('should handle setSelectedPane', () => {
+    it('should handle setCSRFToken with valid arguments', () => {
         expect(
           reducers.csrfTokenReducer('', {
             type: 'setCSRFToken',
-            csrfToken: 'foobarbaz',
+            csrfToken: 'abcdef',
           })
-        ).toEqual('foobarbaz');
+        ).toEqual('abcdef');
+    });
+
+    it('csrfTokenReducer should reject with invalid type', () => {
+        expect(
+          reducers.csrfTokenReducer('', {
+            type: 'setTest',
+            csrfToken: 'abcdfgebz',
+          })
+        ).toEqual('');
+    });
+
+    it('csrfTokenReducer should reject with invalid arguments', () => {
+        expect(
+          reducers.csrfTokenReducer('', {
+            type: 'setCSRFToken',
+            csrfToken: 20,
+          })
+        ).toEqual('');
     });
 
     it('should return the initial modal state', () => {
         expect(reducers.modalReducer(undefined, {})).toEqual(null);
     });
 
-    it('should handle setModal', () => {
+    it('should handle setModal with valid arguments', () => {
         expect(
           reducers.modalReducer('', {
             type: 'setModal',
-            modal: {},
+            modal: { baz: 'buzz', },
           })
-        ).toEqual({});
+        ).toEqual({ baz: 'buzz', });
+    });
+
+    it('modalReducer should reject with invalid type', () => {
+        expect(
+          reducers.modalReducer('', {
+            type: 'setTest',
+            modal: { bug: 'bun', },
+          })
+        ).toEqual('');
+    });
+
+    it('modalReducer should reject with invalid arguments', () => {
+        expect(
+          reducers.modalReducer('', {
+            type: 'setModal',
+            modal: 21,
+          })
+        ).toEqual('');
     });
 });

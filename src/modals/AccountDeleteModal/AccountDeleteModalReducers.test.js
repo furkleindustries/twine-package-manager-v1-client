@@ -59,7 +59,7 @@ describe('AccountDeleteModal reducer unit tests', () => {
     it('accountDeletingMessageReducer should reject with invalid arguments', () => {
         expect(
           reducers.accountDeletingMessageReducer('', {
-            type: 'setAccountDeletingTest',
+            type: 'setAccountDeletingMessage',
             message: 12,
           })
         ).toEqual('');
