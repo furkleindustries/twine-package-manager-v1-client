@@ -1,6 +1,9 @@
 // redux
 import store from '../store';
 import {
+    setAccountCreatingName,
+    setAccountCreatingPassword,
+    setAccountCreatingEmail,
     setAccountCreatingMessage,
 } from '../modals/AccountCreateModal/AccountCreateModalActions';
 
@@ -34,6 +37,13 @@ export default async function accountCreate(name, password, email) {
             'follow the link therein. Your username will be reserved for 24 ' +
             'hours; if left unvalidated it will become available to ' +
             'everyone again.';
+
+        store.dispatch(setAccountCreatingName(''));
+        store.dispatch(setAccountCreatingPassword(''));
+        store.dispatch(setAccountCreatingEmail(''));
+    } else {        
+        store.dispatch(setAccountCreatingName(''));
+        store.dispatch(setAccountCreatingPassword(''));
     }
 
     store.dispatch(setAccountCreatingMessage(message));

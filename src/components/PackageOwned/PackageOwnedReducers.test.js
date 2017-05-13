@@ -128,6 +128,37 @@ describe('PackageOwned reducer unit tests', () => {
         ).toEqual('');
     });
 
+    it('should return the initial packageEditingNewOwner state', () => {
+        expect(reducers.packageEditingNewOwnerReducer(undefined, {}))
+            .toEqual('');
+    });
+
+    it('should handle setPackageEditingNewOwner with valid arguments', () => {
+        expect(
+          reducers.packageEditingNewOwnerReducer('', {
+            type: 'setPackageEditingNewOwner',
+            newOwner: 'hi i am new owner',
+          })
+        ).toEqual('hi i am new owner');
+    });
+
+    it('packageEditingIdReducer should reject with invalid type', () => {
+        expect(
+          reducers.packageEditingNewOwnerReducer('', {
+            type: 'setPackageTest',
+            newOwner: 'a new owner',
+          })
+        ).toEqual('');
+    });
+
+    it('packageEditingNewOwnerReducer should reject with invalid arguments', () => {
+        expect(
+          reducers.packageEditingNewOwnerReducer('', {
+            type: 'setPackageEditingNewOwner',
+            newOwner: 12456,
+          })
+        ).toEqual('');
+    });
 
     it('should return the initial packageEditingId state', () => {
         expect(reducers.packageEditingIdReducer(undefined, {}))

@@ -20,6 +20,16 @@ export function packagePublishingMessageReducer(previous = '', action) {
     return previous;
 }
 
+export function packageEditingNewOwnerReducer(previous = '', action) {
+    if (action.type === 'setPackageEditingNewOwner') {
+        if (typeof action.newOwner === 'string') {
+            return action.newOwner;
+        }
+    }
+
+    return previous;
+}
+
 export const packageEditingReducer = combineReducers({
     id: packageEditingIdReducer,
     dateCreated: packageEditingDateCreatedReducer,
@@ -34,16 +44,6 @@ export const packageEditingReducer = combineReducers({
     keywords: packageEditingKeywordsReducer,
     tag: packageEditingTagReducer,
 });
-
-export function packageEditingMessageReducer(previous = '', action) {
-    if (action.type === 'setPackageEditingMessage') {
-        if (typeof action.message === 'string') {
-            return action.message;
-        }
-    }
-
-    return previous;
-}
 
 export function packageEditingIdReducer(previous = null, action) {
     if (action.type === 'setPackageEditingId') {
@@ -214,6 +214,16 @@ export function packageEditingTagReducer(previous = '', action) {
     } else if (action.type === 'setPackageEditing') {
         if (typeof action.editing.tag === 'string') {
             return action.editing.tag;
+        }
+    }
+
+    return previous;
+}
+
+export function packageEditingMessageReducer(previous = '', action) {
+    if (action.type === 'setPackageEditingMessage') {
+        if (typeof action.message === 'string') {
+            return action.message;
         }
     }
 

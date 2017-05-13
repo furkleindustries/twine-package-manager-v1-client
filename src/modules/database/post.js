@@ -64,63 +64,45 @@ export async function logout(csrfToken) {
     });
 }
 
-export function ownershipTransferOfPackage(packageId, newOwner, csrfToken) {
+export async function packageCreation(pkg, csrfToken) {
     const formData = new FormData();
-    formData.append('packageId', packageId);
-    formData.append('newOwner', newOwner);
+    Object.keys(pkg).forEach(key => {
+        formData.append(key, pkg[key]);
+    });
+
     formData.append('csrfToken', csrfToken);
 
-    fetch('https://furkleindustries.com/twinepm/package/transferOwnership.php', {
+    return await fetch('https://furkleindustries.com/twinepm/login/', {
         method: 'POST',
         credentials: 'include',
         body: formData,
     }).then(response => {
         return response.json();
-    }).catch(() => {
-        const error = 'Unknown error.';
-        store.dispatch(setPackageEditingError(error));
-
-        setTimeout(() => {
-            if (store.getState().packageEditingError === error) {
-                store.dispatch(setPackageEditingError(''));
-            }
-        }, 6000);
-
-        return Promise.reject();
-    }).then(responseObj => {
-        if (responseObj.error || responseObj.status !== 200) {
-            const error = responseObj.error || 'The request appeared to ' +
-                'fail, but there was no error message included.';
-            store.dispatch(setPackageEditingError(error));
-
-            setTimeout(() => {
-                if (store.getState().packageEditingError === error) {
-                    store.dispatch(setPackageEditingError(''));
-                }
-            }, 6000);
-
-            return;
-        }
-
-        const error = `A request for ownership transfer of your package to ` +
-            `the user ${newOwner} has been sent.`;
-        store.dispatch(setPackageEditingError(error));
-
-        setTimeout(() => {
-            if (store.getState().packageEditingError === error) {
-                store.dispatch(setPackageEditingError(''));
-            }
-        }, 6000);
     });
 }
 
-export function updatePackage(newPackage) {
+export async function packageOwnershipTransfer(packageId, newOwner, csrfToken) {
     const formData = new FormData();
-    Object.keys(newPackage).forEach(name => {
-        formData.append(name, newPackage[name]);
+    formData.append('packageId', packageId);
+    formData.append('newOwner', newOwner);
+    formData.append('csrfToken', csrfToken);
+
+    return await fetch('https://furkleindustries.com/twinepm/package/transferOwnership.php', {
+        method: 'POST',
+        credentials: 'include',
+        body: formData,
+    }).then(response => {
+        return response.json();
+    });
+}
+
+export async function packageUpdate(pkg, csrfToken) {
+    const formData = new FormData();
+    Object.keys(pkg).forEach(key => {
+        formData.append(key, pkg[key]);
     });
 
-    formData.append('csrfToken', store.getState().csrfToken);
+    formData.append('csrfToken', csrfToken);
 
     fetch('https://furkleindustries.com/twinepm/package/', {
         method: 'POST',
@@ -128,57 +110,21 @@ export function updatePackage(newPackage) {
         body: formData,
     }).then(response => {
         return response.json();
-    }).catch(() => {
-        const error = 'Error deserializing update response ' +
-            'object. Please contact webmaster.';
-        store.dispatch(setPackageEditingError(error));
+    });
+}
 
-        setTimeout(() => {
-            if (store.getState().packageEditingError === error) {
-                store.dispatch(setPackageEditingError(''));
-            }
-        }, 6000);
+export async function packagePublish(id, published, csrfToken) {
+    const formData = new FormData();
+    formData.append('id', id);
+    formData.append('published', published);
+    formData.append('csrfToken', csrfToken);
 
-        return Promise.reject();
-    }).then(responseObj => {
-        if (responseObj.error || responseObj.status !== 200) {
-            const error = responseObj.error || 'The response object did not ' +
-                'reflect a 200 status, but an error was not returned. ' +
-                'Please contact webmaster.';
-            store.dispatch(setPackageEditingError(responseObj.error));
-
-            setTimeout(() => {
-                if (store.getState().packageEditingError === error) {
-                    store.dispatch(setPackageEditingError(''));
-                }
-            }, 6000);
-
-            return;
-        }
-
-        const dateModified = responseObj.dateModified;
-        store.dispatch(setPackageEditingDateModified(dateModified));
-
-        let packages = deepCopy(store.getState().profile.packages);
-        packages = deepCopy(packages).map(oldPackage => {
-            if (oldPackage.id === newPackage.id) {
-                return newPackage;
-            } else {
-                return oldPackage;
-            }
-        });
-
-        store.dispatch(setProfilePackages(packages));
-
-        const notError = 'Package updated successfully.';
-        store.dispatch(setPackageEditingError(notError));
-
-        setTimeout(() => {
-            if (store.getState().packageEditingError === notError) {
-                store.dispatch(setPackageEditingError(''));
-                modalClose();
-            }
-        }, 6000);
+    return await fetch('https://furkleindustries.com/twinepm/package/', {
+        method: 'POST',
+        credentials: 'include',
+        body: formData,
+    }).then(response => {
+        return response.json();
     });
 }
 

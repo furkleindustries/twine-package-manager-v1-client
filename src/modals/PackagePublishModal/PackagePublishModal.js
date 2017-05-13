@@ -6,25 +6,19 @@ import React, { Component } from 'react';
 // redux
 import { connect, } from 'react-redux';
 import store from '../../store';
-import {
-	setProfilePackages,
-} from '../../panes/profile/profileActions';
-import {
-	setPackagePublishingMessage,
-} from '../../components/PackageOwned/PackageOwnedActions';
 
 // modules
-import deepCopy from '../../modules/deepCopy';
-import * as modalClose from '../../modules/modals/close';
+import modalClose from '../../modules/modals/close';
+import packagePublish from '../../modules/packagePublish';
 
 // css
 import './PackagePublishModal.css';
 
-class PackagePublishModal extends Component {
+export class PackagePublishModal extends Component {
 	constructor() {
 		super();
 
-		this.confirm = this.confirm.bind(this);
+		this.publishPackage = this.publishPackage.bind(this);
 	}
 
 	render() {
@@ -50,13 +44,13 @@ class PackagePublishModal extends Component {
 
 				<button
 					className="PackagePublishModal-confirm wideButton"
-					onClick={this.confirm}>
+					onClick={this.publishPackage}>
 					Confirm
 				</button>
 
 				<button
 					className="PackagePublishModal-reject wideButton"
-					onClick={this.reject}>
+					onClick={modalClose}>
 					Reject
 				</button>
 
@@ -67,124 +61,15 @@ class PackagePublishModal extends Component {
 		);
 	}
 
-	confirm() {
-		const packageId = this.props.id;
-		if (!packageId) {
-			console.log('Could not find package ID.');
-			return;
+	async publishPackage() {
+		const successful = await packagePublish(
+			this.props.id,
+			!this.props.published,
+			this.props.csrfToken);
+
+		if (successful) {
+			setTimeout(modalClose, 6000);
 		}
-
-		const packages = deepCopy(store.getState().profile.packages);
-		if (!packages) {
-			console.log('Could not find packages in store.');
-			return;
-		}
-
-		let found = false;
-		for (let ii = 0; ii < packages.length; ii++) {
-			const pkg = packages[ii];
-			if (pkg.id === packageId) {
-				pkg.published = !pkg.published;
-				found = true;
-				break;
-			}
-		}
-
-		if (!found) {
-			console.log('Could not find package with id ' + packageId +
-				'in the store\'s packages.');
-			return;
-		}
-
-		const formData = new FormData();
-		formData.append('id', this.props.id);
-		formData.append('csrfToken', this.props.csrfToken);
-		formData.append('published', !this.props.published);
-
-		fetch('https://furkleindustries.com/twinepm/package/', {
-			method: 'POST',
-			credentials: 'include',
-			body: formData,
-		}).catch(xhr => {
-			let error = 'Unknown error publishing package.';
-			try {
-				const responseObj = JSON.parse(xhr.responseText);
-				if (responseObj.error) {
-					error = responseObj.error;
-				}
-			} catch (e) {
-				error = 'Unknown error deserializing publishing response ' +
-					'object.';
-			}
-
-			store.dispatch(setPackagePublishingMessage(error));
-
-			setTimeout(() => {
-				if (this.props.error === error) {
-					store.dispatch(setPackagePublishingMessage(''));
-				}
-			}, 6000);
-
-			return Promise.reject();
-		}).then(response => {
-			return response.json();
-		}).catch(e => {
-			const error = 'Unknown error deserializing package ' +
-				'publishing object. Please contact webmaster.';
-			store.dispatch(setPackagePublishingMessage(error));
-
-			setTimeout(() => {
-				if (this.props.error === error) {
-					store.dispatch(setPackagePublishingMessage(''));
-				}
-			}, 6000);
-
-			return Promise.reject();
-		}).then(responseObj => {
-			if (responseObj.error) {
-				let error = responseObj.error;
-				if (!responseObj.error) {
-					error = 'The publishing response object\'s error ' +
-						'field was set, but there was no content in the ' +
-						'field.';
-				}
-
-				store.dispatch(setPackagePublishingMessage(error));
-
-				setTimeout(() => {
-					if (this.props.error === error) {
-						store.dispatch(setPackagePublishingMessage(''));
-					}
-				}, 6000);
-
-				return Promise.reject();
-			} else if (responseObj.status !== 200) {
-				const error = 'Unknown error: publishing response ' +
-					'object status was not 200, but there was no error. Please ' +
-					'contact webmaster.';
-				store.dispatch(setPackagePublishingMessage(error));
-
-				setTimeout(() => {
-					if (this.props.error === error) {
-						store.dispatch(setPackagePublishingMessage(''));
-					}
-				}, 6000);
-
-				return Promise.reject();
-			}
-
-			store.dispatch(setProfilePackages(packages));
-
-			const notError = 'Package successfully updated.';
-			store.dispatch(setPackagePublishingMessage(notError));
-
-			setTimeout(() => {
-				if (this.props.error === notError) {
-					store.dispatch(setPackagePublishingMessage(''));
-					modalClose();
-				}
-			}, 6000);
-		});
 	}
 }
 

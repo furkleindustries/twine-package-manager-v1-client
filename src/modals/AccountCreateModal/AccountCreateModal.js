@@ -117,22 +117,15 @@ export class AccountCreateModal extends Component {
     }
 
     async doAccountCreate() {
-        const success = await accountCreate(
+        const successful = await accountCreate(
             this.props.name,
             this.props.password,
             this.props.email,
             this.props.csrfToken);
 
-        if (success) {
-            store.dispatch(setAccountCreatingName(''));
-            store.dispatch(setAccountCreatingPassword(''));
-            store.dispatch(setAccountCreatingEmail(''));
-
-            modalClose();
+        if (successful) {
+            setTimeout(modalClose, 6000);
         } else {
-            store.dispatch(setAccountCreatingName(''));
-            store.dispatch(setAccountCreatingPassword(''));
-
             this.nameInput.focus();
         }
     }

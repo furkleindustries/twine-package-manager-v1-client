@@ -43,6 +43,7 @@ import { profileMessageReducer, } from './panes/profile/profileReducers';
 import {
     packagePublishingReducer,
     packagePublishingMessageReducer,
+    packageEditingNewOwnerReducer,
     packageEditingReducer,
     packageEditingMessageReducer,
     packageDeletingReducer,
@@ -74,6 +75,7 @@ const indexReducer = combineReducers({
     accountDeletingEnteredId: accountDeletingEnteredIdReducer,
     accountDeletingMessage: accountDeletingMessageReducer,
     packagePublishing: packagePublishingReducer,
+    packageEditingNewOwner: packageEditingNewOwnerReducer,
     packageEditing: packageEditingReducer,
     packageDeleting: packageDeletingReducer,
     packageCreating: packageCreatingReducer,

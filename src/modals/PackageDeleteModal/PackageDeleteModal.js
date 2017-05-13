@@ -8,13 +8,19 @@ import store from '../../store';
 import { connect, } from 'react-redux';
 
 // modules
-import _delete from '../../modules/database/delete';
+import packageDelete from '../../modules/packageDelete';
 import modalClose from '../../modules/modals/close';
 
 // css
 import './PackageDeleteModal.css';
 
-class PackageDeleteModal extends Component {
+export class PackageDeleteModal extends Component {
+	constructor() {
+		super();
+
+		this.deletePackage = this.deletePackage.bind(this);
+	}
+
 	render() {
 		return (
 			<div className="PackageDeleteModal">
@@ -29,7 +35,7 @@ class PackageDeleteModal extends Component {
 
 				<button
 					className="PackageDeleteModal-confirm wideButton"
-					onClick={() => _delete._package(this.props.id)}>
+					onClick={this.deletePackage}>
 					Confirm
 				</button>
 
@@ -44,6 +50,15 @@ class PackageDeleteModal extends Component {
 				</p>
 			</div>
 		);
+	}
+
+	async deletePackage() {
+		const successful = await packageDelete(
+			this.props.id,
+			this.props.csrfToken);
+		if (successful) {
+			setTimeout(modalClose, 6000);
+		}
 	}
 }
 

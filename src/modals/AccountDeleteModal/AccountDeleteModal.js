@@ -2,13 +2,13 @@
 import React, { Component } from 'react';
 
 // redux
-import { connect } from 'react-redux';
+import { connect, } from 'react-redux';
 import store from '../../store';
 import { setAccountDeletingEnteredId, } from './AccountDeleteModalActions';
 
 
 // modules
-import deleteAccount from '../../modules/deleteAccount';
+import accountDelete from '../../modules/accountDelete';
 import modalClose from '../../modules/modals/close';
 
 // css
@@ -18,7 +18,8 @@ export class AccountDeleteModal extends Component {
 	constructor() {
 		super();
 
-		this.handleDeleteAccount = this.handleDeleteAccount.bind(this);
+		this.handleKeyDown = this.handleKeyDown.bind(this);
+		this.deleteAccount = this.deleteAccount.bind(this);
 	}
 
 	render() {
@@ -45,16 +46,12 @@ export class AccountDeleteModal extends Component {
 				<input
 					className="AccountDeleteModal-input body"
 					value={this.props.enteredId}
-					onChange={e => {
-						const value = e.target.value;
-						const action = setAccountDeletingEnteredId(value);
-						store.dispatch(action);
-					}} />
+					onChange={this.handleKeyDown} />
 
 				<button
 					className={"AccountDeleteModal-button wideButton" +
 						(this.props.id === this.props.enteredId ? "" : " disabled")}
-					onClick={this.handleDeleteAccount}>
+					onClick={this.deleteAccount}>
 					Delete Account
 				</button>
 
@@ -71,16 +68,19 @@ export class AccountDeleteModal extends Component {
 		);
 	}
 
-	handleDeleteAccount() {
-		const success = await deleteAccount(
+	handleKeyDown(e) {
+		store.dispatch(setAccountDeletingEnteredId(e.target.value));
+	}
+
+	async deleteAccount() {
+		const success = await accountDelete(
 			(Number)(this.props.id), 
 			this.props.csrfToken);
 		if (success) {
-			setTimeout(() => {
-				modalClose();
-			}, 2000);
+			setTimeout(modalClose, 2000);
 		}
 	}
+
 }
 
 function mapStateToProps() {

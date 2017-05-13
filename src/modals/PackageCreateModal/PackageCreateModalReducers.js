@@ -39,7 +39,7 @@ export function packageCreatingTypeReducer(previous = 'macros', action) {
             return action.creatingType;
         }
     } else if (action.type === 'setPackageCreating') {
-        if (allTypes.indexOf(action.creating.type)) {
+        if (allTypes.indexOf(action.creating.type) !== -1) {
             return action.creating.type;
         }
     }

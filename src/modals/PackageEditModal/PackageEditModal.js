@@ -8,16 +8,16 @@ import { connect, } from 'react-redux';
 import store from '../../store';
 
 import {
-	setPackageEditingName,
-	setPackageEditingType,
-	setPackageEditingVersion,
-	setPackageEditingDescription,
-	setPackageEditingHomepage,
-	setPackageEditingJs,
-	setPackageEditingCss,
-	setPackageEditingKeywords,
-	setPackageEditingTag,
-	setPackageEditingNewOwner,
+    setPackageEditingName,
+    setPackageEditingType,
+    setPackageEditingVersion,
+    setPackageEditingDescription,
+    setPackageEditingHomepage,
+    setPackageEditingJs,
+    setPackageEditingCss,
+    setPackageEditingKeywords,
+    setPackageEditingTag,
+    setPackageEditingNewOwner,
 } from '../../components/PackageOwned/PackageOwnedActions';
 
 // components
@@ -27,277 +27,338 @@ import HideableMenuItem from '../../components/HideableMenuItem/HideableMenuItem
 import unixTimeToSettingsTime from '../../modules/unixTimeToSettingsTime';
 import modalClose from '../../modules/modals/close';
 import onlyFirstLetterCapitalized from '../../modules/onlyFirstLetterCapitalized';
-import * as post from '../../modules/database/post';
+import packageTransferOwnership from '../../modules/packageTransferOwnership';
+import packageUpdate from '../../modules/packageUpdate';
 
 // css
 import './PackageEditModal.css';
 
-class PackageEditModal extends Component {
-	render() {
-		const opts = {
-			spellCheck: false,
-			autoComplete: 'off',
-			autoCorrect: 'off',
-			autoCapitalize: 'off',
-		};
+export class PackageEditModal extends Component {
+    constructor() {
+        super();
 
-		let type = onlyFirstLetterCapitalized(this.props.type);
-		if (type === 'Storythemes') {
-			type = 'Story Themes';
-		} else if (type === 'Passagethemes') {
-			type = 'Passage Themes';
-		}
+        this.transferOwnership = this.transferOwnership.bind(this);
+        this.updatePackage = this.updatePackage.bind(this);
+    }
 
-		const transferOwnershipContent = (
-			<div className="PackageEditModal-transferOwnershipContainer">
-				<label
-					className="PackageEditModal-label"
-					htmlFor="PackageEditModal-transferOwnership">
-					Transfer To User
-				</label>
+    render() {
+        const opts = {
+            spellCheck: false,
+            autoComplete: 'off',
+            autoCorrect: 'off',
+            autoCapitalize: 'off',
+        };
 
-				<input
-					id="PackageEditModal-transferOwnership"
-					className="PackageEditModal-input"
-					value={this.props.packageEditingNewOwner}
-					onChange={e => store.dispatch(setPackageEditingNewOwner(e.target.value)) }/>
+        let type = onlyFirstLetterCapitalized(this.props.type);
+        if (type === 'Storythemes') {
+            type = 'Story Themes';
+        } else if (type === 'Passagethemes') {
+            type = 'Passage Themes';
+        }
 
-				<button
-					className="PackageEditModal-button wideButton"
-					onClick={() => post.ownershipTransferOfPackage(this.props.newOwner)}>
-					Transfer
-				</button>
-			</div>
-		);
+        const transferOwnershipContent = (
+            <div className="PackageEditModal-transferOwnershipContainer">
+                <label
+                    className="PackageEditModal-label"
+                    htmlFor="PackageEditModal-transferOwnership">
+                    Transfer To User
+                </label>
 
-		return (
-			<div className="PackageEditModal">				
-				<h2 className="PackageEditModal-title subheader">
-					Edit Package
-				</h2>
+                <input
+                    id="PackageEditModal-transferOwnership"
+                    className="PackageEditModal-input"
+                    value={this.props.packageEditingNewOwner}
+                    onChange={this.handleNewOwnerChange} />
 
-				<div className="PackageEditModal-infoPair">
-					<label className="PackageEditModal-label body">
-						Package ID:
-					</label>
+                <button
+                    className="PackageEditModal-button wideButton"
+                    onClick={this.transferOwnership}>
+                    Transfer Package To New Owner
+                </button>
+            </div>
+        );
 
-					<div id="PackageEditModal-id"
-						className="PackageEditModal-input body">
-						{this.props.id}
-					</div>
-				</div>
+        return (
+            <div className="PackageEditModal">              
+                <h2 className="PackageEditModal-title subheader">
+                    Edit Package
+                </h2>
 
-				<div className="PackageEditModal-infoPair">
-					<label className="PackageEditModal-label body">
-						Date Created:
-					</label>
+                <div className="PackageEditModal-infoPair">
+                    <label className="PackageEditModal-label body">
+                        Package ID:
+                    </label>
 
-					<div id="PackageEditModal-id"
-						className="PackageEditModal-input body">
-						{unixTimeToSettingsTime(this.props.dateCreated * 1000)}
-					</div>
-				</div>
+                    <div id="PackageEditModal-id"
+                        className="PackageEditModal-input body">
+                        {this.props.id}
+                    </div>
+                </div>
 
-				<div className="PackageEditModal-infoPair">
-					<label className="PackageEditModal-label body">
-						Date Last Modified:
-					</label>
+                <div className="PackageEditModal-infoPair">
+                    <label className="PackageEditModal-label body">
+                        Date Created:
+                    </label>
 
-					<div id="PackageEditModal-id"
-						className="PackageEditModal-input body">
-						{unixTimeToSettingsTime(this.props.dateModified * 1000)}
-					</div>
-				</div>
+                    <div id="PackageEditModal-id"
+                        className="PackageEditModal-input body">
+                        {unixTimeToSettingsTime(this.props.dateCreated * 1000)}
+                    </div>
+                </div>
 
-				<div className="PackageEditModal-infoPair">
-					<label
-						className="PackageEditModal-label body"
-						htmlFor="PackageEditModal-name">
-						Name:
-					</label>
+                <div className="PackageEditModal-infoPair">
+                    <label className="PackageEditModal-label body">
+                        Date Last Modified:
+                    </label>
 
-					<input
-						id="PackageEditModal-name"
-						className="PackageEditModal-input body"
-						value={this.props.name}
-						onChange={e => store.dispatch(setPackageEditingName(e.target.value))}
-						{ ...opts }/>
-				</div>
+                    <div id="PackageEditModal-id"
+                        className="PackageEditModal-input body">
+                        {unixTimeToSettingsTime(this.props.dateModified * 1000)}
+                    </div>
+                </div>
 
-				<div className="PackageEditModal-infoPair">
-					<label
-						className="PackageEditModal-label body"
-						htmlFor="PackageEditModal-type">
-						Package Type:
-					</label>
+                <div className="PackageEditModal-infoPair">
+                    <label
+                        className="PackageEditModal-label body"
+                        htmlFor="PackageEditModal-name">
+                        Name:
+                    </label>
 
-					<select
-						id="PackageEditModal-type"
-						className="PackageEditModal-input body"
-						value={type}
-						onChange={e => {
-							const value = e.target.value.replace(/ /g, '').toLowerCase();
+                    <input
+                        id="PackageEditModal-name"
+                        className="PackageEditModal-input body"
+                        value={this.props.name}
+                        onChange={this.handleNameChange}
+                        { ...opts }/>
+                </div>
 
-							store.dispatch(setPackageEditingType(value));
-						}}
-						{ ...opts }>
-						<option>Macros</option>
-						<option>Scripts</option>
-						<option>Styles</option>
-						<option>Story Themes</option>
-						<option>Passage Themes</option>
-					</select>
-				</div>
+                <div className="PackageEditModal-infoPair">
+                    <label
+                        className="PackageEditModal-label body"
+                        htmlFor="PackageEditModal-type">
+                        Package Type:
+                    </label>
 
-				<div className="PackageEditModal-infoPair">
-					<label
-						className="PackageEditModal-label body"
-						htmlFor="PackageEditModal-version">
-						Version:
-					</label>
+                    <select
+                        id="PackageEditModal-type"
+                        className="PackageEditModal-input body"
+                        value={type}
+                        onChange={this.handleTypeChange}
+                        { ...opts }>
+                        <option>Macros</option>
+                        <option>Scripts</option>
+                        <option>Styles</option>
+                        <option>Story Themes</option>
+                        <option>Passage Themes</option>
+                    </select>
+                </div>
 
-					<input
-						id="PackageEditModal-version"
-						className="PackageEditModal-input body"
-						value={this.props.version}
-						onChange={e => store.dispatch(setPackageEditingVersion(e.target.value))}
-						{ ...opts }/>
-				</div>
+                <div className="PackageEditModal-infoPair">
+                    <label
+                        className="PackageEditModal-label body"
+                        htmlFor="PackageEditModal-version">
+                        Version:
+                    </label>
 
-				<div className="PackageEditModal-infoPair">
-					<label
-						className="PackageEditModal-label PackageEditModal-textareaLabel body"
-						htmlFor="PackageEditModal-description">
-						Description:
-					</label>
+                    <input
+                        id="PackageEditModal-version"
+                        className="PackageEditModal-input body"
+                        value={this.props.version}
+                        onChange={this.handleVersionChange}
+                        { ...opts }/>
+                </div>
 
-					<textarea
-						id="PackageEditModal-description"
-						className="PackageEditModal-input PackageEditModal-textarea body"
-						value={this.props.description}
-						onChange={e => store.dispatch(setPackageEditingDescription(e.target.value))}
-						{ ...opts } />
-				</div>
+                <div className="PackageEditModal-infoPair">
+                    <label
+                        className="PackageEditModal-label PackageEditModal-textareaLabel body"
+                        htmlFor="PackageEditModal-description">
+                        Description:
+                    </label>
 
-				<div className="PackageEditModal-infoPair">
-					<label
-						className="PackageEditModal-label body"
-						htmlFor="PackageEditModal-homepage">
-						Homepage:
-					</label>
+                    <textarea
+                        id="PackageEditModal-description"
+                        className="PackageEditModal-input PackageEditModal-textarea body"
+                        value={this.props.description}
+                        onChange={this.handleDescriptionChange}
+                        { ...opts } />
+                </div>
 
-					<input
-						id="PackageEditModal-homepage"
-						className="PackageEditModal-input body"
-						value={this.props.homepage}
-						onChange={e => store.dispatch(setPackageEditingHomepage(e.target.value))}
-						{ ...opts } />
-				</div>
+                <div className="PackageEditModal-infoPair">
+                    <label
+                        className="PackageEditModal-label body"
+                        htmlFor="PackageEditModal-homepage">
+                        Homepage:
+                    </label>
 
-				<div className="PackageEditModal-infoPair">
-					<label
-						className="PackageEditModal-label PackageEditModal-textareaLabel body"
-						htmlFor="PackageEditModal-js">
-						Javascript:
-					</label>
+                    <input
+                        id="PackageEditModal-homepage"
+                        className="PackageEditModal-input body"
+                        value={this.props.homepage}
+                        onChange={this.handleHomepageChange}
+                        { ...opts } />
+                </div>
 
-					<textarea
-						id="PackageEditModal-js"
-						className="PackageEditModal-input PackageEditModal-textarea body"
-						value={this.props.js}
-						onChange={e => store.dispatch(setPackageEditingJs(e.target.value))}
-						{ ...opts } />
-				</div>
+                <div className="PackageEditModal-infoPair">
+                    <label
+                        className="PackageEditModal-label PackageEditModal-textareaLabel body"
+                        htmlFor="PackageEditModal-js">
+                        Javascript:
+                    </label>
 
-				<div className="PackageEditModal-infoPair">
-					<label
-						className="PackageEditModal-label PackageEditModal-textareaLabel body"
-						htmlFor="PackageEditModal-css">
-						CSS:
-					</label>
+                    <textarea
+                        id="PackageEditModal-js"
+                        className="PackageEditModal-input PackageEditModal-textarea body"
+                        value={this.props.js}
+                        onChange={this.handleJsChange}
+                        { ...opts } />
+                </div>
 
-					<textarea
-						id="PackageEditModal-css"
-						className="PackageEditModal-input PackageEditModal-textarea body"
-						value={this.props.css}
-						onChange={e => store.dispatch(setPackageEditingCss(e.target.value))}
-						{ ...opts } />
-				</div>
+                <div className="PackageEditModal-infoPair">
+                    <label
+                        className="PackageEditModal-label PackageEditModal-textareaLabel body"
+                        htmlFor="PackageEditModal-css">
+                        CSS:
+                    </label>
 
-				<div className="PackageEditModal-infoPair">
-					<label
-						className="PackageEditModal-label body"
-						htmlFor="PackageEditModal-keywords">
-						Keywords:
-					</label>
+                    <textarea
+                        id="PackageEditModal-css"
+                        className="PackageEditModal-input PackageEditModal-textarea body"
+                        value={this.props.css}
+                        onChange={this.handleCssChange}
+                        { ...opts } />
+                </div>
 
-					<input
-						id="PackageEditModal-keywords"
-						className="PackageEditModal-input body"
-						value={this.props.keywords}
-						onChange={e => store.dispatch(setPackageEditingKeywords(e.target.value))}
-						{ ...opts } />
-				</div>
+                <div className="PackageEditModal-infoPair">
+                    <label
+                        className="PackageEditModal-label body"
+                        htmlFor="PackageEditModal-keywords">
+                        Keywords:
+                    </label>
 
-				<div className="PackageEditModal-infoPair">
-					<label
-						className="PackageEditModal-label PackageEditModal-textareaLabel body"
-						htmlFor="PackageEditModal-tag">
-						Tag:
-					</label>
+                    <input
+                        id="PackageEditModal-keywords"
+                        className="PackageEditModal-input body"
+                        value={this.props.keywords}
+                        onChange={this.handleKeywordsChange}
+                        { ...opts } />
+                </div>
 
-					<textarea
-						id="PackageEditModal-tag"
-						className="PackageEditModal-input PackageEditModal-textarea body"
-						value={this.props.tag}
-						onChange={e => store.dispatch(setPackageEditingTag(e.target.value))}
-						{ ...opts } />
-				</div>
+                <div className="PackageEditModal-infoPair">
+                    <label
+                        className="PackageEditModal-label PackageEditModal-textareaLabel body"
+                        htmlFor="PackageEditModal-tag">
+                        Tag:
+                    </label>
 
-				<HideableMenuItem
-					title={"Transfer Ownership of " + this.props.name + ":"}
-					content={transferOwnershipContent} />
+                    <textarea
+                        id="PackageEditModal-tag"
+                        className="PackageEditModal-input PackageEditModal-textarea body"
+                        value={this.props.tag}
+                        onChange={this.handleTagChange}
+                        { ...opts } />
+                </div>
 
-				<button
-					className="wideButton"
-					onClick={() => {
-						post.packageUpdate({
-							id: this.props.id,
-							name: this.props.name,
-							version: this.props.version,
-							description: this.props.description,
-							homepage: this.props.homepage,
-							js: this.props.js,
-							css: this.props.css,
-							keywords: this.props.keywords,
-							tag: this.props.tag,
-						});
-					}}>
-					Confirm
-				</button>
-				
-				<button
-					className="wideButton"
-					onClick={modalClose}>
-					Cancel
-				</button>
+                <HideableMenuItem
+                    title={"Transfer Ownership of " + this.props.name + ":"}
+                    content={transferOwnershipContent} />
 
-				<p className="PackageEditModal-message">
-					{this.props.message}
-				</p>
-			</div>
-		);
-	}
+                <button
+                    className="wideButton"
+                    onClick={this.updatePackage}>
+                    Confirm
+                </button>
+                
+                <button
+                    className="wideButton"
+                    onClick={modalClose}>
+                    Cancel
+                </button>
+
+                <p className="PackageEditModal-message">
+                    {this.props.message}
+                </p>
+            </div>
+        );
+    }
+
+    handleNewOwnerChange(e) {
+        store.dispatch(setPackageEditingNewOwner(e.target.value));
+    }
+
+    transferOwnership() {
+        packageTransferOwnership(
+            this.props.id,
+            this.props.newOwner,
+            this.props.csrfToken);
+    }
+
+    handleNameChange(e) {
+        store.dispatch(setPackageEditingName(e.target.value));
+    }
+
+    handleTypeChange(e) {
+        const value = e.target.value.replace(/ /g, '').toLowerCase();
+
+        store.dispatch(setPackageEditingType(value));
+    }
+
+    handleVersionChange(e) {
+        store.dispatch(setPackageEditingVersion(e.target.value));
+    }
+
+    handleDescriptionChange(e) {
+        store.dispatch(setPackageEditingDescription(e.target.value));
+    }
+
+    handleHomepageChange(e) {
+        store.dispatch(setPackageEditingHomepage(e.target.value));
+    }
+
+    handleJsChange(e) {
+        store.dispatch(setPackageEditingJs(e.target.value));
+    }
+
+    handleCssChange(e) {
+        store.dispatch(setPackageEditingCss(e.target.value));
+    }
+
+    handleKeywordsChange(e) {
+        store.dispatch(setPackageEditingKeywords(e.target.value));
+    }
+
+    handleTagChange(e) {
+        store.dispatch(setPackageEditingTag(e.target.value));
+    }
+
+    async updatePackage() {
+        const pkg = {
+            id: this.props.id,
+            name: this.props.name,
+            type: this.props.type,
+            version: this.props.version,
+            description: this.props.description,
+            homepage: this.props.homepage,
+            js: this.props.js,
+            css: this.props.css,
+            keywords: this.props.keywords,
+            tag: this.props.tag,
+        };
+
+        const successful = await packageUpdate(pkg, this.props.csrfToken);
+        if (successful) {
+            setTimeout(modalClose, 6000);
+        }
+    }
 }
 
 function mapStateToProps() {
-	const state = store.getState();
+    const state = store.getState();
 
-	return {
-		...state.packageEditing,
-		message: state.packageEditingMessage,
-		csrfToken: state.csrfToken,
-	};
+    return {
+        ...state.packageEditing,
+        message: state.packageEditingMessage,
+        csrfToken: state.csrfToken,
+    };
 }
 
 export default connect(mapStateToProps)(PackageEditModal);

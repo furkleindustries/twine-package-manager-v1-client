@@ -1,7 +1,10 @@
+/* react */
 import React, { Component } from 'react';
+
+/* css */
 import './RulesModal.css';
 
-class RulesModal extends Component {
+export class RulesModal extends Component {
 	render() {
 		return (
 			<div className="RulesModal">

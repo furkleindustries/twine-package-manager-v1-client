@@ -84,6 +84,17 @@ describe('PackageCreateModal reducer unit tests', () => {
         ).toEqual('');
     });
 
+    it('packageCreatingNameReducer should reject with setPackageCreating type and invalid name', () => {
+        expect(
+          reducers.packageCreatingNameReducer('', {
+            type: 'setPackageCreating',
+            creating: {
+                name: 156,
+            },
+          })
+        ).toEqual('');
+    });
+
     it('should return the initial packageCreatingType state', () => {
         expect(reducers.packageCreatingTypeReducer(undefined, {}))
             .toEqual('macros');
@@ -123,6 +134,17 @@ describe('PackageCreateModal reducer unit tests', () => {
         ).toEqual('');
     });
 
+    it('packageCreatingTypeReducer should reject with setPackageCreating type and invalid type', () => {
+        expect(
+          reducers.packageCreatingTypeReducer('', {
+            type: 'setPackageCreating',
+            creating: {
+                type: new Date(),
+            },
+          })
+        ).toEqual('');
+    });
+
     it('should return the initial packageCreatingVersion state', () => {
         expect(reducers.packageCreatingVersionReducer(undefined, {}))
             .toEqual('');
@@ -151,6 +173,17 @@ describe('PackageCreateModal reducer unit tests', () => {
           reducers.packageCreatingVersionReducer('', {
             type: 'setPackageCreatingVersion',
             version: 23,
+          })
+        ).toEqual('');
+    });
+
+    it('packageCreatingVersionReducer should reject with setPackageCreating type and invalid version', () => {
+        expect(
+          reducers.packageCreatingVersionReducer('', {
+            type: 'setPackageCreating',
+            creating: {
+                version: 158,
+            },
           })
         ).toEqual('');
     });
@@ -187,6 +220,17 @@ describe('PackageCreateModal reducer unit tests', () => {
         ).toEqual('');
     });
 
+    it('packageCreatingDescriptionReducer should reject with setPackageCreating type and invalid description', () => {
+        expect(
+          reducers.packageCreatingDescriptionReducer('', {
+            type: 'setPackageCreating',
+            creating: {
+                description: 159,
+            },
+          })
+        ).toEqual('');
+    });
+
     it('should return the initial packageCreatingHomepage state', () => {
         expect(reducers.packageCreatingHomepageReducer(undefined, {}))
             .toEqual('');
@@ -215,6 +259,17 @@ describe('PackageCreateModal reducer unit tests', () => {
           reducers.packageCreatingHomepageReducer('', {
             type: 'setPackageCreatingHomepage',
             homepage: 7767,
+          })
+        ).toEqual('');
+    });
+
+    it('packageCreatingHomepageReducer should reject with setPackageCreating type and invalid homepage', () => {
+        expect(
+          reducers.packageCreatingHomepageReducer('', {
+            type: 'setPackageCreating',
+            creating: {
+                homepage: 165,
+            },
           })
         ).toEqual('');
     });
@@ -251,6 +306,17 @@ describe('PackageCreateModal reducer unit tests', () => {
         ).toEqual('');
     });
 
+    it('packageCreatingJsReducer should reject with setPackageCreating type and invalid js', () => {
+        expect(
+          reducers.packageCreatingJsReducer('', {
+            type: 'setPackageCreating',
+            creating: {
+                js: 168,
+            },
+          })
+        ).toEqual('');
+    });
+
     it('should return the initial packageCreatingCss state', () => {
         expect(reducers.packageCreatingCssReducer(undefined, {}))
             .toEqual('');
@@ -279,6 +345,17 @@ describe('PackageCreateModal reducer unit tests', () => {
           reducers.packageCreatingCssReducer('', {
             type: 'setPackageCreatingCss',
             css: 324,
+          })
+        ).toEqual('');
+    });
+
+    it('packageCreatingCssReducer should reject with setPackageCreating type and invalid css', () => {
+        expect(
+          reducers.packageCreatingCssReducer('', {
+            type: 'setPackageCreating',
+            creating: {
+                css: 1956,
+            },
           })
         ).toEqual('');
     });
@@ -315,6 +392,17 @@ describe('PackageCreateModal reducer unit tests', () => {
         ).toEqual('');
     });
 
+    it('packageCreatingKeywordsReducer should reject with setPackageCreating type and invalid keywords', () => {
+        expect(
+          reducers.packageCreatingKeywordsReducer('', {
+            type: 'setPackageCreating',
+            creating: {
+                keywords: 659865,
+            },
+          })
+        ).toEqual('');
+    });
+
     it('should return the initial packageCreatingTag state', () => {
         expect(reducers.packageCreatingTagReducer(undefined, {}))
             .toEqual('');
@@ -343,6 +431,17 @@ describe('PackageCreateModal reducer unit tests', () => {
           reducers.packageCreatingTagReducer('', {
             type: 'setPackageCreatingTag',
             tag: 345,
+          })
+        ).toEqual('');
+    });
+
+    it('packageCreatingTagReducer should reject with setPackageCreating type and invalid tag', () => {
+        expect(
+          reducers.packageCreatingTagReducer('', {
+            type: 'setPackageCreating',
+            creating: {
+                tag: [],
+            },
           })
         ).toEqual('');
     });

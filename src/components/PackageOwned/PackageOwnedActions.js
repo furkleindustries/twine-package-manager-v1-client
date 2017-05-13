@@ -12,6 +12,13 @@ export function setPackagePublishingMessage(message) {
     };
 }
 
+export function setPackageEditingNewOwner(newOwner) {
+    return {
+        newOwner,
+        type: 'setPackageEditingNewOwner',
+    };
+}
+
 export function setPackageEditing(editing) {
     return {
         editing,

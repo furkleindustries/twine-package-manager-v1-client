@@ -23,6 +23,17 @@ describe('PackageOwned action unit tests', () => {
         expect(actions.setPackagePublishingMessage(message)).toEqual(object);
     });
 
+    it('creates a valid setPackageEditingNewOwner action', () => {
+        const newOwner = 'hi i am the newest owner!';
+
+        const object = {
+            newOwner,
+            type: 'setPackageEditingNewOwner',
+        };
+
+        expect(actions.setPackageEditingNewOwner(newOwner)).toEqual(object);
+    });
+
     it('creates a valid setPackageEditing action', () => {
         const editing = {};
 

@@ -119,6 +119,8 @@ describe('AccountCreateModal unit tests', () => {
     });
 
     it('handles doAccountCreate with success', async () => {
+        jest.useFakeTimers();
+
         accountCreate.mockClear();
         accountCreate.mockImplementationOnce(() => true);
 
@@ -134,31 +136,18 @@ describe('AccountCreateModal unit tests', () => {
         expect(accountCreate.mock.calls.length).toEqual(1);
         const args = ['foo', 'bar', 'baz', 'abcdef'];
         expect(accountCreate.mock.calls[0]).toEqual(args);
-        expect(store.dispatch.mock.calls.length).toEqual(3);
-        expect(store.dispatch.mock.calls[0]).toEqual([
-            {
-                name: '',
-                type: 'setAccountCreatingName',
-            },
-        ]);
-        expect(store.dispatch.mock.calls[1]).toEqual([
-            {
-                password: '',
-                type: 'setAccountCreatingPassword',
-            },
-        ]);
-        expect(store.dispatch.mock.calls[2]).toEqual([
-            {
-                email: '',
-                type: 'setAccountCreatingEmail',
-            },
-        ]);
+
+        jest.runAllTimers();
+
         expect(modalClose.mock.calls.length).toEqual(1);
     });
 
     it('handles doAccountCreate with failure', async () => {
+        jest.useFakeTimers();
+
         accountCreate.mockClear();
         accountCreate.mockImplementationOnce(() => false);
+        modalClose.mockClear();
 
         const component = <AccountCreateModal
             name="foo"
@@ -173,18 +162,9 @@ describe('AccountCreateModal unit tests', () => {
         expect(accountCreate.mock.calls.length).toEqual(1);
         const args = ['foo', 'bar', 'baz', 'abcdef'];
         expect(accountCreate.mock.calls[0]).toEqual(args);
-        expect(store.dispatch.mock.calls.length).toEqual(2);
-        expect(store.dispatch.mock.calls[0]).toEqual([
-            {
-                name: '',
-                type: 'setAccountCreatingName',
-            },
-        ]);
-        expect(store.dispatch.mock.calls[1]).toEqual([
-            {
-                password: '',
-                type: 'setAccountCreatingPassword',
-            },
-        ]);
+
+        jest.runAllTimers();
+
+        expect(modalClose.mock.calls.length).toEqual(0);
     });
 });
