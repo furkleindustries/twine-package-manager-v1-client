@@ -1,4 +1,4 @@
-// redux
+/* redux */
 import store from '../store';
 import {
     setAccountCreatingName,
@@ -7,7 +7,7 @@ import {
     setAccountCreatingMessage,
 } from '../modals/AccountCreateModal/AccountCreateModalActions';
 
-// modules
+/* modules */
 import * as post from './database/post';
 
 export default async function accountCreate(name, password, email) {
@@ -20,7 +20,7 @@ export default async function accountCreate(name, password, email) {
 
     let message = '';
     if (!responseObj) {
-        message = 'There was an message in receiving or deserializing the ' +
+        message = 'There was an error in receiving or deserializing the ' +
             'server response.';
     } else if (responseObj.error) {
         message = responseObj.error;
@@ -49,7 +49,9 @@ export default async function accountCreate(name, password, email) {
     store.dispatch(setAccountCreatingMessage(message));
 
     setTimeout(() => {
-        store.dispatch(setAccountCreatingMessage(''));
+        if (store.getState().accountCreatingMessage === message) {
+            store.dispatch(setAccountCreatingMessage(''));
+        }
     }, 6000);
 
     return succeeded;

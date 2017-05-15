@@ -1,7 +1,7 @@
-// react
+/* react */
 import React from 'react';
 
-// modals
+/* modals */
 import AccountCreateModal from '../../modals/AccountCreateModal/AccountCreateModal';
 import AccountDeleteModal from '../../modals/AccountDeleteModal/AccountDeleteModal';
 
@@ -12,7 +12,7 @@ import PackageDeleteModal from '../../modals/PackageDeleteModal/PackageDeleteMod
 
 import RulesModal from '../../modals/RulesModal/RulesModal';
 
-// modules
+/* modules */
 import create from './create';
 
 export function accountCreate() {

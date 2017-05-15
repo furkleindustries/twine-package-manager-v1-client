@@ -4,7 +4,7 @@ import 'whatwg-fetch';
 import * as _delete from './delete';
 
 
-describe('RulesModal unit tests', () => {
+describe('database _delete unit tests', () => {
     beforeEach(() => {
         fetch = jest.fn();
         fetch.mockImplementationOnce(() => Promise.resolve({ json: () => {}}));

@@ -1,4 +1,4 @@
-// redux
+/* redux */
 import store from '../../store';
 import { setAppSelectedPane, } from '../../appActions';
 

@@ -9,7 +9,7 @@ import * as _delete from './database/delete';
 import modalClose from './modals/close';
 import logout from './logout';
 
-export default async function deleteAccount(id, csrfToken) {
+export default async function accountDelete(id, csrfToken) {
     let responseObj;
     try {
         responseObj = await _delete.account(id, csrfToken);
@@ -20,12 +20,13 @@ export default async function deleteAccount(id, csrfToken) {
     let message = '';
     let succeeded = false;
     if (!responseObj) {
-        message = 'Unknown error receiving or deserializing server response.';
+        message = 'There was an error in receiving or deserializing the ' +
+            'server response.';
     } else if (responseObj.error) {
         message = responseObj.error;
     } else if (responseObj.status !== 200) {
-        message = 'The request did not succeed, but an error was not ' +
-            'included.';
+        message = 'The request did not succeed, but there was no message ' +
+            'received.';
     } else {
         message = 'Your account has been deleted.';
         succeeded = true;
@@ -35,7 +36,7 @@ export default async function deleteAccount(id, csrfToken) {
 
     if (succeeded) {
         setTimeout(() => {
-            logout();
+            logout(null, 'skipServer');
             store.dispatch(setAccountDeletingMessage(''));
         }, 2000);
     } else {

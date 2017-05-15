@@ -1,4 +1,4 @@
-// redux
+/* redux */
 import store from '../../store';
 import { setSideBarSelectedPane, } from '../../appActions';
 

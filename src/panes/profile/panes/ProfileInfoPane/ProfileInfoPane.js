@@ -5,7 +5,6 @@ import React, { Component, } from 'react';
 import { connect, } from 'react-redux';
 import store from '../../../../store';
 import {
-    setProfile,
     setProfileRollback,
     setProfileDateCreatedVisible,
     setProfileName,
@@ -16,19 +15,23 @@ import {
     setProfileHomepage,
     setProfileDateStyle,
     setProfileTimeStyle,
-    setProfileEditing,
 } from '../../profileActions';
 
 // modules
-import * as post from '../../../../modules/database/post';
-import * as modalFactories from '../../../../modules/modals/factories';
 import unixTimeToSettingsTime from '../../../../modules/unixTimeToSettingsTime';
 import deepCopy from '../../../../modules/deepCopy';
+import accountUpdate from '../../../../modules/accountUpdate';
 
 // css
 import './ProfileInfoPane.css';
 
 export class ProfileInfoPane extends Component {
+    constructor() {
+        super();
+
+        this.updateProfile = this.updateProfile.bind(this);
+    }
+
     render() {
         return (
             <div className="ProfileInfoPane">
@@ -77,11 +80,7 @@ export class ProfileInfoPane extends Component {
                             className="ProfileInfoPane-visibility body"
                             type="checkbox"
                             checked={this.props.dateCreatedVisible ? "checked" : null}
-                            onChange={e => {
-                                let action = setProfileDateCreatedVisible(
-                                    e.target.checked);
-                                store.dispatch(action);
-                            }} />
+                            onChange={this.handleDateCreatedChange} />
                     </div>
 
                     <div className="ProfileInfoPane-infoPair">
@@ -95,21 +94,14 @@ export class ProfileInfoPane extends Component {
                             id="ProfileInfoPane-name"
                             className="ProfileInfoPane-input body"
                             value={this.props.name}
-                            onChange={e => {
-                                const action = setProfileName(e.target.value);
-                                store.dispatch(action);
-                            }} />
+                            onChange={this.handleNameChange} />
 
                         <input
                             id="ProfileInfoPane-nameVisible"
                             className="ProfileInfoPane-visibility body"
                             type="checkbox"
                             checked={this.props.nameVisible ? "checked" : null}
-                            onChange={e => {
-                                const action = setProfileNameVisible(
-                                    e.target.checked);
-                                store.dispatch(action);
-                            }} />
+                            onChange={this.handleNameVisibleChange} />
                     </div>
 
                     <div className="ProfileInfoPane-infoPair">
@@ -123,11 +115,7 @@ export class ProfileInfoPane extends Component {
                             id="ProfileInfoPane-description"
                             className="ProfileInfoPane-input body"
                             value={this.props.description}
-                            onChange={e => {
-                                const action = setProfileDescription(
-                                    e.target.value);
-                                store.dispatch(action);
-                            }} />
+                            onChange={this.handleDescriptionChange} />
                     </div>
 
                     <div className="ProfileInfoPane-infoPair">
@@ -141,21 +129,14 @@ export class ProfileInfoPane extends Component {
                             id="ProfileInfoPane-email"
                             className="ProfileInfoPane-input body"
                             value={this.props.email}
-                            onChange={e => {
-                                const action = setProfileEmail(e.target.value);
-                                store.dispatch(action);
-                            }} />
+                            onChange={this.handleEmailChange} />
 
                         <input
                             id="ProfileInfoPane-emailVisible"
                             className="ProfileInfoPane-visibility body"
                             type="checkbox"
                             checked={this.props.emailVisible ? "checked" : null}
-                            onChange={e => {
-                                const action = setProfileEmailVisible(
-                                    e.target.checked);
-                                store.dispatch(action);
-                            }} />
+                            onChange={this.handleEmailVisibleChange} />
                     </div>
 
                     <div className="ProfileInfoPane-infoPair">
@@ -169,11 +150,7 @@ export class ProfileInfoPane extends Component {
                             id="ProfileInfoPane-homepage"
                             className="ProfileInfoPane-homepage ProfileInfoPane-input body"
                             value={this.props.homepage}
-                            onChange={e => {
-                                const action = setProfileHomepage(
-                                    e.target.value);
-                                store.dispatch(action);
-                            }} />
+                            onChange={this.handleHomepageChange} />
                     </div>
 
                     <div className="ProfileInfoPane-infoPair">
@@ -187,19 +164,7 @@ export class ProfileInfoPane extends Component {
                             id="ProfileInfoPane-dateStyle"
                             className="ProfileInfoPane-homepage ProfileInfoPane-input body"
                             value={this.props.dateStyle === 'ddmm' ? 'day/month/year' : 'month/day/year'}
-                            onChange={e => {
-                                let action;
-                                const value = e.target.value;
-                                if (value === 'month/day/year') {
-                                    action = setProfileDateStyle('mmdd');
-                                } else if (value === 'day/month/year') {
-                                    action = setProfileDateStyle('ddmm');
-                                } else {
-                                    throw new Error('Unrecognized datestyle.');
-                                }
-
-                                store.dispatch(action);
-                            }}>
+                            onChange={this.handleDateStyleChange}>
                             <option>month/day/year</option>
                             <option>day/month/year</option>
                         </select>
@@ -216,11 +181,7 @@ export class ProfileInfoPane extends Component {
                             id="ProfileInfoPane-timeStyle"
                             className="ProfileInfoPane-homepage ProfileInfoPane-input body"
                             value={this.props.timeStyle}
-                            onChange={e => {
-                                const action = setProfileTimeStyle(
-                                    e.target.value);
-                                store.dispatch(action);
-                            }}>
+                            onChange={this.handleTimeStyleChange}>
                             <option>12h</option>
                             <option>24h</option>
                         </select>
@@ -230,20 +191,7 @@ export class ProfileInfoPane extends Component {
                 <button
                     className={"ProfileInfoPane-confirmEditAccount wideButton" +
                         (this.props.changed ? "" : " disabled")}
-                    onClick={() => {
-                        post.profileUpdate({
-                            dateCreatedVisible: this.props.dateCreatedVisible,
-                            name: this.props.name || '',
-                            nameVisible: this.props.nameVisible,
-                            description: this.props.description || '',
-                            email: this.props.email || '',
-                            emailVisible: this.props.emailVisible,
-                            homepage: this.props.homepage || '',
-                            dateStyle: this.props.dateStyle,
-                            timeStyle: this.props.timeStyle,
-                            csrfToken: this.props.csrfToken,
-                        });
-                    }}>
+                    onClick={this.updateProfile}>
                     <span>Update Profile</span>
                 </button>
 
@@ -262,6 +210,68 @@ export class ProfileInfoPane extends Component {
         delete rollback.csrfToken;
 
         store.dispatch(setProfileRollback(rollback));
+    }
+
+    handleDateCreatedChange(e) {
+        store.dispatch(setProfileDateCreatedVisible(e.target.checked));
+    }
+
+    handleNameChange(e) {
+        store.dispatch(setProfileName(e.target.value));
+    }
+
+    handleNameVisibleChange(e) {
+        store.dispatch(setProfileNameVisible(e.target.checked));
+    }
+
+    handleDescriptionChange(e) {
+        store.dispatch(setProfileDescription(e.target.value));
+    }
+
+    handleEmailChange(e) {
+        store.dispatch(setProfileEmail(e.target.value));
+    }
+
+    handleEmailVisibleChange(e) {
+        store.dispatch(setProfileEmailVisible(e.target.checked));
+    }
+
+    handleHomepageChange(e) {
+        store.dispatch(setProfileHomepage(e.target.value));
+    }
+
+    handleDateStyleChange(e) {
+        let dateStyle;
+        const value = e.target.value;
+        if (value === 'month/day/year') {
+            dateStyle = 'mmdd';
+        } else if (value === 'day/month/year') {
+            dateStyle = 'ddmm';
+        } else {
+            throw new Error('Unrecognized datestyle.');
+        }
+
+        store.dispatch(setProfileDateStyle(dateStyle));
+    }
+
+    handleTimeStyleChange(e) {
+        store.dispatch(setProfileTimeStyle(e.target.value));
+    }
+
+    updateProfile() {
+        const profile = {
+            dateCreatedVisible: this.props.dateCreatedVisible,
+            name: this.props.name || '',
+            nameVisible: this.props.nameVisible,
+            description: this.props.description || '',
+            email: this.props.email || '',
+            emailVisible: this.props.emailVisible,
+            homepage: this.props.homepage || '',
+            dateStyle: this.props.dateStyle,
+            timeStyle: this.props.timeStyle,
+        };
+
+        accountUpdate(profile, this.props.csrfToken);
     }
 }
 

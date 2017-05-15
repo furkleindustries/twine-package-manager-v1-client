@@ -1,3 +1,4 @@
+/* modules */
 import modalClose from './close';
 
 export default function closeListener(e) {

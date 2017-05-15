@@ -1,9 +1,9 @@
-// redux
+/* redux */
 import store from '../store';
 import { setCSRFToken, } from '../appActions';
 import { setLoginMessage, } from '../panes/login/loginActions';
 
-//  modules
+/* modules */
 import * as post from './database/post';
 import loginRender from './loginRender';
 

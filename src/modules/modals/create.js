@@ -3,7 +3,7 @@ import React from 'react';
 
 // redux
 import store from '../../store';
-import { setModal } from '../../appActions';
+import { setModal, } from '../../appActions';
 
 // modal
 import Modal from '../../components/Modal/Modal';
@@ -18,7 +18,10 @@ export default function create(content) {
     /* setTimeout to queue the change rather than firing it immediately.
      * Should probably switch to getComputedStyle at some point. */
     setTimeout(() => {
-        document.querySelector('.Modal-container').style.opacity = 1;
+        const container = document.querySelector('.Modal-container');
+        if (container && container.style) {
+            container.style.opacity = 1;
+        }
     });
 
     /* Register keydown and click events for closing modal */

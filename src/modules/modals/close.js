@@ -1,13 +1,16 @@
-// redux
+/* redux */
 import store from '../../store';
 import { setModal, } from '../../appActions';
 
-// modules
+/* modules */
 import closeListener from './closeListener';
 
 export default function close() {
     /* TODO: REFACTOR DOCUMENT.QUERYSELECTOR */
-    document.querySelector('.Modal-container').style.opacity = 0;
+    const container = document.querySelector('.Modal-container');
+    if (container && container.style) {
+        container.style.opacity = 0;
+    }
 
     setTimeout(() => {
         location.hash = '';
