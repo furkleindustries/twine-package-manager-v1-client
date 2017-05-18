@@ -146,11 +146,11 @@ export function profileHomepageReducer(previous = '', action) {
 
 export function profileDateStyleReducer(previous = 'mmdd', action) {
     if (action.type === 'setProfileDateStyle') {
-        if (/(mmdd|ddmm)/.test(action.dateStyle)) {
+        if (/^(mmdd|ddmm)$/.test(action.dateStyle)) {
             return action.dateStyle;
         }
     } else if (action.type === 'setProfile') {
-        if (/(mmdd|ddmm)/.test(action.profile.dateStyle)) {
+        if (/^(mmdd|ddmm)$/.test(action.profile.dateStyle)) {
             return action.profile.dateStyle;
         }
     }
@@ -160,11 +160,11 @@ export function profileDateStyleReducer(previous = 'mmdd', action) {
 
 export function profileTimeStyleReducer(previous = '12h', action) {
     if (action.type === 'setProfileTimeStyle') {
-        if (/(12h|24h)/.test(action.timeStyle)) {
+        if (/^(12h|24h)$/.test(action.timeStyle)) {
             return action.timeStyle;
         }
     } else if (action.type === 'setProfile') {
-        if (/(12h|24h)/.test(action.profile.timeStyle)) {
+        if (/^(12h|24h)$/.test(action.profile.timeStyle)) {
             return action.profile.timeStyle;
         }
     }

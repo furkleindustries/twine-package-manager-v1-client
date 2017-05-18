@@ -16,7 +16,7 @@ import * as modalFactories from '../../modules/modals/factories';
 // css
 import './PackageOwned.css';
 
-class PackageOwned extends Component {
+export class PackageOwned extends Component {
     constructor() {
         super();
 

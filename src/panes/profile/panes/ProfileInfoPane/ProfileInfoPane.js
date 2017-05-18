@@ -29,6 +29,11 @@ export class ProfileInfoPane extends Component {
     constructor() {
         super();
 
+        this.getNameVisibleChecked = this.getNameVisibleChecked.bind(this);
+        this.getDateCreatedVisibleChecked =
+            this.getDateCreatedVisibleChecked.bind(this);
+        this.getEmailVisibleChecked = this.getEmailVisibleChecked.bind(this);
+        this.getPrettyDateStyle = this.getPrettyDateStyle.bind(this);
         this.updateProfile = this.updateProfile.bind(this);
     }
 
@@ -79,7 +84,7 @@ export class ProfileInfoPane extends Component {
                             id="ProfileInfoPane-dateCreatedVisible"
                             className="ProfileInfoPane-visibility body"
                             type="checkbox"
-                            checked={this.props.dateCreatedVisible ? "checked" : null}
+                            checked={this.getDateCreatedVisibleChecked}
                             onChange={this.handleDateCreatedChange} />
                     </div>
 
@@ -100,7 +105,7 @@ export class ProfileInfoPane extends Component {
                             id="ProfileInfoPane-nameVisible"
                             className="ProfileInfoPane-visibility body"
                             type="checkbox"
-                            checked={this.props.nameVisible ? "checked" : null}
+                            checked={this.getNameVisibleChecked}
                             onChange={this.handleNameVisibleChange} />
                     </div>
 
@@ -135,7 +140,7 @@ export class ProfileInfoPane extends Component {
                             id="ProfileInfoPane-emailVisible"
                             className="ProfileInfoPane-visibility body"
                             type="checkbox"
-                            checked={this.props.emailVisible ? "checked" : null}
+                            checked={this.getEmailVisibleChecked}
                             onChange={this.handleEmailVisibleChange} />
                     </div>
 
@@ -163,7 +168,7 @@ export class ProfileInfoPane extends Component {
                         <select
                             id="ProfileInfoPane-dateStyle"
                             className="ProfileInfoPane-homepage ProfileInfoPane-input body"
-                            value={this.props.dateStyle === 'ddmm' ? 'day/month/year' : 'month/day/year'}
+                            value={this.getPrettyDateStyle}
                             onChange={this.handleDateStyleChange}>
                             <option>month/day/year</option>
                             <option>day/month/year</option>
@@ -256,6 +261,24 @@ export class ProfileInfoPane extends Component {
 
     handleTimeStyleChange(e) {
         store.dispatch(setProfileTimeStyle(e.target.value));
+    }
+
+    getNameVisibleChecked() {
+        return this.props.nameVisible ? "checked" : null;
+    }
+
+    getDateCreatedVisibleChecked() {
+        return this.props.dateCreatedVisible ? "checked" : null;
+    }
+
+    getEmailVisibleChecked() {
+        return this.props.emailVisible ? "checked" : null;
+    }
+
+    getPrettyDateStyle() {
+        return this.props.dateStyle === 'ddmm' ?
+            'day/month/year' :
+            'month/day/year';
     }
 
     updateProfile() {

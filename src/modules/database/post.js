@@ -15,6 +15,23 @@ export async function accountCreation(name, password, email) {
     });
 }
 
+export async function accountUpdate(profile, csrfToken) {
+    const formData = new FormData();
+    Object.keys(profile).forEach(name => {
+        formData.append(name, profile[name]);
+    });
+
+    formData.append('csrfToken', csrfToken);
+
+    return await fetch('https://furkleindustries.com/twinepm/userdata/', {
+        method: 'POST',
+        credentials: 'include',
+        body: formData,
+    }).then(response => {
+        return response.json();
+    });
+}
+
 export async function login(username, password) {
     const formData = new FormData();
     formData.append('username', username);
@@ -22,6 +39,7 @@ export async function login(username, password) {
 
     return await fetch('https://furkleindustries.com/twinepm/login/', {
         method: 'POST',
+        credentials: 'include',
         body: formData,
     }).then(response => {
         return response.json();
@@ -32,7 +50,8 @@ export async function logout(csrfToken) {
     const formData = new FormData();
     formData.append('csrfToken', csrfToken);
 
-    return await fetch('https://furkleindustries.com/twinepm/login/logout.php', {
+    const url = 'https://furkleindustries.com/twinepm/login/logout.php';
+    return await fetch(url, {
         method: 'POST',
         credentials: 'include',
         body: formData,
@@ -101,23 +120,6 @@ export async function packagePublish(id, published, csrfToken) {
     formData.append('csrfToken', csrfToken);
 
     return await fetch('https://furkleindustries.com/twinepm/package/', {
-        method: 'POST',
-        credentials: 'include',
-        body: formData,
-    }).then(response => {
-        return response.json();
-    });
-}
-
-export async function accountUpdate(profile, csrfToken) {
-    const formData = new FormData();
-    Object.keys(profile).forEach(name => {
-        formData.append(name, profile[name]);
-    });
-
-    formData.append('csrfToken', csrfToken);
-
-    return await fetch('https://furkleindustries.com/twinepm/userdata/', {
         method: 'POST',
         credentials: 'include',
         body: formData,

@@ -15,7 +15,7 @@ jest.mock('../panes/login/loginActions');
 import { setLoginMessage, } from '../panes/login/loginActions';
 setLoginMessage.mockImplementation(value => {
     return {
-        loginMessage: value,
+        message: value,
         type: 'setLoginMessage',
     };
 });
@@ -89,8 +89,50 @@ describe('login unit tests', () => {
         ]);
     });
 
-    it('calls relevant methods when login is unsuccessful', () => {
+    it('calls relevant methods when login is unsuccessful', async () => {
+        jest.clearAllTimers();
 
+        jest.useFakeTimers();
+
+        post.login.mockImplementationOnce(() => {
+            return {
+                status: 400,
+            };
+        });
+
+        await login('user', 'pass');
+
+        const message = 'Unknown error.';
+
+        expect(setLoginMessage.mock.calls.length).toBe(1);
+        expect(setLoginMessage.mock.calls[0]).toEqual([message]);
+
+        expect(store.dispatch.mock.calls.length).toBe(1);
+        expect(store.dispatch.mock.calls[0]).toEqual([
+            {
+                message,
+                type: 'setLoginMessage',
+            },
+        ]);
+
+        store.getState.mockImplementationOnce(() => {
+            return {
+                loginMessage: message,
+            };
+        });
+
+        jest.runAllTimers();
+
+        expect(setLoginMessage.mock.calls.length).toBe(2);
+        expect(setLoginMessage.mock.calls[1]).toEqual(['']);
+
+        expect(store.dispatch.mock.calls.length).toBe(2);
+        expect(store.dispatch.mock.calls[1]).toEqual([
+            {
+                message: '',
+                type: 'setLoginMessage',
+            },
+        ]);
     });
 
     it('logs exceptions received from post.login', () => {
@@ -105,5 +147,43 @@ describe('login unit tests', () => {
 
         expect(console.log.mock.calls.length).toEqual(1);
         expect(console.log.mock.calls[0]).toEqual([exception]);
+    });
+
+    it('sets the loginMessage to the error property received in the response', async () => {
+        post.login.mockImplementationOnce(() => {
+            return {
+                status: 400,
+                error: 'test error',
+            };
+        });
+
+        await login('user', 'pass');
+
+        expect(setLoginMessage.mock.calls[0]).toEqual(['test error']);
+    });
+
+    it('does not set loginMessage if the message has changed since the timeout was created', async () => {
+        jest.clearAllTimers();
+
+        jest.useFakeTimers();
+
+        post.login.mockImplementationOnce(() => {
+            return {
+                status: 400,
+                error: 'foo',
+            };
+        });
+
+        await login('username', 'password');
+
+        store.getState.mockImplementationOnce(() => {
+            return {
+                loginMessage: 'not foo',
+            };
+        });
+
+        jest.runAllTimers();
+
+        expect(store.dispatch.mock.calls.length).toBe(1);
     });
 });

@@ -1,7 +1,7 @@
-// react
+/* react */
 import { browserHistory, } from 'react-router';
 
-// redux
+/* redux */
 import store from '../store';
 import {
     setAppPanes,
@@ -19,14 +19,20 @@ import {
     setProfileRollback,
 } from '../panes/profile/profileActions'
 
-// modules
+/* modules */
 import deepCopy from './deepCopy';
 import * as get from './database/get';
 
 export default async function loginRender(antiCSRFToken, gotoProfile) {
     const baseUrl = process.env.PUBLIC_URL;
 
-    const profileObj = await get.userdata(antiCSRFToken);
+    let profileObj;
+    try {
+        profileObj = await get.userdata(antiCSRFToken);
+    } catch (e) {
+        console.log(e);
+        return;
+    }
 
     if (profileObj.error || profileObj.status !== 200) {
         if (profileObj.errorCode === 'no_access_cookie' ||
@@ -66,7 +72,7 @@ export default async function loginRender(antiCSRFToken, gotoProfile) {
     store.dispatch(setPassword(''));
 
     /* Redirect to the profile page. */
-    if (gotoProfile) {
+    if (gotoProfile === true || gotoProfile === 'gotoProfile') {
         store.dispatch(setAppSelectedPane('profile'));
         browserHistory.push(`${baseUrl}/profile`);
     }

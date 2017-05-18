@@ -1,7 +1,7 @@
-// react
+/* react */
 import { browserHistory, } from 'react-router';
 
-// redux
+/* redux */
 import store from '../store';
 import {
     setAppPanes,
@@ -12,7 +12,7 @@ import {
 
 import { setProfile, } from '../panes/profile/profileActions';
 
-// modules
+/* modules */
 import deepCopy from './deepCopy';
 import * as post from './database/post';
 
@@ -22,6 +22,7 @@ export default function logout(antiCSRFToken, skipServer) {
             post.logout(antiCSRFToken);
         } catch (e) {
             console.log(e);
+            return;
         }
     }
 
@@ -43,7 +44,7 @@ export default function logout(antiCSRFToken, skipServer) {
     if (state.appSelectedPane === 'profile') {
         store.dispatch(setAppSelectedPane('login'));
 
-        // redirect to the login page
+        /* redirect to the login page */
         browserHistory.push(`${process.env.PUBLIC_URL}/login`);
     }
 }

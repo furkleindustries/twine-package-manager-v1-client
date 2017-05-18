@@ -1,16 +1,16 @@
-// react
+/* react */
 import React, { Component, } from 'react';
 
-// redux
+/* redux */
 import { connect, } from 'react-redux';
 import store from '../../../../store';
 
-// modules
-import changePassword from '../../../../modules/changePassword';
+/* modules */
+/* import changePassword from '../../../../modules/changePassword'; */
 import * as modalFactories from '../../../../modules/modals/factories';
 import logout from '../../../../modules/logout';
 
-// css
+/* css */
 import './ProfileAccountPane.css';
 
 export class ProfileAccountPane extends Component {
@@ -21,15 +21,13 @@ export class ProfileAccountPane extends Component {
 					Account Options
 				</h1>
 
-                <button
-                    className="Profile-logout wideButton"
-                    onClick={changePassword}>
+                <button className="Profile-logout wideButton">
                     <span>Change Password</span>
                 </button>
 
                 <button
                     className="ProfileInfoPane-deleteAccount wideButton"
-                    onClick={modalFactories.accountDelete}>
+                    onClick={modalFactories.createDeleteAccountModal}>
                     <span>Delete Account</span>
                 </button>
 

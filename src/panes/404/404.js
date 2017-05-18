@@ -1,10 +1,14 @@
-// react
+/* react */
 import React, { Component, } from 'react';
 
-// css
+/* redux */
+import store from '../../store';
+import { setSideBarVisible, } from '../../appActions';
+
+/* css */
 import './404.css';
 
-export default class FourOhFourPane extends Component {
+export class FourOhFourPane extends Component {
     render() {
         return (
             <div className="FourOhFour paneContainer">
@@ -12,4 +16,10 @@ export default class FourOhFourPane extends Component {
             </div>
         );
     }
+
+    componentDidMount() {
+        store.dispatch(setSideBarVisible(false));
+    }
 }
+
+export default FourOhFourPane;

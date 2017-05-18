@@ -1,17 +1,21 @@
-// react
+/* react */
 import React, { Component, } from 'react';
 
-// css
+/* css */
 import './ProfileTransfersPane.css';
 
-export default class ProfileTransfersPane extends Component {
+export class ProfileTransfersPane extends Component {
 	render() {
 		return (
 			<div className="ProfileTransfersPane">
 				<h1 className="header">
 					Transfer Information
+
+                    Coming soon!
 				</h1>
 			</div>
 		);
 	}
 }
+
+export default ProfileTransfersPane;

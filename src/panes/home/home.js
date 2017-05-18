@@ -1,15 +1,15 @@
-// react
+/* react */
 import React, { Component, } from 'react';
 import { Link, } from 'react-router';
 
-// redux
+/* redux */
 import store from '../../store';
 import {
 	setAppSelectedPane,
 	setSideBarVisible,
 } from '../../appActions';
 
-//css
+/* css */
 import './home.css';
 
 /* https://c2.staticflickr.com/8/7319/8730255464_529c6aea39_z.jpg */
@@ -17,7 +17,7 @@ import maze from '../../images/maze_small.jpg';
 /* https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/PSM_V87_D113_Arrangement_of_atoms_in_a_rock_salt_crystal.png/665px-PSM_V87_D113_Arrangement_of_atoms_in_a_rock_salt_crystal.png */
 import atoms from '../../images/atoms_small.jpg';
 
-class HomePane extends Component {
+export class HomePane extends Component {
 	render() {
 		const baseUrl = process.env.PUBLIC_URL;
 
@@ -49,7 +49,7 @@ class HomePane extends Component {
 					<Link
 						id="about"
 						to={baseUrl + "/about"}
-						onClick={e => store.dispatch(setAppSelectedPane(e.target.id))}>
+						onClick={this.redirect}>
 						About
 					</Link>
 					
@@ -58,7 +58,7 @@ class HomePane extends Component {
 					<Link
 						id="login"
 						to={baseUrl + "/login"}
-						onClick={e => store.dispatch(setAppSelectedPane(e.target.id))}>
+						onClick={this.redirect}>
 						Login
 					</Link>
 					
@@ -74,6 +74,10 @@ class HomePane extends Component {
 
     componentDidMount() {
         store.dispatch(setSideBarVisible(false));
+    }
+
+    redirect(e) {
+    	store.dispatch(setAppSelectedPane(e.target.id));
     }
 }
 

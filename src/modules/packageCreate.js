@@ -1,4 +1,4 @@
-// redux
+/* redux */
 import store from '../store';
 
 import {
@@ -9,7 +9,7 @@ import {
     setPackageCreatingMessage,
 } from '../modals/PackageCreateModal/PackageCreateModalActions';
 
-// modules
+/* modules */
 import * as post from './database/post';
 
 export default async function packageCreate(pkg, csrfToken) {
@@ -21,6 +21,7 @@ export default async function packageCreate(pkg, csrfToken) {
     }
 
     let message = '';
+    let succeeded = false;
     if (!responseObj) {
         message = 'There was an error in receiving or deserializing the ' +
             'server response.';
@@ -29,10 +30,7 @@ export default async function packageCreate(pkg, csrfToken) {
     } else if (responseObj.status !== 200) {
         message = 'The request did not succeed, but there was no ' +
             'message received.';
-    }
-
-    let succeeded = false;
-    if (!message) {
+    } else {
         succeeded = true;
         message = 'Package created successfully.';
 
@@ -50,7 +48,9 @@ export default async function packageCreate(pkg, csrfToken) {
     store.dispatch(setPackageCreatingMessage(message));
 
     setTimeout(() => {
-        store.dispatch(setPackageCreatingMessage(''));
+        if (store.getState().packageCreatingMessage === message) {
+            store.dispatch(setPackageCreatingMessage(''));
+        }
     }, 6000);
 
     return succeeded;

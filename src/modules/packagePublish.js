@@ -3,6 +3,7 @@ import store from '../store';
 import {
     setProfilePackages,
 } from '../panes/profile/profileActions';
+
 import {
     setPackagePublishingMessage,
 } from '../components/PackageOwned/PackageOwnedActions';
@@ -19,6 +20,7 @@ export default async function packagePublish(id, published, csrfToken) {
     }
 
     let message = '';
+    let succeeded = false;
     if (!responseObj) {
         message = 'There was an error in receiving or deserializing the ' +
             'server response.';
@@ -27,12 +29,25 @@ export default async function packagePublish(id, published, csrfToken) {
     } else if (responseObj.status !== 200) {
         message = 'The request did not succeed, but there was no ' +
             'message received.';
-    }
-
-    let succeeded = false;
-    if (!message) {
+    } else {
         succeeded = true;
-        message = 'Package publish state changed successfully.';
+        message = 'Package publish state updated successfully.';
+
+        let packages = store.getState().profile.packages;
+        if (!packages) {
+            console.log('Packages cannot be found in state.');
+            return;
+        }
+
+        packages = packages.map(pkg => {
+            if (pkg.id === id) {
+                pkg.published = published;
+            }
+
+            return pkg;
+        });
+
+        store.dispatch(setProfilePackages(packages));
     }
 
     store.dispatch(setPackagePublishingMessage(message));

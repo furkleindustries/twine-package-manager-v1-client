@@ -35,11 +35,15 @@ describe('PackageEditModal unit tests', () => {
         window.localStorage = {};
 
         store.dispatch = dispatch;
+
         const component = ReactTestUtils.renderIntoDocument(rootComponent);
+        
         modalFactories.packageEdit();
+        
         const find = ReactTestUtils.scryRenderedComponentsWithType(
             component,
             PackageEditModal);
+        
         expect(find.length).toEqual(1);
     });
 

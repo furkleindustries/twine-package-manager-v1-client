@@ -1,11 +1,11 @@
-// react
+/* react */
 import React, { Component, } from 'react';
 
-// redux
+/* redux */
 import store from '../../store';
 import { setSideBarVisible, } from '../../appActions';
 
-// css
+/* css */
 import './forum.css';
 
 let forumPath = '';

@@ -1,4 +1,4 @@
-// redux
+/* redux */
 import store from '../store';
 import {
     setProfilePackages,
@@ -6,20 +6,21 @@ import {
 
 import {
     setPackageDeletingMessage,
-} from '../modals/PackageCreateModal/PackageCreateModalActions';
+} from '../components/PackageOwned/PackageOwnedActions';
 
-// modules
+/* modules */
 import * as _delete from './database/delete';
 
 export default async function packageDelete(id, csrfToken) {
     let responseObj;
     try {
-        responseObj = await _delete.package(id, csrfToken);
+        responseObj = await _delete._package(id, csrfToken);
     } catch (e) {
         console.log(e);
     }
 
     let message = '';
+    let succeeded = false;
     if (!responseObj) {
         message = 'There was an error in receiving or deserializing the ' +
             'server response.';
@@ -28,10 +29,7 @@ export default async function packageDelete(id, csrfToken) {
     } else if (responseObj.status !== 200) {
         message = 'The request did not succeed, but there was no ' +
             'message received.';
-    }
-
-    let succeeded = false;
-    if (!message) {
+    } else {
         succeeded = true;
         message = 'Package deleted successfully.';
 
@@ -59,7 +57,9 @@ export default async function packageDelete(id, csrfToken) {
     store.dispatch(setPackageDeletingMessage(message));
 
     setTimeout(() => {
-        store.dispatch(setPackageDeletingMessage(''));
+        if (store.getState().packageDeletingMessage === message) {
+            store.dispatch(setPackageDeletingMessage(''));
+        }
     }, 6000);
 
     return succeeded;

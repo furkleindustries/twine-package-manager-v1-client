@@ -354,6 +354,15 @@ describe('search reducer unit tests', () => {
         ).toEqual('');
     });
 
+    it('searchFilterTargetsReducer using type setSearchOptions should reject if tgts is not an array-like object', () => {
+        expect(
+            reducers.searchFilterTargetsReducer('', {
+                type: 'setSearchOptions',
+                searchOptions: { filterTargets: 'not ALO', },
+            })
+        ).toBe('');
+    });
+
     it('should return the initial searchFilterStyle state', () => {
         expect(reducers.searchFilterStyleReducer(undefined, {}))
         	.toEqual('metaphone/contains');

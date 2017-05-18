@@ -1,47 +1,56 @@
 export default function unixTimeToSettingsTime(unixTimeInMs, dateStyle, timeStyle) {
-	const date = new Date(unixTimeInMs);
-	let dateStr = '';
-	if (date) {
-		if (dateStyle === 'ddmm') {
-			dateStr = date.getDate() + '/' +
-				(date.getMonth() + 1) + '/' +
-				date.getFullYear() + ' ';
-		} else {
-			dateStr = (date.getMonth() + 1) + '/' +
-				date.getDate() + '/' +
-				date.getFullYear() + ' ';
-		}
+    const date = new Date(unixTimeInMs);
 
-		let hours = date.getHours();
-		let amPM = '';
-		if (timeStyle === '12h') {
-			if (hours === 0) {
-				hours = 12;
-			}
+    /* isNaN on a function result seems like the only way to assert
+     * invalidity */ 
+    if (Number.isNaN(date.getDay())) {
+        return '';
+    }
 
-			if (hours < 12) {
-				amPM = 'AM';
-			} else if (hours > 12) {
-				hours -= 12;
-				amPM = 'PM';
-			}
-		} else {
-			if (hours === 0) {
-				hours = '00';
-			}
-		}
+    let dateStr = '';
 
-		hours = (String)(hours);
+    if (dateStyle === 'ddmm') {
+        dateStr = date.getDate() + '/' +
+            (date.getMonth() + 1) + '/' +
+            date.getFullYear() + ' ';
+    } else if (dateStyle === 'mmdd') {
+        dateStr = (date.getMonth() + 1) + '/' +
+            date.getDate() + '/' +
+            date.getFullYear() + ' ';
+    } else {
+        return '';
+    }
 
-		let minutes = date.getMinutes();
-		if (minutes < 10) {
-			minutes = '0' + minutes;
-		} else {
-			minutes = (String)(minutes);
-		}
+    let hours = date.getHours();
+    let amPM = '';
+    if (timeStyle === '12h') {
+        if (hours === 0) {
+            hours = 12;
+            amPM = 'AM';
+        } else if (hours < 12) {
+            amPM = 'AM';
+        } else {
+            hours -= 12;
+            amPM = 'PM';
+        }
+    } else if (timeStyle === '24h') {
+        if (hours === 0) {
+            hours = '00';
+        }
+    } else {
+        return '';
+    }
 
-		dateStr += hours + ':' + minutes + amPM;
-	}
+    hours = (String)(hours);
 
-	return dateStr;
+    let minutes = date.getMinutes();
+    if (minutes < 10) {
+        minutes = '0' + minutes;
+    } else {
+        minutes = (String)(minutes);
+    }
+
+    dateStr += hours + ':' + minutes + amPM;
+
+    return dateStr;
 }

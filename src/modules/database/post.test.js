@@ -69,6 +69,7 @@ describe('database post unit tests', () => {
         formData.append('password', 'testpassword2');
         const obj = {
             method: 'POST',
+            credentials: 'include',
             body: formData,
         };
 

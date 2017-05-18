@@ -1,14 +1,15 @@
-// redux
+/* redux */
 import store from '../store';
 import {
     setProfilePackages,
-} from '../components/PackageOwned/PackageOwnedActions';
+} from '../panes/profile/profileActions';
+
 import {
     setPackageEditingDateModified,
     setPackageEditingMessage,
-} from '../modals/PackageCreateModal/PackageCreateModalActions';
+} from '../components/PackageOwned/PackageOwnedActions';
 
-// modules
+/* modules */
 import * as post from './database/post';
 
 export default async function packageUpdate(pkg, csrfToken) {
@@ -20,6 +21,7 @@ export default async function packageUpdate(pkg, csrfToken) {
     }
 
     let message = '';
+    let succeeded = false;
     if (!responseObj) {
         message = 'There was an error in receiving or deserializing the ' +
             'server response.';
@@ -28,31 +30,37 @@ export default async function packageUpdate(pkg, csrfToken) {
     } else if (responseObj.status !== 200) {
         message = 'The request did not succeed, but there was no ' +
             'message received.';
-    }
-
-    let succeeded = false;
-    if (!message) {
+    } else {
         succeeded = true;
-        message = 'Package edited successfully.';
-    }
+        message = 'Package updated successfully.';
 
-    const dateModified = responseObj.dateModified;
-    store.dispatch(setPackageEditingDateModified(dateModified));
 
-    const packages = store.getState().profile.packages.map(oldPackage => {
-        if (oldPackage.id === pkg.id) {
-            return pkg;
-        } else {
-            return oldPackage;
+        let packages = store.getState().profile.packages;
+        if (!packages) {
+            console.log('Could not find packages in state.');
+            return;
         }
-    });
+        
+        const dateModified = responseObj.dateModified;
+        store.dispatch(setPackageEditingDateModified(dateModified));
+        
+        packages = packages.map(oldPackage => {
+            if (oldPackage.id === pkg.id) {
+                return pkg;
+            } else {
+                return oldPackage;
+            }
+        });
 
-    store.dispatch(setProfilePackages(packages));
+        store.dispatch(setProfilePackages(packages));
+    }
 
     store.dispatch(setPackageEditingMessage(message));
 
     setTimeout(() => {
-        store.dispatch(setPackageEditingMessage(''));
+        if (store.getState().packageEditingMessage === message) {
+            store.dispatch(setPackageEditingMessage(''));
+        }
     }, 6000);
 
     return succeeded;

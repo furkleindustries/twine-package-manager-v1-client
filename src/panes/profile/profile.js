@@ -1,12 +1,12 @@
-// react
+/* react */
 import React, { Component, } from 'react';
 import { browserHistory, } from 'react-router';
 
-// redux
+/* redux */
 import { connect, } from 'react-redux';
 import store from '../../store';
 
-// actions
+/* actions */
 import {
     setAppSelectedPane,
     setSideBarVisible,
@@ -14,16 +14,16 @@ import {
     setSideBarSelectedPane,
 } from '../../appActions';
 
-// components
+/* components */
 import PaneControl from '../../components/PaneControl/PaneControl';
 
-// modules
+/* modules */
 import * as modalFactories from '../../modules/modals/factories';
 
-// css
+/* css */
 import './profile.css';
 
-// sidebar pane metadata
+/* sidebar pane metadata */
 import panesSourceProfile from '../../panesSourceProfile'; 
 
 const baseUrl = process.env.PUBLIC_URL;
