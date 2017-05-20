@@ -9,3 +9,8 @@ export async function userdata(antiCSRFToken) {
         return response.json();
     });
 }
+
+export async function search(paramStr, antiCSRFToken) {
+    const url = `https://furkleindustries.com/twinepm/search/${paramStr}`;
+    return await fetch(url).then(response => response.json());
+}

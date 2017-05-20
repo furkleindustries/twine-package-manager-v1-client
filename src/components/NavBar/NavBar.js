@@ -22,7 +22,7 @@ export class NavBar extends Component {
 
 		return (
 			<div className={"NavBar" +
-				(this.props.class ? " " + this.props.class : "") +
+				(this.props.class ? ` ${this.props.class}` : "") +
 				(this.props.visible ? "" : " hidden")}>
 				{list}
 			</div>

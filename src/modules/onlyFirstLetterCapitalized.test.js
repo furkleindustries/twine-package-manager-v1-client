@@ -1,7 +1,3 @@
-export default function capitalizeFirstLetter(str) {
-    return str[0].toUpperCase() + str.slice(1).toLowerCase();
-}
-
 import onlyFirstLetterCapitalized from './onlyFirstLetterCapitalized';
 
 describe('onlyFirstLetterCapitalized unit tests', () => {
@@ -18,5 +14,10 @@ describe('onlyFirstLetterCapitalized unit tests', () => {
     it('tests that a sentence with random capitalization is correctly transformed', () => {
         const str = 'fdkjADFDFjkdlsSfgcvDD';
         expect(onlyFirstLetterCapitalized(str)).toBe('Fdkjadfdfjkdlssfgcvdd');
+    });
+
+    it('returns an empty string when a non-string value is provided', () => {
+        const notStr = 134;
+        expect(onlyFirstLetterCapitalized(notStr)).toBe('');
     });
 });

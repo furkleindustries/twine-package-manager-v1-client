@@ -3,7 +3,9 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
+    <meta name="theme-color" content="red">
+    <link rel="shortcut icon" sizes="192x192" href="%PUBLIC_URL%/icon.png">
+    <link rel="manifest" href="manifest.json">
     <!--
       Notice the use of %PUBLIC_URL% in the tag above.
       It will be replaced with the URL of the `public` folder during the build.
@@ -17,6 +19,11 @@
   </head>
   <body>
     <div id="root"></div>
+
+    <noscript>
+      The TwinePM client requires Javascript to operate.
+      Please enable Javascript to continue.
+    </noscript>
     <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.
@@ -27,5 +34,17 @@
       To begin the development, run `npm start`.
       To create a production bundle, use `npm run build`.
     -->
+
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('service-worker.js')
+          .then(reg => {
+            console.log('Service worker registered.');
+          }).catch(err => {
+            console.log('Registering service worker failed: ' + err +
+                '.');
+          });
+      }
+    </script>
   </body>
 </html>

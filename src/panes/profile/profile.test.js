@@ -4,6 +4,9 @@ import ReactTestUtils from 'react-dom/test-utils';
 import { browserHistory, } from 'react-router';
 const push = browserHistory.push;
 
+/* enzyme */
+import { shallow, mount, } from 'enzyme';
+
 /* redux */
 import store from '../../store';
 const dispatch = store.dispatch;
@@ -16,9 +19,6 @@ const actions = {
     setSideBarPanes: actionsUnderTest.setSideBarPanes,
     setSideBarSelectedPane: actionsUnderTest.setSideBarSelectedPane,
 };
-
-/* enzyme */
-import { shallow, mount, } from 'enzyme';
 
 /* modules */
 jest.mock('../../modules/modals/factories');
