@@ -1,6 +1,3 @@
-/* node modules */
-import url from 'url';
-
 /* metadata for each app pane */
 import panesSourceApp from './panesSourceApp';
 
@@ -26,7 +23,6 @@ if (isRunningNodeJs()) {
 }
 
 const startPane = pathname.slice(pathname.lastIndexOf('/') + 1) || 'home';
-
 export function appSelectedPaneReducer(previous = startPane, action) {
     if (action.type === 'setAppSelectedPane') {
         if (action.selectedPane && typeof action.selectedPane === 'string') {

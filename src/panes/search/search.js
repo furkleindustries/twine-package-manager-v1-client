@@ -607,8 +607,6 @@ export class SearchPane extends Component {
         ];
 
         store.dispatch(setSearchVersionRange(arr));
-
-        this.serializeSearchOptions();
     }
 
     search() {
