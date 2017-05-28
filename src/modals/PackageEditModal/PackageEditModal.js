@@ -1,12 +1,8 @@
-import 'whatwg-fetch';
-
-// react
+/* react */
 import React, { Component, } from 'react';
 
-// redux
+/* redux */
 import { connect, } from 'react-redux';
-import store from '../../store';
-
 import {
     setPackageEditingName,
     setPackageEditingType,
@@ -20,22 +16,33 @@ import {
     setPackageEditingNewOwner,
 } from '../../components/PackageOwned/PackageOwnedActions';
 
-// components
+/* components */
 import HideableMenuItem from '../../components/HideableMenuItem/HideableMenuItem';
 
-// modules
+/* modules */
 import unixTimeToSettingsTime from '../../modules/unixTimeToSettingsTime';
 import modalClose from '../../modules/modals/close';
 import onlyFirstLetterCapitalized from '../../modules/onlyFirstLetterCapitalized';
 import packageTransferOwnership from '../../modules/packageTransferOwnership';
 import packageUpdate from '../../modules/packageUpdate';
 
-// css
-import './PackageEditModal.css';
+/* css */
+import css from './PackageEditModal.css';
 
 export class PackageEditModal extends Component {
     constructor() {
         super();
+
+        this.handleNewOwnerChange = this.handleNewOwnerChange.bind(this);
+        this.handleNameChange = this.handleNameChange.bind(this);
+        this.handleTypeChange = this.handleTypeChange.bind(this);
+        this.handleVersionChange = this.handleVersionChange.bind(this);
+        this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
+        this.handleHomepageChange = this.handleHomepageChange.bind(this);
+        this.handleJsChange = this.handleJsChange.bind(this);
+        this.handleCssChange = this.handleCssChange.bind(this);
+        this.handleKeywordsChange = this.handleKeywordsChange.bind(this);
+        this.handleTagChange = this.handleTagChange.bind(this);
 
         this.transferOwnership = this.transferOwnership.bind(this);
         this.updatePackage = this.updatePackage.bind(this);
@@ -277,12 +284,14 @@ export class PackageEditModal extends Component {
                 <p className="PackageEditModal-message">
                     {this.props.message}
                 </p>
+
+                <style>{css}</style>
             </div>
         );
     }
 
     handleNewOwnerChange(e) {
-        store.dispatch(setPackageEditingNewOwner(e.target.value));
+        this.props.dispatch(setPackageEditingNewOwner(e.target.value));
     }
 
     transferOwnership() {
@@ -293,41 +302,41 @@ export class PackageEditModal extends Component {
     }
 
     handleNameChange(e) {
-        store.dispatch(setPackageEditingName(e.target.value));
+        this.props.dispatch(setPackageEditingName(e.target.value));
     }
 
     handleTypeChange(e) {
         const value = e.target.value.replace(/ /g, '').toLowerCase();
 
-        store.dispatch(setPackageEditingType(value));
+        this.props.dispatch(setPackageEditingType(value));
     }
 
     handleVersionChange(e) {
-        store.dispatch(setPackageEditingVersion(e.target.value));
+        this.props.dispatch(setPackageEditingVersion(e.target.value));
     }
 
     handleDescriptionChange(e) {
-        store.dispatch(setPackageEditingDescription(e.target.value));
+        this.props.dispatch(setPackageEditingDescription(e.target.value));
     }
 
     handleHomepageChange(e) {
-        store.dispatch(setPackageEditingHomepage(e.target.value));
+        this.props.dispatch(setPackageEditingHomepage(e.target.value));
     }
 
     handleJsChange(e) {
-        store.dispatch(setPackageEditingJs(e.target.value));
+        this.props.dispatch(setPackageEditingJs(e.target.value));
     }
 
     handleCssChange(e) {
-        store.dispatch(setPackageEditingCss(e.target.value));
+        this.props.dispatch(setPackageEditingCss(e.target.value));
     }
 
     handleKeywordsChange(e) {
-        store.dispatch(setPackageEditingKeywords(e.target.value));
+        this.props.dispatch(setPackageEditingKeywords(e.target.value));
     }
 
     handleTagChange(e) {
-        store.dispatch(setPackageEditingTag(e.target.value));
+        this.props.dispatch(setPackageEditingTag(e.target.value));
     }
 
     async updatePackage() {
@@ -351,9 +360,7 @@ export class PackageEditModal extends Component {
     }
 }
 
-function mapStateToProps() {
-    const state = store.getState();
-
+function mapStateToProps(state) {
     return {
         ...state.packageEditing,
         message: state.packageEditingMessage,

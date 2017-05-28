@@ -1,8 +1,8 @@
-// React
+/* React */
 import React, { Component, } from 'react';
 
-// css
-import './HideableMenuItem.css';
+/* css */
+import css from './HideableMenuItem.css';
 
 export default class HideableMenuItem extends Component {
 	constructor(props) {
@@ -36,6 +36,8 @@ export default class HideableMenuItem extends Component {
 				<div className={"HideableMenuItem-container" + (this.state.hidden ? " hidden" : "")}>
 					{this.props.content}
 				</div>
+
+				<style>{css}</style>
 			</div>
 		);
 	}

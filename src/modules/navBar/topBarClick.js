@@ -1,7 +1,7 @@
 /* redux */
-import store from '../../store';
+import getStore from '../../store';
 import { setAppSelectedPane, } from '../../appActions';
 
 export default function topBarClick(e) {
-	store.dispatch(setAppSelectedPane(e.target.id));
+	getStore().dispatch(setAppSelectedPane(e.target.id));
 }

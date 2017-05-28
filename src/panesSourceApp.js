@@ -1,20 +1,21 @@
-// images
+const baseUrl = process.env.PUBLIC_URL;
+
 /* https://upload.wikimedia.org/wikipedia/commons/2/2b/CERN_UA5_-_ppbar_interaction_at_540GeV.jpg */
-import cloudchamber from './images/cloudchamber_small.jpg';
+const cloudchamber = 'static/images/cloudchamber_small.jpg';
 /* https://pixabay.com/en/science-fiction-beijing-building-1989816/ */
-import building from './images/building_small.jpg';
+const building = 'static/images/building_small.jpg';
 /* https://upload.wikimedia.org/wikipedia/commons/9/9f/Hubble%E2%80%99s_modern_art.jpg */
-import hubble from './images/hubble_small.jpg';
+const hubble = 'static/images/hubble_small.jpg';
 /* https://c2.staticflickr.com/8/7319/8730255464_529c6aea39_z.jpg */
-import maze from './images/maze_small.jpg';
+const maze = 'static/images/maze_small.jpg';
 /* https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/PSM_V87_D113_Arrangement_of_atoms_in_a_rock_salt_crystal.png/665px-PSM_V87_D113_Arrangement_of_atoms_in_a_rock_salt_crystal.png */
-import atoms from './images/atoms_small.jpg';
+const atoms = 'static/images/atoms_small.jpg';
 /* https://c1.staticflickr.com/2/1291/4709904302_6a27e8a579_b.jpg */
-import pneumonitis from './images/pneumonitis_small.jpg';
+const pneumonitis = 'static/images/pneumonitis_small.jpg';
 /* https://upload.wikimedia.org/wikipedia/commons/5/56/2006-08-15_-_Road_Trip_-_Day_23_-_United_States_-_California_-_San_Francisco_-_Trolley_Wires_-_Black_4889418922.jpg */
-import wires from './images/wires_small.jpg';
+const wires = 'static/images/wires_small.jpg';
 /* https://pixabay.com/en/motherboard-circuit-diagram-circuit-152501/ */
-import motherboard from './images/motherboard.svg';
+const motherboard = 'static/images/motherboard.svg';
 
 const panes = {
     home: {

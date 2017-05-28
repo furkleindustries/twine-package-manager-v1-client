@@ -1,14 +1,14 @@
-// react
+/* react */
 import React from 'react';
 
-// react-router
+/* react-router */
 import { Router, Route, IndexRoute, browserHistory, } from 'react-router';
 
-// redux
+/* redux */
 import { Provider, } from 'react-redux';
-import store from './store';
+import initStore from './store';
 
-// components
+/* components */
 import App from './App';
 import Home from './panes/home/home';
 import Forum from './panes/forum/forum';
@@ -21,7 +21,7 @@ import FourOhFour from './panes/404/404';
 const baseUrl = process.env.PUBLIC_URL;
 
 const rootComponent = (
-    <Provider store={store}>
+    <Provider store={initStore()}>
         <Router history={browserHistory}>
             <Route path={`${baseUrl}/`} component={App}>
                 <IndexRoute component={Home} />

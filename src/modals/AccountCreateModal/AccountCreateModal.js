@@ -1,27 +1,29 @@
-// react
+/* react */
 import React, { Component } from 'react';
 
-// redux
+/* redux */
 import { connect, } from 'react-redux';
-import store from '../../store';
 import {
     setAccountCreatingName,
     setAccountCreatingPassword,
     setAccountCreatingEmail,
 } from './AccountCreateModalActions';
 
-// modules
+/* modules */
 import accountCreate from '../../modules/accountCreate';
 import modalClose from '../../modules/modals/close';
 
-// css
-import './AccountCreateModal.css';
+/* css */
+import css from './AccountCreateModal.css';
 
 export class AccountCreateModal extends Component {
     constructor() {
         super();
 
         this.handleKeyDown = this.handleKeyDown.bind(this);
+        this.handleNameChange = this.handleNameChange.bind(this);
+        this.handlePasswordChange = this.handlePasswordChange.bind(this);
+        this.handleEmailChange = this.handleEmailChange.bind(this);
         this.doAccountCreate = this.doAccountCreate.bind(this);
     }
 
@@ -90,6 +92,8 @@ export class AccountCreateModal extends Component {
                 <p className="AccountCreateModal-message">
                     {this.props.message}
                 </p>
+
+                <style>{css}</style>
             </div>
         );
     }
@@ -105,15 +109,15 @@ export class AccountCreateModal extends Component {
     }
 
     handleNameChange(e) {
-        store.dispatch(setAccountCreatingName(e.target.value));
+        this.props.dispatch(setAccountCreatingName(e.target.value));
     }
 
     handlePasswordChange(e) {
-        store.dispatch(setAccountCreatingPassword(e.target.value));
+        this.props.dispatch(setAccountCreatingPassword(e.target.value));
     }
 
     handleEmailChange(e) {
-        store.dispatch(setAccountCreatingEmail(e.target.value));
+        this.props.dispatch(setAccountCreatingEmail(e.target.value));
     }
 
     async doAccountCreate() {
@@ -131,9 +135,7 @@ export class AccountCreateModal extends Component {
     }
 }
 
-function mapStateToProps() {
-    const state = store.getState();
-
+function mapStateToProps(state) {
     return {
         name: state.accountCreatingName,
         password: state.accountCreatingPassword,

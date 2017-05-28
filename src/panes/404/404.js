@@ -6,13 +6,14 @@ import store from '../../store';
 import { setSideBarVisible, } from '../../appActions';
 
 /* css */
-import './404.css';
+import css from './404.css';
 
 export class FourOhFourPane extends Component {
     render() {
         return (
             <div className="FourOhFour paneContainer">
                 Sorry, there's nothing here!
+                <style>{css}</style>
             </div>
         );
     }

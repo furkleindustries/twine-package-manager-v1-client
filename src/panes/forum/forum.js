@@ -6,7 +6,7 @@ import store from '../../store';
 import { setSideBarVisible, } from '../../appActions';
 
 /* css */
-import './forum.css';
+import css from './forum.css';
 
 let forumPath = '';
 let intervalID;
@@ -19,6 +19,7 @@ export class ForumPane extends Component {
                     src={'https://furkleindustries.com/twinepm/forum/' +
                         forumPath}
                     ref={iframe => this.iframe = iframe} />
+                <style>{css}</style>
             </div>
         );
     }

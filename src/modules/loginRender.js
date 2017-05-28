@@ -2,7 +2,6 @@
 import { browserHistory, } from 'react-router';
 
 /* redux */
-import store from '../store';
 import {
     setAppPanes,
     setAppSelectedPane,
@@ -23,15 +22,29 @@ import {
 import deepCopy from './deepCopy';
 import * as get from './database/get';
 
-export default async function loginRender(antiCSRFToken, gotoProfile) {
+export default async function loginRender(store, antiCSRFToken, gotoProfile) {
     const baseUrl = process.env.PUBLIC_URL;
 
-    let profileObj;
+    let profileObj = {};
     try {
         profileObj = await get.userdata(antiCSRFToken);
     } catch (e) {
         console.log(e);
-        return;
+
+        if (localStorage.twinepmProfileCache) {
+            try {
+                /* Fake the response with the cached profile. */
+                profileObj.userdata =
+                    JSON.parse(localStorage.twinepmProfileCache);
+                profileObj.status = 200;
+            } catch (e) {
+                console.log('Failed deserializing ' +
+                    'twinepmProfileCache.');
+                return;
+            }
+        } else {
+            return;
+        }
     }
 
     if (profileObj.error || profileObj.status !== 200) {
@@ -61,6 +74,8 @@ export default async function loginRender(antiCSRFToken, gotoProfile) {
     store.dispatch(setAppPanes(panesCopy));
 
     store.dispatch(setProfile(profileObj.userdata));
+    localStorage.twinepmProfileCache =
+        JSON.stringify(store.getState().profile);
 
     const current = deepCopy(store.getState().profile);
     delete current.rollback;

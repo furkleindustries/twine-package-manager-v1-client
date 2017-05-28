@@ -1,7 +1,13 @@
-// metadata for each app pane
-import appPanesSource from './panesSourceApp';
+/* node modules */
+import url from 'url';
 
-export function appPanesReducer(previous = appPanesSource, action) {
+/* metadata for each app pane */
+import panesSourceApp from './panesSourceApp';
+
+/* modules */
+import isRunningNodeJs from './modules/isRunningNodeJs';
+
+export function appPanesReducer(previous = panesSourceApp, action) {
     if (action.type === 'setAppPanes') {
         if (action.panes && typeof action.panes === 'object') {
             return action.panes;
@@ -11,9 +17,15 @@ export function appPanesReducer(previous = appPanesSource, action) {
     return previous;
 }
 
-const startPane =
-    location.pathname.slice(location.pathname.lastIndexOf('/') + 1) ||
-    'home';
+let pathname;
+if (isRunningNodeJs()) {
+    /* TODO: FIX THIS */
+    pathname = '/';
+} else {
+    pathname = location.pathname;
+}
+
+const startPane = pathname.slice(pathname.lastIndexOf('/') + 1) || 'home';
 
 export function appSelectedPaneReducer(previous = startPane, action) {
     if (action.type === 'setAppSelectedPane') {

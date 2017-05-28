@@ -20,7 +20,7 @@ import login from '../../modules/login';
 import * as modalFactories from '../../modules/modals/factories';
 
 /* css */
-import './login.css';
+import css from './login.css';
 
 const baseUrl = process.env.PUBLIC_URL;
 
@@ -85,6 +85,8 @@ export class LoginPane extends Component {
                 <p className="Login-message">
                     {this.props.message}
                 </p>
+
+                <style>{css}</style>
             </div>
         );
     }

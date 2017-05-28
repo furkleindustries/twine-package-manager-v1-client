@@ -2,7 +2,7 @@
 import React, { Component, } from 'react';
 
 /* css */
-import './ProfileTransfersPane.css';
+import css from './ProfileTransfersPane.css';
 
 export class ProfileTransfersPane extends Component {
 	render() {
@@ -13,6 +13,8 @@ export class ProfileTransfersPane extends Component {
 
                     Coming soon!
 				</h1>
+
+				<style>{css}</style>
 			</div>
 		);
 	}

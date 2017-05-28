@@ -21,7 +21,7 @@ import PaneControl from '../../components/PaneControl/PaneControl';
 import * as modalFactories from '../../modules/modals/factories';
 
 /* css */
-import './profile.css';
+import css from './profile.css';
 
 /* sidebar pane metadata */
 import panesSourceProfile from '../../panesSourceProfile'; 
@@ -35,6 +35,7 @@ export class ProfilePane extends Component {
                 <PaneControl
                     panes={panesSourceProfile}
                     selectedPane={this.props.selectedPane || 'info'} />
+                <style>{css}</style>
             </div>
         );
     }

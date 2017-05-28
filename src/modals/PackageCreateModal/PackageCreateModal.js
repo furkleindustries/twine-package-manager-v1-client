@@ -1,11 +1,8 @@
-import 'whatwg-fetch';
-
-// react
+/* react */
 import React, { Component, } from 'react';
 
-// redux
+/* redux */
 import { connect, } from 'react-redux';
-import store from '../../store';
 
 import {
     setPackageCreatingName,
@@ -19,19 +16,28 @@ import {
     setPackageCreatingTag,
 } from './PackageCreateModalActions';
 
-// modules
+/* modules */
 import packageCreate from '../../modules/packageCreate';
 import modalClose from '../../modules/modals/close';
 import onlyFirstLetterCapitalized from '../../modules/onlyFirstLetterCapitalized';
 
-// css
-import './PackageCreateModal.css';
+/* css */
+import css from './PackageCreateModal.css';
 
 export class PackageCreateModal extends Component {
     constructor() {
         super();
 
         this.createPackage = this.createPackage.bind(this);
+        this.handleNameChange = this.handleNameChange.bind(this);
+        this.handleTypeChange = this.handleTypeChange.bind(this);
+        this.handleVersionChange = this.handleVersionChange.bind(this);
+        this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
+        this.handleHomepageChange = this.handleHomepageChange.bind(this);
+        this.handleJsChange = this.handleJsChange.bind(this);
+        this.handleCssChange = this.handleCssChange.bind(this);
+        this.handleKeywordsChange = this.handleKeywordsChange.bind(this);
+        this.handleTagChange = this.handleTagChange.bind(this);
     }
 
     render() {
@@ -211,45 +217,47 @@ export class PackageCreateModal extends Component {
                 <p className="PackageCreateModal-message">
                     {this.props.message}
                 </p>
+
+                <style>{css}</style>
             </div>
         );
     }
 
     handleNameChange(e) {
-        store.dispatch(setPackageCreatingName(e.target.value));
+        this.props.dispatch(setPackageCreatingName(e.target.value));
     }
 
     handleTypeChange(e) {
         const value = e.target.value.replace(/ /g, '').toLowerCase();
-        store.dispatch(setPackageCreatingType(value));
+        this.props.dispatch(setPackageCreatingType(value));
     }
 
     handleVersionChange(e) {
-        store.dispatch(setPackageCreatingVersion(e.target.value));
+        this.props.dispatch(setPackageCreatingVersion(e.target.value));
     }
 
     handleDescriptionChange(e) {
-        store.dispatch(setPackageCreatingDescription(e.target.value));
+        this.props.dispatch(setPackageCreatingDescription(e.target.value));
     }
 
     handleHomepageChange(e) {
-        store.dispatch(setPackageCreatingHomepage(e.target.value));
+        this.props.dispatch(setPackageCreatingHomepage(e.target.value));
     }
 
     handleJsChange(e) {
-        store.dispatch(setPackageCreatingJs(e.target.value));
+        this.props.dispatch(setPackageCreatingJs(e.target.value));
     }
 
     handleCssChange(e) {
-        store.dispatch(setPackageCreatingCss(e.target.value));
+        this.props.dispatch(setPackageCreatingCss(e.target.value));
     }
 
     handleKeywordsChange(e) {
-        store.dispatch(setPackageCreatingKeywords(e.target.value));
+        this.props.dispatch(setPackageCreatingKeywords(e.target.value));
     }
 
     handleTagChange(e) {
-        store.dispatch(setPackageCreatingTag(e.target.value));
+        this.props.dispatch(setPackageCreatingTag(e.target.value));
     }
 
     async createPackage() {
@@ -273,9 +281,7 @@ export class PackageCreateModal extends Component {
     }
 }
 
-function mapStateToProps() {
-    const state = store.getState();
-
+function mapStateToProps(state) {
     return {
         ...state.packageCreating,
         message: state.packageCreatingMessage,

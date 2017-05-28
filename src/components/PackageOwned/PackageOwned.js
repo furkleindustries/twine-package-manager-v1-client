@@ -1,20 +1,18 @@
-/// react
-import React, { Component } from 'react';
+/* react */
+import React, { Component, } from 'react';
 
-// redux
-import store from '../../store';
-
+/* redux */
 import {
     setPackagePublishing,
     setPackageEditing,
     setPackageDeleting,
 } from './PackageOwnedActions';
 
-// modules
+/* modules */
 import * as modalFactories from '../../modules/modals/factories';
 
-// css
-import './PackageOwned.css';
+/* css */
+import css from './PackageOwned.css';
 
 export class PackageOwned extends Component {
     constructor() {
@@ -56,6 +54,8 @@ export class PackageOwned extends Component {
                     onClick={this.makePublishModal}>
                     {this.props.package.published ? "Unpublish" : "Publish"}
                 </button>
+
+                <style>{css}</style>
             </div>
         );
     }
@@ -82,7 +82,7 @@ export class PackageOwned extends Component {
     }
 
     makePublishModal() {
-        store.dispatch(setPackagePublishing({
+        this.props.dispatch(setPackagePublishing({
             id: this.props.package.id,
             published: this.props.package.published,
         }));
@@ -92,13 +92,13 @@ export class PackageOwned extends Component {
     }
 
     makeEditModal() {
-        store.dispatch(setPackageEditing(this.props.package));
+        this.props.dispatch(setPackageEditing(this.props.package));
 
         modalFactories.packageEdit(this.props.package.id);
     }
 
     makeDeleteModal() {
-        store.dispatch(setPackageDeleting({
+        this.props.dispatch(setPackageDeleting({
             id: this.props.package.id,
             name: this.props.package.name,
         }));

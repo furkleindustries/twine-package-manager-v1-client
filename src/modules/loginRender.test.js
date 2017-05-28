@@ -352,6 +352,7 @@ describe('loginRender unit tests', () => {
         await loginRender('test_token');
 
         expect(store.dispatch.mock.calls.length).toBe(0);
+
         expect(console.log.mock.calls.length).toBe(1);
 
         console.log = log;
@@ -370,6 +371,46 @@ describe('loginRender unit tests', () => {
 
         expect(console.log.mock.calls.length).toBe(1);
         expect(console.log.mock.calls[0]).toEqual([exception]);
+
+        console.log = log;
+    });
+
+    it('passes parsed data to the profile if get.userdata throws and localStorage.twinepmProfileCache exists', async () => {
+        const log = console.log;
+        console.log = jest.fn();
+
+        const exception = new Error('oh no!');
+        get.userdata.mockImplementationOnce(() => {
+            throw exception;
+        });
+
+        window.localStorage.twinepmProfileCache = `{"test":"testing"}`;
+
+        await loginRender('test_token');
+
+        expect(setProfile.mock.calls.length).toBe(1);
+        expect(setProfile.mock.calls[0]).toEqual([
+            { test: 'testing', },
+        ]);
+
+        console.log = log;
+    });
+
+    it('logs deserialization failure if get.userdata throws and localStorage.twinepmProfileCache exists but is unparseable', async () => {
+        const log = console.log;
+        console.log = jest.fn();
+
+        const exception = new Error('oh no!');
+        get.userdata.mockImplementationOnce(() => {
+            throw exception;
+        });
+
+        window.localStorage.twinepmProfileCache = `realbadjson`;
+
+        await loginRender('test_token');
+
+        expect(console.log.mock.calls.length).toBe(2);
+        expect(store.dispatch.mock.calls.length).toBe(0);
 
         console.log = log;
     });

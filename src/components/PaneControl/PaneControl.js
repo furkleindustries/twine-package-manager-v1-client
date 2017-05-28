@@ -1,11 +1,11 @@
-// react
-import React, { Component } from 'react';
+/* react */
+import React, { Component, } from 'react';
 
-// components
+/* components */
 import Pane from '../Pane/Pane';
 
-// css
-import './PaneControl.css';
+/* css */
+import css from './PaneControl.css';
 
 export default class PaneControl extends Component {
 	render() {
@@ -22,10 +22,12 @@ export default class PaneControl extends Component {
 			});
 		}
 
+		const className = "PaneControl" +
+				(this.props.class ? ` ${this.props.class}` : "");
 		return (
-			<div className={"PaneControl" +
-				(this.props.class ? ` ${this.props.class}` : "")}>
+			<div className={className}>
 				{list}
+				<style>{css}</style>
 			</div>
 		);
 	}

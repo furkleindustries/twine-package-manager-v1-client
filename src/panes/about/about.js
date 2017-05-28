@@ -12,7 +12,7 @@ import RulesModal from '../../modals/RulesModal/RulesModal.js';
 import create from '../../modules/modals/create';
 
 /* css */
-import './about.css';
+import css from './about.css';
 
 export class AboutPane extends Component {
     render() {
@@ -35,6 +35,8 @@ export class AboutPane extends Component {
                 <p className="About-attribution body">
                     A Furkle Industries production.
                 </p>
+
+                <style>{css}</style>
             </div>
         );
     }

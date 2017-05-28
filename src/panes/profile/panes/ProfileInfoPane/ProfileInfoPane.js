@@ -1,9 +1,8 @@
-// react
+/* react */
 import React, { Component, } from 'react';
 
-// redux
+/* redux */
 import { connect, } from 'react-redux';
-import store from '../../../../store';
 import {
     setProfileRollback,
     setProfileDateCreatedVisible,
@@ -17,13 +16,13 @@ import {
     setProfileTimeStyle,
 } from '../../profileActions';
 
-// modules
+/* modules */
 import unixTimeToSettingsTime from '../../../../modules/unixTimeToSettingsTime';
 import deepCopy from '../../../../modules/deepCopy';
 import accountUpdate from '../../../../modules/accountUpdate';
 
-// css
-import './ProfileInfoPane.css';
+/* css */
+import css from './ProfileInfoPane.css';
 
 export class ProfileInfoPane extends Component {
     constructor() {
@@ -34,6 +33,18 @@ export class ProfileInfoPane extends Component {
             this.getDateCreatedVisibleChecked.bind(this);
         this.getEmailVisibleChecked = this.getEmailVisibleChecked.bind(this);
         this.getPrettyDateStyle = this.getPrettyDateStyle.bind(this);
+
+        this.handleDateCreatedVisibleChange =
+            this.handleDateCreatedVisibleChange.bind(this);
+        this.handleNameChange = this.handleNameChange.bind(this);
+        this.handleNameVisibleChange = this.handleNameVisibleChange.bind(this);
+        this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
+        this.handleEmailChange = this.handleEmailChange.bind(this);
+        this.handleEmailVisibleChange =
+            this.handleEmailVisibleChange.bind(this);
+        this.handleDateStyleChange = this.handleDateStyleChange.bind(this);
+        this.handleTimeStyleChange = this.handleTimeStyleChange.bind(this);
+
         this.updateProfile = this.updateProfile.bind(this);
     }
 
@@ -85,7 +96,7 @@ export class ProfileInfoPane extends Component {
                             className="ProfileInfoPane-visibility body"
                             type="checkbox"
                             checked={this.getDateCreatedVisibleChecked}
-                            onChange={this.handleDateCreatedChange} />
+                            onChange={this.handleDateCreatedVisibleChange} />
                     </div>
 
                     <div className="ProfileInfoPane-infoPair">
@@ -203,6 +214,8 @@ export class ProfileInfoPane extends Component {
                 <p className="ProfileInfoPane-message">
                     {this.props.message}
                 </p>
+
+                <style>{css}</style>
             </div>
         );
     }
@@ -214,35 +227,35 @@ export class ProfileInfoPane extends Component {
         delete rollback.packages;
         delete rollback.csrfToken;
 
-        store.dispatch(setProfileRollback(rollback));
+        this.props.dispatch(setProfileRollback(rollback));
     }
 
-    handleDateCreatedChange(e) {
-        store.dispatch(setProfileDateCreatedVisible(e.target.checked));
+    handleDateCreatedVisibleChange(e) {
+        this.props.dispatch(setProfileDateCreatedVisible(e.target.checked));
     }
 
     handleNameChange(e) {
-        store.dispatch(setProfileName(e.target.value));
+        this.props.dispatch(setProfileName(e.target.value));
     }
 
     handleNameVisibleChange(e) {
-        store.dispatch(setProfileNameVisible(e.target.checked));
+        this.props.dispatch(setProfileNameVisible(e.target.checked));
     }
 
     handleDescriptionChange(e) {
-        store.dispatch(setProfileDescription(e.target.value));
+        this.props.dispatch(setProfileDescription(e.target.value));
     }
 
     handleEmailChange(e) {
-        store.dispatch(setProfileEmail(e.target.value));
+        this.props.dispatch(setProfileEmail(e.target.value));
     }
 
     handleEmailVisibleChange(e) {
-        store.dispatch(setProfileEmailVisible(e.target.checked));
+        this.props.dispatch(setProfileEmailVisible(e.target.checked));
     }
 
     handleHomepageChange(e) {
-        store.dispatch(setProfileHomepage(e.target.value));
+        this.props.dispatch(setProfileHomepage(e.target.value));
     }
 
     handleDateStyleChange(e) {
@@ -256,11 +269,11 @@ export class ProfileInfoPane extends Component {
             throw new Error('Unrecognized datestyle.');
         }
 
-        store.dispatch(setProfileDateStyle(dateStyle));
+        this.props.dispatch(setProfileDateStyle(dateStyle));
     }
 
     handleTimeStyleChange(e) {
-        store.dispatch(setProfileTimeStyle(e.target.value));
+        this.props.dispatch(setProfileTimeStyle(e.target.value));
     }
 
     getNameVisibleChecked() {
@@ -298,12 +311,10 @@ export class ProfileInfoPane extends Component {
     }
 }
 
-function mapStateToProps() {
-    const state = store.getState();
+function mapStateToProps(state) {
+    const rollback = state.profile.rollback;
 
-    const rollback = store.getState().profile.rollback;
-
-    const current = deepCopy(store.getState().profile);
+    const current = deepCopy(state.profile);
     delete current.rollback;
     delete current.packages;
 

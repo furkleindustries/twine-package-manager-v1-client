@@ -3,7 +3,6 @@ import React, { Component, } from 'react';
 
 /* redux */
 import { connect, } from 'react-redux';
-import store from '../../../../store';
 
 /* modules */
 /* import changePassword from '../../../../modules/changePassword'; */
@@ -11,15 +10,15 @@ import * as modalFactories from '../../../../modules/modals/factories';
 import logout from '../../../../modules/logout';
 
 /* css */
-import './ProfileAccountPane.css';
+import css from './ProfileAccountPane.css';
 
 export class ProfileAccountPane extends Component {
-	render() {
-		return (
-			<div className="ProfileAccountPane">
-				<h1 className="header">
-					Account Options
-				</h1>
+    render() {
+        return (
+            <div className="ProfileAccountPane">
+                <h1 className="header">
+                    Account Options
+                </h1>
 
                 <button className="Profile-logout wideButton">
                     <span>Change Password</span>
@@ -38,18 +37,19 @@ export class ProfileAccountPane extends Component {
                 </button>
 
                 <p className="ProfileInfoPane-message">
-                	{this.props.message}
+                    {this.props.message}
                 </p>
-			</div>
-		);
-	}
+
+                <style>{css}</style>
+            </div>
+        );
+    }
 }
 
-function mapStateToProps() {
-	const state = store.getState();
-	return {
-		message: store.profileMessage,
-	};
-}	
+function mapStateToProps(state) {
+    return {
+        message: state.profileMessage,
+    };
+}   
 
 export default connect(mapStateToProps)(ProfileAccountPane);

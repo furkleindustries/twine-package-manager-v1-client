@@ -1,11 +1,10 @@
-// react
+/* react */
 import React, { Component, } from 'react';
 
-// redux
+/* redux */
 import { connect, } from 'react-redux';
-import store from './store';
-// REMOVE IN PRODUCTION
-window.store = store;
+
+import isRunningNodeJs from './modules/isRunningNodeJs';
 
 import {
     setCSRFToken,
@@ -19,18 +18,21 @@ import {
     setPackageDeleting,
 } from './components/PackageOwned/PackageOwnedActions';
 
-// modules
+/* modules */
 import loginRender from './modules/loginRender';
 import * as modalFactories from './modules/modals/factories';
 import sideBarClick from './modules/navBar/sideBarClick';
 
-// components
+/* components */
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
 import { NavBar, } from './components/NavBar/NavBar';
 
-// css
-import './App.css';
+/* css */
+import css from './App.css';
+
+/* service worker */
+import './modules/offline-install';
 
 export class App extends Component {
     constructor() {
@@ -57,8 +59,6 @@ export class App extends Component {
 
                 <Header />
 
-                {this.props.children}
-
                 <NavBar
                     class="sideBar"
                     panes={sidebarPanes}
@@ -66,12 +66,16 @@ export class App extends Component {
                     visible={this.props.sideBarVisible}
                     useRouterLink={false}
                     navBarItemClick={sideBarClick} />
+                
+                {this.props.children}
 
                 <Footer />
 
                 <div className={"Modal-container" + (this.props.modal ? "" : " hidden")}>
                     {this.props.modal}
                 </div>
+
+                <style dangerouslySetInnerHTML={{ __html: css, }}></style>
             </div>
         );
     }
@@ -79,22 +83,24 @@ export class App extends Component {
     componentDidMount() {
         const antiCSRFToken = localStorage.twinepmCSRFToken;
         if (antiCSRFToken) {
-            store.dispatch(setCSRFToken(antiCSRFToken));
-            loginRender(antiCSRFToken, false);
+            this.props.dispatch(setCSRFToken(antiCSRFToken));
+            loginRender(this.store, antiCSRFToken, false);
         }
 
         let searchOptions = localStorage.twinepmSearchOptions; 
         if (searchOptions) {
             try {
                 searchOptions = JSON.parse(searchOptions);
-                store.dispatch(setSearchOptions(searchOptions));
+                this.props.dispatch(setSearchOptions(searchOptions));
             } catch (e) {
                 console.log('There was an entry for saved search options, ' +
                     'but it could not be deserialized.');
             }
         }
 
-        window.onhashchange = this.handleHashChange;
+        if (!isRunningNodeJs()) {
+            window.onhashchange = this.handleHashChange;
+        }
     }
 
     handleHashChange() {
@@ -124,7 +130,7 @@ export class App extends Component {
                     return;
                 }
 
-                store.dispatch(setPackagePublishing({
+                this.props.dispatch(setPackagePublishing({
                     id: pkg.id,
                     published: pkg.published,
                 }));
@@ -147,7 +153,7 @@ export class App extends Component {
                     return;
                 }
                 
-                store.dispatch(setPackageEditing(pkg));
+                this.props.dispatch(setPackageEditing(pkg));
 
                 modalFactories.packageEdit();
 
@@ -157,7 +163,7 @@ export class App extends Component {
             re = /^#deletePackage-(\d+)$/;
             match = location.hash.match(re);
             if (match && match[1]) {
-                store.dispatch(setPackageDeleting(Number(match[1])));
+                this.props.dispatch(setPackageDeleting(Number(match[1])));
 
                 modalFactories.packageDelete();
                 return;
@@ -169,9 +175,7 @@ export class App extends Component {
     }
 }
 
-function mapStateToProps() {
-    const state = store.getState();
-
+function mapStateToProps(state) {
     return {
         appPanes: state.appPanes,
         appSelectedPane: state.appSelectedPane,

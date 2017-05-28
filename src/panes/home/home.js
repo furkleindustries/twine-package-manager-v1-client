@@ -10,12 +10,15 @@ import {
 } from '../../appActions';
 
 /* css */
-import './home.css';
+import css from './home.css';
+
+/* icons */
+const baseUrl = process.env.PUBLIC_URL;
 
 /* https://c2.staticflickr.com/8/7319/8730255464_529c6aea39_z.jpg */
-import maze from '../../images/maze_small.jpg';
+const maze = `${baseUrl}/static/maze_small.png`;
 /* https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/PSM_V87_D113_Arrangement_of_atoms_in_a_rock_salt_crystal.png/665px-PSM_V87_D113_Arrangement_of_atoms_in_a_rock_salt_crystal.png */
-import atoms from '../../images/atoms_small.jpg';
+const atoms = `${baseUrl}/static/atoms_small.png`;
 
 export class HomePane extends Component {
 	render() {

@@ -1,21 +1,20 @@
-// react
+/* react */
 import React, { Component, } from 'react';
 
-// redux
+/* redux */
 import { connect, } from 'react-redux';
-import store from '../../../../store';
 
-// components
+/* components */
 import PackageOwned from '../../../../components/PackageOwned/PackageOwned';
 
-// modules
+/* modules */
 import * as modalFactories from '../../../../modules/modals/factories';
 
-// css
-import './ProfilePackagesPane.css';
+/* css */
+import css from './ProfilePackagesPane.css';
 
 export class ProfilePackagesPane extends Component {
-	render() {
+    render() {
         const list = (this.props.packages || []).map(pkg => {
             return <PackageOwned
                 key={pkg.name}
@@ -27,9 +26,9 @@ export class ProfilePackagesPane extends Component {
                 package={pkg} />;
         });
 
-		return (
-			<div className="ProfilePackagesPane">
-				<h1 className="header">My Packages</h1>
+        return (
+            <div className="ProfilePackagesPane">
+                <h1 className="header">My Packages</h1>
 
                     {list.length ? list : "No packages."}
 
@@ -38,17 +37,17 @@ export class ProfilePackagesPane extends Component {
                     onClick={modalFactories.packageCreate}>
                     Create New Package
                 </button>
-			</div>
-		);
-	}
+
+                <style>{css}</style>
+            </div>
+        );
+    }
 }
 
-function mapStateToProps() {
-	const state = store.getState();
-
-	return {
-		packages: state.profile.packages,
-	};
+function mapStateToProps(state) {
+    return {
+        packages: state.profile.packages,
+    };
 }
 
 export default connect(mapStateToProps)(ProfilePackagesPane);

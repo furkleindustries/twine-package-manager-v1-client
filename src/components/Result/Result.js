@@ -1,8 +1,8 @@
-/// react
-import React, { Component } from 'react';
+/* react */
+import React, { Component, } from 'react';
 
-// css
-import './Result.css';
+/* css */
+import css from './Result.css';
 
 export default class Result extends Component {
     constructor() {
@@ -43,6 +43,8 @@ export default class Result extends Component {
                 <div className="Result-keywordsContainer body">
                     {keywords}
                 </div>
+
+                <style>{css}</style>
             </div>
         );
     }
