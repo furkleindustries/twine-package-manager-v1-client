@@ -1,5 +1,5 @@
-/* react */
-import { browserHistory, } from 'react-router';
+/* next */
+import Router from 'next/router';
 
 /* redux */
 import {
@@ -56,7 +56,7 @@ export default async function loginRender(store, antiCSRFToken, gotoProfile) {
 
             if (store.getState().appSelectedPane === 'profile') {
                 store.dispatch(setAppSelectedPane('login'));
-                browserHistory.push(`${baseUrl}/login`);
+                Router.push('/login', 'login');
             }
         }
 
@@ -89,6 +89,6 @@ export default async function loginRender(store, antiCSRFToken, gotoProfile) {
     /* Redirect to the profile page. */
     if (gotoProfile === true || gotoProfile === 'gotoProfile') {
         store.dispatch(setAppSelectedPane('profile'));
-        browserHistory.push(`${baseUrl}/profile`);
+        Router.push('/profile', 'profile');
     }
 }

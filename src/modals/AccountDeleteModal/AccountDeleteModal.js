@@ -1,17 +1,17 @@
-// react
-import React, { Component } from 'react';
+/* react */
+import React, { Component, } from 'react';
 
-// redux
+/* redux */
 import { connect, } from 'react-redux';
 import { setAccountDeletingEnteredId, } from './AccountDeleteModalActions';
 
 
-// modules
+/* modules */
 import accountDelete from '../../modules/accountDelete';
 import modalClose from '../../modules/modals/close';
 
-// css
-import css from './AccountDeleteModal.css';
+/* css */
+/*import css from './AccountDeleteModal.css';*/
 
 export class AccountDeleteModal extends Component {
     constructor() {
@@ -64,7 +64,11 @@ export class AccountDeleteModal extends Component {
                     {this.props.message}
                 </p>
 
-                <style>{css}</style>
+                <style jsx>{
+                    `.AccountDeleteModal-message {
+                        height: 1rem;
+                    }`
+                }</style>
             </div>
         );
     }
@@ -75,10 +79,11 @@ export class AccountDeleteModal extends Component {
 
     async deleteAccount() {
         const success = await accountDelete(
+            this.props.store,
             (Number)(this.props.id), 
             this.props.csrfToken);
         if (success) {
-            setTimeout(modalClose, 2000);
+            setTimeout(() => modalClose(this.props.store.dispatch), 2000);
         }
     }
 

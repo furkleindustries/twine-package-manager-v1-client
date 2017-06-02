@@ -1,11 +1,12 @@
-// react
+/* react */
 import React from 'react';
 
-// enzyme
+/* enzyme */
 import { shallow, mount, } from 'enzyme';
 
-// components
-import Result, { Keyword, } from './Result';
+/* components */
+import Result from './Result';
+import Keyword from './Keyword';
 
 describe('Result unit tests', () => {
     it('renders Result', () => {

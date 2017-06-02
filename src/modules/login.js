@@ -1,5 +1,4 @@
 /* redux */
-import store from '../store';
 import { setCSRFToken, } from '../appActions';
 import { setLoginMessage, } from '../panes/login/loginActions';
 
@@ -7,7 +6,7 @@ import { setLoginMessage, } from '../panes/login/loginActions';
 import * as post from './database/post';
 import loginRender from './loginRender';
 
-export default async function login(username, password) {
+export default async function login(store, username, password) {
 	let result;
 	try {
 		result = await post.login(username, password);
@@ -20,7 +19,7 @@ export default async function login(username, password) {
 	if (result && result.csrfToken) {
 		localStorage.twinepmCSRFToken = result.csrfToken;
 		store.dispatch(setCSRFToken(result.csrfToken));
-		loginRender(result.csrfToken, 'gotoProfile');
+		loginRender(store, result.csrfToken, 'gotoProfile');
 		successful = true;
 	} else {
 		let error;

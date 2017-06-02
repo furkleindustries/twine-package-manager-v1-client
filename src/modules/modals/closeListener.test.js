@@ -1,3 +1,7 @@
+/* redux */
+const store = {};
+store.dispatch = jest.fn();
+
 /* modules */
 import closeListener from './closeListener';
 
@@ -6,6 +10,7 @@ import modalClose from './close';
 
 describe('modal closeListener unit tests', () => {
     beforeEach(() => {
+        store.dispatch.mockClear();
         modalClose.mockClear();
     });
 
@@ -13,10 +18,10 @@ describe('modal closeListener unit tests', () => {
         closeListener({
             type: 'keydown',
             keyCode: 27,
-        });
+        }, store.dispatch);
 
         expect(modalClose.mock.calls.length).toEqual(1);
-        expect(modalClose.mock.calls[0]).toEqual([]);
+        expect(modalClose.mock.calls[0]).toEqual([ store.dispatch, ]);
     });
 
     it('rejects with e.type of keydown and e.keyCode !== 27', () => {
@@ -39,10 +44,10 @@ describe('modal closeListener unit tests', () => {
         closeListener({
             type: 'click',
             target: { testing: 'test', }
-        });
+        }, store.dispatch);
 
         expect(modalClose.mock.calls.length).toEqual(1);
-        expect(modalClose.mock.calls[0]).toEqual([]);
+        expect(modalClose.mock.calls[0]).toEqual([ store.dispatch, ]);
     });
 
     it('rejects with e.type of click and click target inside the modal container', () => {

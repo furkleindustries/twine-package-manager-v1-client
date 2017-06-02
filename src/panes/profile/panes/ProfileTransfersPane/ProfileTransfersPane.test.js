@@ -6,46 +6,33 @@ import { browserHistory, } from 'react-router';
 /* enzyme */
 import { shallow, mount, } from 'enzyme';
 
-/* redux */
-import store from '../../../../store';
-const dispatch = store.dispatch;
-
-import {
-    setAppSelectedPane,
-    setSideBarPanes,
-    setSideBarSelectedPane,
-} from '../../../../appActions';
+/* next */
+jest.mock('next/router');
 
 /* modules */
 import panesSourceProfile from '../../../../panesSourceProfile';
 
 /* components */
 import { ProfileTransfersPane, } from './ProfileTransfersPane';
-import rootComponent from '../../../../rootComponent';
+import Profile from '../../../../../pages/profile';
 import {
     PackageOwned,
 } from '../../../../components/PackageOwned/PackageOwned';
 
 describe('ProfileTransfersPane tests', () => {
+    beforeEach(() => {
+        window.localStorage = {};
+    });
+
     it('produces the ProfileTransfersPane', () => {
-        window.localStorage = { twinepmCSRFToken: 'test', };
+        const wrapper = mount(<Profile />);
+        const app = wrapper.find('App');
+        app.props().dispatch({
+            selectedPane: 'transfers',
+            type: 'setSideBarSelectedPane',
+        });
 
-        const baseUrl = process.env.PUBLIC_URL;
-        
-        store.dispatch = dispatch;
-  
-        const component = ReactTestUtils.renderIntoDocument(rootComponent);
-
-        browserHistory.push(`${baseUrl}/profile`);
-
-        store.dispatch(setAppSelectedPane('profile'));
-        store.dispatch(setSideBarPanes(panesSourceProfile));
-        store.dispatch(setSideBarSelectedPane('transfers'));
-        
-        const find = ReactTestUtils.scryRenderedComponentsWithType(
-            component,
-            ProfileTransfersPane);
-        
+        const find = wrapper.find('ProfileTransfersPane');
         expect(find.length).toEqual(1);
     });
 

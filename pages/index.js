@@ -17,11 +17,9 @@ import {
 import App from '../src/App';
 
 /* css */
-import css from '../src/panes/home/home.css';
+/*import css from '../src/panes/home/home.css';*/
 
 /* icons */
-const baseUrl = process.env.PUBLIC_URL;
-
 /* https://c2.staticflickr.com/8/7319/8730255464_529c6aea39_z.jpg */
 const maze = 'static/images/maze';
 /* https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/PSM_V87_D113_Arrangement_of_atoms_in_a_rock_salt_crystal.png/665px-PSM_V87_D113_Arrangement_of_atoms_in_a_rock_salt_crystal.png */
@@ -50,7 +48,7 @@ export class HomePage extends Component {
                     alt="home img one"
                     src={`${maze}_200w.jpg`}
                     sizes="20vw"
-                    srcset={`${maze}-200w.jpg 200w,
+                    srcSet={`${maze}_200w.jpg 200w,
                             ${maze}_296w.jpg 296w,
                             ${maze}_385w.jpg 385w,
                             ${maze}_456w.jpg 456w,
@@ -63,7 +61,7 @@ export class HomePage extends Component {
                     alt="home img two"
                     src={`${atoms}_200w.jpg`}
                     sizes="20vw"
-                    srcset={`${atoms}-200w.jpg 200w,
+                    srcSet={`${atoms}_200w.jpg 200w,
                             ${atoms}_534w.jpg 534w,
                             ${atoms}_665w.jpg 665w`} />
 
@@ -76,7 +74,7 @@ export class HomePage extends Component {
                     alt="home img one"
                     src={`${maze}_200w.jpg`}
                     sizes="20vw"
-                    srcset={`${maze}-200w.jpg 200w,
+                    srcSet={`${maze}_200w.jpg 200w,
                             ${maze}_296w.jpg 296w,
                             ${maze}_385w.jpg 385w,
                             ${maze}_456w.jpg 456w,
@@ -89,7 +87,7 @@ export class HomePage extends Component {
                     alt="home img two"
                     src={`${atoms}_200w.jpg`}
                     sizes="20vw"
-                    srcset={`${atoms}-200w.jpg 200w,
+                    srcSet={`${atoms}_200w.jpg 200w,
                             ${atoms}_534w.jpg 534w,
                             ${atoms}_665w.jpg 665w`} />
 
@@ -97,8 +95,10 @@ export class HomePage extends Component {
                     {"Click "}
                     
                     <Link
-                        id="about"
+                        prefetch
                         href="/about"
+                        as="about"
+                        id="about"
                         onClick={this.redirect}>
                         <a>About</a>
                     </Link>
@@ -106,8 +106,10 @@ export class HomePage extends Component {
                     {" in the navbar to read more about what you can do with the package manager. Click "}
                     
                     <Link
+                        prefetch
+                        href="/login"
+                        as="login"
                         id="login"
-                        url="/login"
                         onClick={this.redirect}>
                         <a>Login</a>
                     </Link>
@@ -119,7 +121,29 @@ export class HomePage extends Component {
                     Opening late 2017.
                 </p>
 
-                <style>{css}</style>
+                <style jsx>{
+                    `.Home-intro {
+                        margin-top: 0;
+                    }
+
+                    .Home-headerBanner {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        position: relative;
+                        left: 1rem;
+                        padding: 0.5rem;
+                    }
+
+                    .Home-image {
+                        width: 20%;
+                        padding: 0.5rem;
+                    }
+
+                    .Home-subheader {
+                        margin-top: 0;
+                    }`
+                }</style>
             </div>
         );
     }
@@ -141,10 +165,13 @@ const wrapped = () => (
     </App>
 );
 
-wrapped.getInitialProps = ({ req, store }) => {
+export async function getInitialProps({ req, store, }) {
+    /* req only exists on server side */
     if (req) {
         store.dispatch(setAppSelectedPane(req.url.slice(1)));
     }
-};
+}
+
+wrapped.getInitialProps = getInitialProps;
 
 export default withRedux(initStore, null, null)(wrapped);

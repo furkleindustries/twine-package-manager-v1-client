@@ -4,33 +4,59 @@ import React from 'react';
 /* enzyme */
 import { shallow, mount, } from 'enzyme';
 
+/* next */
+jest.mock('next/router');
+
 /* redux */
-jest.mock('../../store');
-import store from '../../store';
+const store = {};
+store.dispatch = jest.fn();
 
 jest.mock('../../appActions');
-import { setSideBarVisible, } from '../../appActions';
-setSideBarVisible.mockImplementation(() => {
-    return { type: 'setSideBarVisible', };
+import {
+    setAppSelectedPane,
+    setSideBarVisible,
+} from '../../appActions';
+
+const actionMocks = {
+    setAppSelectedPane,
+    setSideBarVisible,
+};
+
+Object.keys(actionMocks).forEach((key) => {
+    actionMocks[key].mockImplementation(() => ( { type: key, } ));
 });
 
 /* components */
-import { ForumPane, } from './forum';
+import ConnectedForum, {
+    ForumPage,
+    getInitialProps,
+} from '../../../pages/forum';
 
 /* modules */
 jest.mock('../../modules/modals/create');
 import create from '../../modules/modals/create';
 
-describe('ForumPane unit tests', () => {
-    window.localStorage = {};
+describe('ForumPage unit tests', () => {
+    beforeEach(() => {
+        window.localStorage = {};
+        window.clearInterval = jest.fn();
+        window.removeEventListener = jest.fn();
+        store.dispatch.mockClear();
+        create.mockClear();
 
-    it('renders ForumPane', () => {
-        const wrapper = shallow(<ForumPane />);
+        Object.keys(actionMocks).forEach((key) => {
+            actionMocks[key].mockClear();
+        });
+    });
+
+    it('renders the connected ForumPage component', () => {
+        const wrapper = mount(<ConnectedForum />);
         expect(wrapper.length).toEqual(1);
     });
 
     it('hides setSideBarVisible', () => {
-        const wrapper = mount(<ForumPane />);
+        const wrapper = shallow(<ForumPage dispatch={store.dispatch} />);
+        wrapper.instance().componentDidMount();
 
         expect(setSideBarVisible.mock.calls.length).toBe(1);
         expect(setSideBarVisible.mock.calls[0]).toEqual([ false, ]);
@@ -44,7 +70,8 @@ describe('ForumPane unit tests', () => {
     it('creates an event listener with type message when mounted', () => {
         window.addEventListener = jest.fn();
 
-        const wrapper = mount(<ForumPane />);
+        const wrapper = shallow(<ForumPage dispatch={store.dispatch} />);
+        wrapper.instance().componentDidMount();
 
         expect(addEventListener.mock.calls.length).toBe(1);
         expect(addEventListener.mock.calls[0][0]).toBe('message');
@@ -54,7 +81,8 @@ describe('ForumPane unit tests', () => {
         jest.clearAllTimers();
         jest.useFakeTimers();
 
-        const wrapper = mount(<ForumPane />);
+        const wrapper = shallow(<ForumPage dispatch={store.dispatch} />);
+        wrapper.instance().componentDidMount();
 
         const postMessage = jest.fn();
         wrapper.instance().iframe = {
@@ -77,7 +105,8 @@ describe('ForumPane unit tests', () => {
         jest.clearAllTimers();
         jest.useFakeTimers();
 
-        const wrapper = mount(<ForumPane />);
+        const wrapper = shallow(<ForumPage dispatch={store.dispatch} />);
+        wrapper.instance().componentDidMount();
 
         const postMessage = jest.fn();
         wrapper.instance().iframe = {
@@ -90,11 +119,9 @@ describe('ForumPane unit tests', () => {
     });
 
     it('removes the event listener and clear interval with type message when unmounted', () => {
-        window.removeEventListener = jest.fn();
-        window.clearInterval = jest.fn();
-
-        const wrapper = mount(<ForumPane />);
-        wrapper.unmount();
+        const wrapper = shallow(<ForumPage dispatch={store.dispatch} />);
+        wrapper.instance().componentDidMount();
+        wrapper.instance().componentWillUnmount();
 
         expect(removeEventListener.mock.calls.length).toBe(1);
         expect(removeEventListener.mock.calls[0][0]).toBe('message');
@@ -103,7 +130,7 @@ describe('ForumPane unit tests', () => {
     });
 
     it('breaks nothing when message data type is tpmForumPath and data.href exists', () => {
-        const wrapper = shallow(<ForumPane />);
+        const wrapper = shallow(<ForumPage />);
 
         const message = {
             data: {
@@ -116,9 +143,7 @@ describe('ForumPane unit tests', () => {
     });
 
     it('handles receiveMessage by clearing the interval if the data type is tpmForumSignedOut', () => {
-        window.clearInterval = jest.fn();
-
-        const wrapper = shallow(<ForumPane />);
+        const wrapper = shallow(<ForumPage />);
 
         const message = {
             data: { type: 'tpmForumSignedOut', },
@@ -130,20 +155,40 @@ describe('ForumPane unit tests', () => {
     });
 
     it('does nothing when message data exists but type is unrecognized', () => {
-        const wrapper = shallow(<ForumPane />);
+        const wrapper = shallow(<ForumPage />);
 
         const message = {
             data: { type: 'unrecognized', },
         };
 
         wrapper.instance().receiveMessage(message);
+        expect(clearInterval)
     });
 
     it('does nothing when message.data does not exist or message.data is not an object', () => {
-        const wrapper = shallow(<ForumPane />);
+        const wrapper = shallow(<ForumPage />);
 
         const message = {};
 
         wrapper.instance().receiveMessage(message);
+    });
+
+    it('tests getInitialProps when req exists', async () => {
+        await getInitialProps({ req: { url: '/foo', }, store, });
+
+        expect(setAppSelectedPane.mock.calls.length).toBe(1);
+        expect(setAppSelectedPane.mock.calls[0]).toEqual([ 'foo', ]);
+        
+        expect(store.dispatch.mock.calls.length).toBe(1);
+        expect(store.dispatch.mock.calls[0]).toEqual([
+            { type: 'setAppSelectedPane', },
+        ]);
+    });
+
+    it('tests getInitialProps when req does not exist', async () => {
+        await getInitialProps({ store, });
+
+        expect(setAppSelectedPane.mock.calls.length).toBe(0);
+        expect(store.dispatch.mock.calls.length).toBe(0);
     });
 });

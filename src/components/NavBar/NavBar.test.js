@@ -1,12 +1,11 @@
-// react
+/* react */
 import React from 'react';
-import { Link, } from 'react-router';
 
-// enzyme
+/* enzyme */
 import { shallow, } from 'enzyme';
 
-// components
-import { NavBar, NavBarItem, } from './NavBar';
+/* components */
+import { NavBar, } from './NavBar';
 
 describe('NavBar and NavBarItem unit tests', () => {
     it('renders NavBar', () => {
@@ -17,31 +16,5 @@ describe('NavBar and NavBarItem unit tests', () => {
 
         const wrapper = shallow(<NavBar panes={panes} />);
         expect(wrapper.length).toEqual(1);
-    });
-
-    it('renders NavBarItem with router link', () => {
-        const wrapper = shallow(<NavBarItem useRouterLink={true} />);
-        expect(wrapper.length).toEqual(1);
-        expect(wrapper.find(Link).length).toEqual(1);
-    });
-
-    it('renders NavBarItem with button', () => {
-        const wrapper = shallow(<NavBarItem useRouterLink={false} />);
-        expect(wrapper.length).toEqual(1);
-        expect(wrapper.find('button').length).toEqual(1);
-    });
-
-    it('renders NavBarItem with button and active', () => {
-        const component = <NavBarItem active={true} useRouterLink={false} />;
-        const wrapper = shallow(component);
-        expect(wrapper.length).toEqual(1);
-        expect(wrapper.find('.active').length).toEqual(1);
-    });
-
-    it('renders NavBarItem with button and visible', () => {
-        const component = <NavBarItem visible={true} useRouterLink={false} />;
-        const wrapper = shallow(component);
-        expect(wrapper.length).toEqual(1);
-        expect(wrapper.find('.hidden').length).toEqual(0);
     });
 });

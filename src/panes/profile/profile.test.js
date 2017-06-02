@@ -1,24 +1,35 @@
 /* react */
 import React from 'react';
-import ReactTestUtils from 'react-dom/test-utils';
-import { browserHistory, } from 'react-router';
-const push = browserHistory.push;
 
 /* enzyme */
 import { shallow, mount, } from 'enzyme';
 
+/* next */
+jest.mock('next/router');
+import Router from 'next/router';
+
 /* redux */
-import store from '../../store';
-const dispatch = store.dispatch;
+const store = {};
+store.dispatch = jest.fn();
 
-import * as actionsUnderTest from '../../appActions';
+jest.mock('../../appActions');
+import {
+    setAppSelectedPane,
+    setSideBarVisible,
+    setSideBarPanes,
+    setSideBarSelectedPane,
+} from '../../appActions';
 
-const actions = {
-    setAppSelectedPane: actionsUnderTest.setAppSelectedPane,
-    setSideBarVisible: actionsUnderTest.setSideBarVisible,
-    setSideBarPanes: actionsUnderTest.setSideBarPanes,
-    setSideBarSelectedPane: actionsUnderTest.setSideBarSelectedPane,
+const actionMocks = {
+    setAppSelectedPane,
+    setSideBarVisible,
+    setSideBarPanes,
+    setSideBarSelectedPane,
 };
+
+Object.keys(actionMocks).forEach((key) => {
+    actionMocks[key].mockImplementation(() => ( { type: key, } ));
+});
 
 /* modules */
 jest.mock('../../modules/modals/factories');
@@ -27,40 +38,31 @@ import * as modalFactories from '../../modules/modals/factories';
 import panesSourceProfile from '../../panesSourceProfile';
 
 /* components */
-import { ProfilePane, } from './profile';
-import rootComponent from '../../rootComponent';
+import ConnectedProfile, {
+    ProfilePage,
+    getInitialProps,
+} from '../../../pages/profile';
 
 describe('profile unit tests', () => {
     beforeEach(() => {
         window.localStorage = {};
+        store.dispatch.mockClear();
+        Router.push.mockClear();
 
-        store.dispatch = jest.fn();
-        browserHistory.push = jest.fn();
+        Object.keys(actionMocks).forEach((key) => {
+            actionMocks[key].mockClear();
+        });
+
+        Object.keys(modalFactories).forEach((key) => {
+            if (typeof modalFactories[key] === 'function') {
+                modalFactories[key].mockClear();
+            }
+        });
     });
 
-    it('renders the Profile component', () => {
-        const wrapper = shallow(<ProfilePane />);
+    it('renders the connected Profile component', () => {
+        const wrapper = shallow(<ConnectedProfile />);
         expect(wrapper.length).toEqual(1);
-    });
-
-    it('produces the Profile component', () => {
-        window.localStorage = { twinepmCSRFToken: 'test', };
-
-        const baseUrl = process.env.PUBLIC_URL;
-        
-        store.dispatch = dispatch;
-  
-        const component = ReactTestUtils.renderIntoDocument(rootComponent);
-
-        browserHistory.push = push;
-
-        browserHistory.push(`${baseUrl}/profile`);
-
-        const find = ReactTestUtils.scryRenderedComponentsWithType(
-            component,
-            ProfilePane);
-        
-        expect(find.length).toEqual(1);
     });
 
     it('handles side effects when mounted and localStorage.twinepmCSRFToken exists, passing localStorage.twinepmProfileLocation', () => {
@@ -69,53 +71,36 @@ describe('profile unit tests', () => {
             twinepmProfileLocation: 'fake',
         };
 
-        actionsUnderTest.setSideBarVisible = jest.fn();
-        actionsUnderTest.setSideBarPanes = jest.fn();
-        actionsUnderTest.setSideBarSelectedPane = jest.fn();
-
-        /* can't really mount because it requires a Provider lower down */
-        const wrapper = shallow(<ProfilePane />);
-
-        /* fake mounting */
+        const wrapper = shallow(<ProfilePage dispatch={store.dispatch} />);
         wrapper.instance().componentDidMount();
 
-        expect(actionsUnderTest.setSideBarVisible.mock.calls.length)
-            .toBe(1);
-        expect(actionsUnderTest.setSideBarVisible.mock.calls[0])
-            .toEqual([ true, ]);
+        expect(setSideBarVisible.mock.calls.length).toBe(1);
+        expect(setSideBarVisible.mock.calls[0]).toEqual([ true, ]);
 
-        expect(actionsUnderTest.setSideBarSelectedPane.mock.calls.length)
-            .toBe(1);
-        expect(actionsUnderTest.setSideBarSelectedPane.mock.calls[0])
-            .toEqual([ 'fake', ]);
+        expect(setSideBarSelectedPane.mock.calls.length).toBe(1);
+        expect(setSideBarSelectedPane.mock.calls[0]).toEqual([ 'fake', ]);
 
-        expect(actionsUnderTest.setSideBarPanes.mock.calls.length).toBe(1);
-        expect(actionsUnderTest.setSideBarPanes.mock.calls[0])
+        expect(setSideBarPanes.mock.calls.length).toBe(1);
+        expect(setSideBarPanes.mock.calls[0])
             .toEqual([ panesSourceProfile, ]);
 
         expect(store.dispatch.mock.calls.length).toBe(3);
-
-        Object.keys(actions).forEach(key => {
-            actionsUnderTest[key] = actions[key];
-        });
     });
 
     it('redirects to login when and returns early when mounting if !localStorage.twinepmCSRFToken', () => {
-        actionsUnderTest.setAppSelectedPane = jest.fn();
-
-        const wrapper = shallow(<ProfilePane />);
-
+        const wrapper = shallow(<ProfilePage dispatch={store.dispatch} />);
         wrapper.instance().componentDidMount();
 
-        expect(actionsUnderTest.setAppSelectedPane.mock.calls.length).toBe(1);
-        expect(actionsUnderTest.setAppSelectedPane.mock.calls[0]).toEqual([
-            'login',
-        ]);
+        expect(setAppSelectedPane.mock.calls.length).toBe(1);
+        expect(setAppSelectedPane.mock.calls[0]).toEqual([ 'login', ]);
 
         expect(store.dispatch.mock.calls.length).toBe(1);
 
-        expect(browserHistory.push.mock.calls.length).toBe(1);
-        expect(/\/login$/.test(browserHistory.push.mock.calls[0])).toBe(true);
+        expect(Router.push.mock.calls.length).toBe(1);
+        expect(Router.push.mock.calls[0]).toEqual([
+            '/login',
+            'login',
+        ]);
     });
 
     it('calls modalFactories.accountDelete when mounting if location.hash is #deleteAccount', () => {
@@ -123,8 +108,7 @@ describe('profile unit tests', () => {
 
         window.location.hash = '#deleteAccount';
 
-        const wrapper = shallow(<ProfilePane />);
-
+        const wrapper = shallow(<ProfilePage dispatch={store.dispatch} />);
         wrapper.instance().componentDidMount();
 
         expect(modalFactories.accountDelete.mock.calls.length).toBe(1);
@@ -135,10 +119,28 @@ describe('profile unit tests', () => {
 
         window.location.hash = '#createNewPackage';
 
-        const wrapper = shallow(<ProfilePane />);
-
+        const wrapper = shallow(<ProfilePage dispatch={store.dispatch} />);
         wrapper.instance().componentDidMount();
 
         expect(modalFactories.packageCreate.mock.calls.length).toBe(1);
+    });
+
+    it('tests getInitialProps when req exists', async () => {
+        await getInitialProps({ req: { url: '/foo', }, store, });
+
+        expect(setAppSelectedPane.mock.calls.length).toBe(1);
+        expect(setAppSelectedPane.mock.calls[0]).toEqual([ 'foo', ]);
+        
+        expect(store.dispatch.mock.calls.length).toBe(1);
+        expect(store.dispatch.mock.calls[0]).toEqual([
+            { type: 'setAppSelectedPane', },
+        ]);
+    });
+
+    it('tests getInitialProps when req does not exist', async () => {
+        await getInitialProps({ store, });
+
+        expect(setAppSelectedPane.mock.calls.length).toBe(0);
+        expect(store.dispatch.mock.calls.length).toBe(0);
     });
 });

@@ -1,5 +1,4 @@
 /* redux */
-import store from '../store';
 import {
     setProfilePackages,
 } from '../panes/profile/profileActions';
@@ -11,7 +10,7 @@ import {
 /* modules */
 import * as post from './database/post';
 
-export default async function packagePublish(id, published, csrfToken) {
+export default async function packagePublish(store, id, published, csrfToken) {
     let responseObj;
     try {
         responseObj = await post.packagePublish(id, published, csrfToken);

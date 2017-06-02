@@ -1,7 +1,7 @@
 /* redux */
-jest.mock('../store');
-import store from '../store';
-store.getState.mockImplementation(() => {
+const store = {};
+store.dispatch = jest.fn();
+store.getState = jest.fn().mockImplementation(() => {
     return {
         profile: {
             packages: [
@@ -44,10 +44,11 @@ import * as post from './database/post';
 describe('packageUpdate tests', () => {
     beforeEach(() => {
         store.dispatch.mockClear();
-        setProfilePackages.mockClear();
-        setPackageEditingDateModified.mockClear();
-        setPackageEditingMessage.mockClear();
         post.packageUpdate.mockClear();
+
+        Object.keys(actionMocks).forEach(key => {
+            actionMocks[key].mockClear();
+        });
     });
 
     it('calls action creators correctly', async () => {
@@ -63,7 +64,7 @@ describe('packageUpdate tests', () => {
             testProp: 'test',
         };
 
-        await packageUpdate(pkg, 'test_token');
+        await packageUpdate(store, pkg, 'test_token');
 
         expect(setPackageEditingDateModified.mock.calls.length).toBe(1);
         expect(setPackageEditingDateModified.mock.calls[0]).toEqual([ 12, ]);
@@ -90,7 +91,7 @@ describe('packageUpdate tests', () => {
             return { status: 200, };
         });
 
-        await packageUpdate({}, 'test_token');
+        await packageUpdate(store, {}, 'test_token');
 
         expect(store.dispatch.mock.calls.length).toBe(3);
         expect(store.dispatch.mock.calls[0]).toEqual([
@@ -114,7 +115,7 @@ describe('packageUpdate tests', () => {
             return { status: 200, };
         });
 
-        await packageUpdate({}, 'test_token');
+        await packageUpdate(store, {}, 'test_token');
 
         store.getState.mockImplementationOnce(() => {
             return {
@@ -136,7 +137,7 @@ describe('packageUpdate tests', () => {
             return { status: 200, };
         });
 
-        await packageUpdate({}, 'test_token');
+        await packageUpdate(store, {}, 'test_token');
 
         jest.runAllTimers();
 
@@ -146,7 +147,7 @@ describe('packageUpdate tests', () => {
     it('produces a generic error message when !responseObj', async () => {
         post.packageUpdate.mockImplementationOnce(() => undefined);
 
-        await packageUpdate({}, 'test_token');
+        await packageUpdate(store, {}, 'test_token');
 
         expect(setPackageEditingMessage.mock.calls[0]).toEqual([
             'There was an error in receiving or deserializing the server ' +
@@ -159,7 +160,7 @@ describe('packageUpdate tests', () => {
             return { error: 'testing', };
         });
 
-        await packageUpdate({}, 'test_token');
+        await packageUpdate(store, {}, 'test_token');
 
         expect(setPackageEditingMessage.mock.calls[0]).toEqual([ 'testing', ]);
     });
@@ -169,7 +170,7 @@ describe('packageUpdate tests', () => {
             return { status: 400, };
         });
 
-        await packageUpdate({}, 'test_token');
+        await packageUpdate(store, {}, 'test_token');
 
         expect(setPackageEditingMessage.mock.calls[0]).toEqual([
             'The request did not succeed, but there was no message received.',
@@ -188,7 +189,7 @@ describe('packageUpdate tests', () => {
             return { profile: {}, };
         });
 
-        await packageUpdate({}, 'test_token');
+        await packageUpdate(store, {}, 'test_token');
 
         expect(console.log.mock.calls.length).toBe(1);
         expect(store.dispatch.mock.calls.length).toBe(0);
@@ -205,7 +206,7 @@ describe('packageUpdate tests', () => {
             throw exception;
         });
 
-        await packageUpdate({}, 'test_token');
+        await packageUpdate(store, {}, 'test_token');
 
         expect(console.log.mock.calls.length).toBe(1);
         expect(console.log.mock.calls[0]).toEqual([ exception, ]);

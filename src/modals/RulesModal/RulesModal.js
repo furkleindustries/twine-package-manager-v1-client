@@ -2,7 +2,7 @@
 import React, { Component, } from 'react';
 
 /* css */
-import css from './RulesModal.css';
+/*import css from './RulesModal.css';*/
 
 export class RulesModal extends Component {
     render() {
@@ -10,7 +10,9 @@ export class RulesModal extends Component {
             <div className="RulesModal">
                 <h1 className="header">Rules</h1>
 
-                <style>{css}</style>
+                <style jsx>{
+                    ``
+                }</style>
             </div>
         );
     }

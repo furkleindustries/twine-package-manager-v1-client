@@ -1,7 +1,7 @@
 /* redux */
-jest.mock('../store');
-import store from '../store';
-store.getState.mockImplementation(() => {
+const store = {};
+store.dispatch = jest.fn();
+store.getState = jest.fn().mockImplementation(() => {
     return {
         profile: {
             packages: [],
@@ -39,9 +39,11 @@ import * as post from './database/post';
 describe('packageCreate unit tests', () => {
     beforeEach(() => {
         store.dispatch.mockClear();
-        setProfilePackages.mockClear();
-        setPackageCreatingMessage.mockClear();
         post.packageCreation.mockClear();
+
+        Object.keys(actionMocks).forEach(key => {
+            actionMocks[key].mockClear();
+        });
     });
 
     it('calls actions creators correctly', async () => {
@@ -51,7 +53,7 @@ describe('packageCreate unit tests', () => {
 
         const pkg = { test: 'testing', }; 
 
-        await packageCreate(pkg, 'test_token');
+        await packageCreate(store, pkg, 'test_token');
 
         expect(setProfilePackages.mock.calls.length).toBe(1);
         expect(setProfilePackages.mock.calls[0]).toEqual([[pkg]]);
@@ -69,7 +71,7 @@ describe('packageCreate unit tests', () => {
 
         const pkg = { test: 'testing', }; 
 
-        await packageCreate(pkg, 'test_token');
+        await packageCreate(store, pkg, 'test_token');
 
         expect(store.dispatch.mock.calls.length).toBe(2);
         expect(store.dispatch.mock.calls[0]).toEqual([
@@ -90,7 +92,7 @@ describe('packageCreate unit tests', () => {
             return { status: 200, };
         });
 
-        await packageCreate({}, 'test_token');
+        await packageCreate(store, {}, 'test_token');
 
         store.getState.mockImplementationOnce(() => {
             return {
@@ -113,7 +115,7 @@ describe('packageCreate unit tests', () => {
             return { status: 200, };
         });
 
-        await packageCreate({}, 'test_token');
+        await packageCreate(store, {}, 'test_token');
 
         store.getState.mockImplementationOnce(() => {
             return {
@@ -129,7 +131,7 @@ describe('packageCreate unit tests', () => {
     it('produces a generic error message when !responseObj', async () => {
         post.packageCreation.mockImplementationOnce(() => undefined);
 
-        await packageCreate({}, 'test_token');
+        await packageCreate(store, {}, 'test_token');
 
         expect(setPackageCreatingMessage.mock.calls[0]).toEqual([
             'There was an error in receiving or deserializing the server ' +
@@ -142,7 +144,7 @@ describe('packageCreate unit tests', () => {
             return { error: 'test_error_1', };
         });
 
-        await packageCreate({}, 'test_token');
+        await packageCreate(store, {}, 'test_token');
 
         expect(setPackageCreatingMessage.mock.calls[0])
             .toEqual(['test_error_1']);
@@ -153,7 +155,7 @@ describe('packageCreate unit tests', () => {
             return { status: 400, };
         });
 
-        await packageCreate({}, 'test_token');
+        await packageCreate(store, {}, 'test_token');
 
         expect(setPackageCreatingMessage.mock.calls[0]).toEqual([
             'The request did not succeed, but there was no message received.',
@@ -169,7 +171,7 @@ describe('packageCreate unit tests', () => {
             throw exception;
         });
 
-        await packageCreate({}, 'test_token');
+        await packageCreate(store, {}, 'test_token');
 
         expect(console.log.mock.calls.length).toBe(1);
         expect(console.log.mock.calls[0]).toEqual([exception]);
@@ -189,7 +191,7 @@ describe('packageCreate unit tests', () => {
             return { profile: {}, };
         });
 
-        await packageCreate({}, 'test_token');
+        await packageCreate(store, {}, 'test_token');
 
         expect(console.log.mock.calls.length).toBe(1);
         expect(store.dispatch.mock.calls.length).toBe(0);

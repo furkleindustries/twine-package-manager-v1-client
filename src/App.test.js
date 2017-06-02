@@ -1,27 +1,31 @@
-// react
+/* react */
 import React from 'react';
 
-// enzyme
+/* enzyme */
 import { shallow, mount, } from 'enzyme';
 
-// redux
-import store from './store';
+/* redux */
+const store = {};
+store.dispatch = jest.fn();
 
-// components
+/* components */
 import { App, } from './App';
-import Home from './panes/home/home';
-import rootComponent from './rootComponent';
+import { Home, } from '../pages/index';
 
-// modules
+/* modules */
 jest.mock('./modules/loginRender');
 import loginRender from './modules/loginRender';
+
+jest.mock('./modules/isRunningNodeJs');
+import isRunningNodeJs from './modules/isRunningNodeJs';
 
 jest.mock('./modules/modals/factories');
 import * as modalFactories from './modules/modals/factories';
 
 describe('app unit tests', () => {
     beforeEach(() => {
-        store.dispatch = jest.fn();
+        delete window.onhashchange;
+        store.dispatch.mockClear();
     });
 
     it('renders App', () => {
@@ -32,7 +36,8 @@ describe('app unit tests', () => {
     it('unhides modal container when modal prop is present', () => {
         const modal = <div className="__test"></div>
         const wrapper = shallow(<App modal={modal} children={Home} />);
-        expect(wrapper.find('.Modal-container.hidden').length).toEqual(0);
+        expect(wrapper.find('.Modal-container').length).toBe(1);
+        expect(wrapper.find('.Modal-container.hidden').length).toBe(0);
     });
 
     it('saves anti-csrf token', () => {
@@ -40,11 +45,11 @@ describe('app unit tests', () => {
             twinepmCSRFToken: 'foobarbaz',
         };
 
-        mount(React.cloneElement(rootComponent));
+        const wrapper = shallow(<App dispatch={store.dispatch} />);
+        wrapper.instance().componentDidMount();
 
-        expect(store.dispatch.mock.calls.length).toEqual(2);
-        /* [0] is setSideBarVisible and irrelevant to this test */
-        expect(store.dispatch.mock.calls[1]).toEqual(
+        expect(store.dispatch.mock.calls.length).toBe(1);
+        expect(store.dispatch.mock.calls[0]).toEqual(
             [
                 {
                     csrfToken: 'foobarbaz',
@@ -59,11 +64,11 @@ describe('app unit tests', () => {
             twinepmSearchOptions: '{}',
         };
 
-        mount(React.cloneElement(rootComponent));
+        const wrapper = shallow(<App dispatch={store.dispatch} />);
+        wrapper.instance().componentDidMount();
 
-        expect(store.dispatch.mock.calls.length).toEqual(2);
-        /* [0] is setSideBarVisible and irrelevant to this test */
-        expect(store.dispatch.mock.calls[1]).toEqual(
+        expect(store.dispatch.mock.calls.length).toEqual(1);
+        expect(store.dispatch.mock.calls[0]).toEqual(
             [
                 {
                     searchOptions: {},
@@ -73,18 +78,28 @@ describe('app unit tests', () => {
         );
     });
 
-    it('rejects search options if not deserializable', () => {
+    it('rejects search options and logs message if not deserializable', () => {
+        const log = console.log;
+        console.log = jest.fn();
+
         window.localStorage = {
             twinepmSearchOptions: 'fdj{kl',
         };
 
-        mount(React.cloneElement(rootComponent));
+        const wrapper = shallow(<App dispatch={store.dispatch} />);
+        wrapper.instance().componentDidMount();
 
-        expect(store.dispatch.mock.calls.length).toEqual(1);
+        expect(store.dispatch.mock.calls.length).toEqual(0);
+        expect(console.log.mock.calls.length).toBe(1);
+
+        console.log = log;
     });
 
     it('handles #rules hash change', () => {
-        const app = <App children={Home} appSelectedPane="about" />;
+        const app = <App
+            children={Home}
+            appSelectedPane="about"
+            dispatch={store.dispatch} />;
 
         window.location.hash = '#rules';
 
@@ -93,11 +108,37 @@ describe('app unit tests', () => {
         wrapper.instance().handleHashChange();
 
         expect(modalFactories.rules.mock.calls.length).toEqual(1);
-        expect(modalFactories.rules.mock.calls[0]).toEqual([]);
+        expect(modalFactories.rules.mock.calls[0]).toEqual([
+            store.dispatch,
+        ]);
+    });
+
+    it('adds a hash change listener to the window if we\'re running client-side', () => {
+        isRunningNodeJs.mockImplementationOnce(() => false)
+
+        const app = <App />;
+        const wrapper = shallow(app);
+        wrapper.instance().componentDidMount();
+
+        expect(window.onhashchange).toBe(wrapper.instance().handleHashChange);
+    });
+
+    it('does not add a hash change listener to the window if we\'re running server-side', () => {
+        isRunningNodeJs.mockImplementationOnce(() => true)
+
+
+        const app = <App />;
+        const wrapper = shallow(app);
+        wrapper.instance().componentDidMount();
+
+        expect(window.onhashchange).toBe(undefined);
     });
 
     it('handles #createAccount hash change', () => {
-        const app = <App children={Home} appSelectedPane="login" />;
+        const app = <App
+            children={Home}
+            appSelectedPane="login"
+            dispatch={store.dispatch} />;
 
         window.location.hash = '#createAccount';
 
@@ -106,11 +147,16 @@ describe('app unit tests', () => {
         wrapper.instance().handleHashChange();
 
         expect(modalFactories.accountCreate.mock.calls.length).toEqual(1);
-        expect(modalFactories.accountCreate.mock.calls[0]).toEqual([]);
+        expect(modalFactories.accountCreate.mock.calls[0]).toEqual([
+            store.dispatch,
+        ]);
     });
 
     it('handles #deleteAccount hash change', () => {
-        const app = <App children={Home} appSelectedPane="profile" />;
+        const app = <App
+            children={Home}
+            appSelectedPane="profile"
+            dispatch={store.dispatch} />;
 
         window.location.hash = '#deleteAccount';
 
@@ -119,7 +165,9 @@ describe('app unit tests', () => {
         wrapper.instance().handleHashChange();
 
         expect(modalFactories.accountDelete.mock.calls.length).toEqual(1);
-        expect(modalFactories.accountDelete.mock.calls[0]).toEqual([]);
+        expect(modalFactories.accountDelete.mock.calls[0]).toEqual([
+            store.dispatch,
+        ]);
     });
 
     it('handles #togglePackagePublish-\d+ hash change', () => {
@@ -132,12 +180,11 @@ describe('app unit tests', () => {
             ],
         };
 
-        const app = (
-            <App
-                children={Home}
-                appSelectedPane="profile"
-                profile={profile} />
-        );
+        const app = <App
+            children={Home}
+            appSelectedPane="profile"
+            profile={profile}
+            dispatch={store.dispatch} />;
 
         window.location.hash = '#togglePackagePublish-14';
 
@@ -148,15 +195,18 @@ describe('app unit tests', () => {
         expect(modalFactories.togglePackagePublish.mock.calls.length)
             .toEqual(1);
         expect(modalFactories.togglePackagePublish.mock.calls[0])
-            .toEqual([14]);
+            .toEqual([ store.dispatch, 14, ]);
         expect(store.dispatch.mock.calls.length).toEqual(1);
-        expect(store.dispatch.mock.calls[0]).toEqual([{
-            publishing: {
-                id: 14,
-                published: true,
+        expect(store.dispatch.mock.calls[0]).toEqual([
+            {
+                publishing: {
+                    id: 14,
+                    published: true,
+                },
+
+                type: 'setPackagePublishing',
             },
-            type: 'setPackagePublishing',
-        }]);
+        ]);
     });
 
     it('rejects #togglePackagePublish-\d+ hash change with invalid \d+', () => {
@@ -171,12 +221,10 @@ describe('app unit tests', () => {
             ],
         };
 
-        const app = (
-            <App
-                children={Home}
-                appSelectedPane="profile"
-                profile={profile} />
-        );
+        const app = <App
+            children={Home}
+            appSelectedPane="profile"
+            profile={profile} />;
 
         window.location.hash = '#togglePackagePublish-14';
 
@@ -198,12 +246,11 @@ describe('app unit tests', () => {
             ],
         };
 
-        const app = (
-            <App
-                children={Home}
-                appSelectedPane="profile"
-                profile={profile} />
-        );
+        const app = <App
+            children={Home}
+            appSelectedPane="profile"
+            profile={profile}
+            dispatch={store.dispatch} />;
 
         window.location.hash = '#editPackage-15';
 
@@ -212,14 +259,20 @@ describe('app unit tests', () => {
         wrapper.instance().handleHashChange();
 
         expect(modalFactories.packageEdit.mock.calls.length).toEqual(1);
-        expect(modalFactories.packageEdit.mock.calls[0]).toEqual([]);
+        expect(modalFactories.packageEdit.mock.calls[0]).toEqual([
+            store.dispatch,
+            15,
+        ]);
         expect(store.dispatch.mock.calls.length).toEqual(1);
-        expect(store.dispatch.mock.calls[0]).toEqual([{
-            editing: {
-                id: 15,
+        expect(store.dispatch.mock.calls[0]).toEqual([
+            {
+                editing: {
+                    id: 15,
+                },
+
+                type: 'setPackageEditing',
             },
-            type: 'setPackageEditing',
-        }]);
+        ]);
     });
 
     it('rejects #editPackage-\d+ hash change with invalid \d+', () => {
@@ -233,12 +286,12 @@ describe('app unit tests', () => {
             ],
         };
 
-        const app = (
-            <App
-                children={Home}
-                appSelectedPane="profile"
-                profile={profile} />
-        );
+        const app = <App
+            children={Home}
+            appSelectedPane="profile"
+            profile={profile}
+            dispatch={store.dispatch} />;
+
 
         window.location.hash = '#editPackage-12';
 
@@ -259,12 +312,11 @@ describe('app unit tests', () => {
             ],
         };
 
-        const app = (
-            <App
-                children={Home}
-                appSelectedPane="profile"
-                profile={profile} />
-        );
+        const app = <App
+            children={Home}
+            appSelectedPane="profile"
+            profile={profile}
+            dispatch={store.dispatch} />;
 
         window.location.hash = '#deletePackage-16';
 
@@ -273,7 +325,11 @@ describe('app unit tests', () => {
         wrapper.instance().handleHashChange();
 
         expect(modalFactories.packageDelete.mock.calls.length).toEqual(1);
-        expect(modalFactories.packageDelete.mock.calls[0]).toEqual([]);
+        expect(modalFactories.packageDelete.mock.calls[0]).toEqual([
+            store.dispatch,
+            16,
+        ]);
+
         expect(store.dispatch.mock.calls.length).toEqual(1);
         expect(store.dispatch.mock.calls[0]).toEqual([{
             deleting: 16,
@@ -282,7 +338,10 @@ describe('app unit tests', () => {
     });
 
     it('handles #createNewPackage hash change', () => {
-        const app = <App children={Home} appSelectedPane="profile" />;
+        const app = <App
+            children={Home}
+            appSelectedPane="profile"
+            dispatch={store.dispatch} />;
 
         window.location.hash = '#createNewPackage';
 
@@ -291,7 +350,9 @@ describe('app unit tests', () => {
         wrapper.instance().handleHashChange();
 
         expect(modalFactories.packageCreate.mock.calls.length).toEqual(1);
-        expect(modalFactories.packageCreate.mock.calls[0]).toEqual([]);
+        expect(modalFactories.packageCreate.mock.calls[0]).toEqual([
+            store.dispatch,
+        ]);
     });
 
     it('handles handleHashChange with invalid selectedPane', () => {

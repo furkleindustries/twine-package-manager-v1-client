@@ -1,6 +1,9 @@
 import * as reducers from './appReducers';
 import panesSourceApp from './panesSourceApp';
 
+jest.mock('./modules/isRunningNodeJs');
+import isRunningNodeJs from './modules/isRunningNodeJs';
+
 describe('app reducer unit tests', () => {
     it('should return the initial appPanes state', () => {
         expect(reducers.appPanesReducer(undefined, {}))
@@ -9,10 +12,10 @@ describe('app reducer unit tests', () => {
 
     it('should handle setAppPanes with valid arguments', () => {
         expect(
-          reducers.appPanesReducer('', {
-            type: 'setAppPanes',
-            panes: { foo: 'baz', },
-          })
+            reducers.appPanesReducer('', {
+                type: 'setAppPanes',
+                panes: { foo: 'baz', },
+            })
         ).toEqual({ foo: 'baz', });
     });
 
@@ -27,42 +30,42 @@ describe('app reducer unit tests', () => {
 
     it('appPanesReducer should reject with invalid arguments', () => {
         expect(
-          reducers.appPanesReducer('', {
-            type: 'setAppPanes',
-            panes: 15,
-          })
-        ).toEqual('');
+            reducers.appPanesReducer('', {
+                type: 'setAppPanes',
+                panes: 15,
+            })
+        ).toBe('');
     });
 
     it('should return the initial appSelectedPane state', () => {
-        expect(reducers.appSelectedPaneReducer(undefined, {})).toEqual('home');
+        expect(reducers.appSelectedPaneReducer(undefined, {})).toBe('home');
     });
 
     it('should handle setAppSelectedPane with valid arguments', () => {
         expect(
-          reducers.appSelectedPaneReducer('', {
-            type: 'setAppSelectedPane',
-            selectedPane: 'testing',
-          })
-        ).toEqual('testing');
+            reducers.appSelectedPaneReducer('', {
+                type: 'setAppSelectedPane',
+                selectedPane: 'testing',
+            })
+        ).toBe('testing');
     });
 
     it('appSelectedPaneReducer should reject with invalid type', () => {
         expect(
-          reducers.appSelectedPaneReducer('', {
-            type: 'setTest',
-            username: 'will fail',
-          })
-        ).toEqual('');
+            reducers.appSelectedPaneReducer('', {
+                type: 'setTest',
+                username: 'will fail',
+            })
+        ).toBe('');
     });
 
     it('appSelectedPaneReducer should reject with invalid arguments', () => {
         expect(
-          reducers.appSelectedPaneReducer('', {
-            type: 'setAppSelectedPane',
-            selectedPane: 16,
-          })
-        ).toEqual('');
+            reducers.appSelectedPaneReducer('', {
+                type: 'setAppSelectedPane',
+                selectedPane: 16,
+            })
+        ).toBe('');
     });
 
     it('should return the initial sideBarVisible state', () => {

@@ -1,6 +1,7 @@
 /* redux */
-jest.mock('../store');
-import store from '../store';
+const store = {};
+store.dispatch = jest.fn();
+store.getState = jest.fn();
 
 jest.mock('../modals/AccountCreateModal/AccountCreateModalActions');
 import {
@@ -10,32 +11,17 @@ import {
     setAccountCreatingMessage,
 } from '../modals/AccountCreateModal/AccountCreateModalActions';
 
-setAccountCreatingName.mockImplementation(value => {
-    return {
-        name: value,
-        type: 'setAccountCreatingName',
-    };
-});
+const actionMocks = {
+    setAccountCreatingName,
+    setAccountCreatingPassword,
+    setAccountCreatingEmail,
+    setAccountCreatingMessage,
+};
 
-setAccountCreatingPassword.mockImplementation(value => {
-    return {
-        password: value,
-        type: 'setAccountCreatingPassword',
-    };
-});
-
-setAccountCreatingEmail.mockImplementation(value => {
-    return {
-        email: value,
-        type: 'setAccountCreatingEmail',
-    };
-});
-
-setAccountCreatingMessage.mockImplementation(value => {
-    return {
-        message: value,
-        type: 'setAccountCreatingMessage',
-    };
+Object.keys(actionMocks).forEach((key) => {
+    actionMocks[key].mockImplementation(() => {
+        return { type: key, };
+    });
 });
 
 /* modules */
@@ -48,10 +34,102 @@ describe('accountCreate unit tests', () => {
     beforeEach(() => {
         post.accountCreation.mockClear();
         store.dispatch.mockClear();
-        setAccountCreatingName.mockClear();
-        setAccountCreatingPassword.mockClear();
-        setAccountCreatingEmail.mockClear();
-        setAccountCreatingMessage.mockClear();
+        store.getState.mockClear();
+
+        Object.keys(actionMocks).forEach((key) => {
+            actionMocks[key].mockClear();
+        });
+    });
+
+    it('tests that store.dispatch is called correctly when accountCreate succeeds', async () => {
+        jest.clearAllTimers();
+        jest.useFakeTimers();
+
+        post.accountCreation.mockImplementationOnce(() => {
+            return {
+                status: 200,
+            };
+        });
+
+        await accountCreate(store, 'a', 'b', 'c');
+
+        expect(store.dispatch.mock.calls.length).toEqual(4);
+
+        const args1 = [ { type: 'setAccountCreatingName', }, ];
+
+        expect(store.dispatch.mock.calls[0]).toEqual(args1);
+
+        const args2 = [ { type: 'setAccountCreatingPassword', }, ];
+
+        expect(store.dispatch.mock.calls[1]).toEqual(args2);
+
+        const args3 = [ { type: 'setAccountCreatingEmail', }, ];
+
+        expect(store.dispatch.mock.calls[2]).toEqual(args3);
+
+        const args4 = [ { type: 'setAccountCreatingMessage', }, ];
+
+        expect(store.dispatch.mock.calls[3]).toEqual(args4);
+
+        store.getState.mockImplementationOnce(() => {
+            return {
+                accountCreatingMessage: 'Please check your e-mail ' +
+                    '(including the spam folder) for the validation e-mail, ' +
+                    'then follow the link therein. Your username will be ' +
+                    'reserved for 24 hours; if left unvalidated it will ' +
+                    'become available to everyone again.',
+            };
+        });
+
+        jest.runAllTimers();
+
+        expect(store.dispatch.mock.calls.length).toEqual(5);
+
+        const args5 = [ { type: 'setAccountCreatingMessage', }, ];
+        
+        expect(store.dispatch.mock.calls[4]).toEqual(args5);
+    });
+
+    it('tests that store.dispatch is called correctly when accountCreate fails', async () => {
+        jest.clearAllTimers();
+        jest.useFakeTimers();
+
+        post.accountCreation.mockImplementationOnce(() => {
+            return {
+                status: 400,
+            };
+        });
+
+        await accountCreate(store, 'a', 'b', 'c');
+
+        expect(store.dispatch.mock.calls.length).toEqual(3);
+
+        const args1 = [ { type: 'setAccountCreatingName', }, ];
+
+        expect(store.dispatch.mock.calls[0]).toEqual(args1);
+
+        const args2 = [ { type: 'setAccountCreatingPassword', }, ];
+
+        expect(store.dispatch.mock.calls[1]).toEqual(args2);
+
+        const args3 = [ { type: 'setAccountCreatingMessage', }, ];
+
+        expect(store.dispatch.mock.calls[2]).toEqual(args3);
+
+        store.getState.mockImplementationOnce(() => {
+            return {
+                accountCreatingMessage: 'The request did not succeed, but ' +
+                    'there was no message received.',
+            };
+        });
+
+        jest.runAllTimers();
+
+        expect(store.dispatch.mock.calls.length).toEqual(4);
+
+        const args5 = [ { type: 'setAccountCreatingMessage', }, ];
+        
+        expect(store.dispatch.mock.calls[3]).toEqual(args5);
     });
 
     it('tests that accountCreate succeeds with status 200', async () => {
@@ -60,6 +138,7 @@ describe('accountCreate unit tests', () => {
         });
 
         const succeeded = await accountCreate(
+            store,
             'tester',
             'testpassword',
             'tester@test.com');
@@ -72,6 +151,7 @@ describe('accountCreate unit tests', () => {
         });
 
         const succeeded = await accountCreate(
+            store,
             'tester',
             'testpassword',
             'tester@test.com');
@@ -84,6 +164,7 @@ describe('accountCreate unit tests', () => {
         });
 
         const succeeded = await accountCreate(
+            store,
             'tester',
             'testpassword',
             'tester@test.com');
@@ -91,20 +172,21 @@ describe('accountCreate unit tests', () => {
     });
 
     it('tests that accountCreate calls post.accountCreation correctly', async () => {
-        await accountCreate('a', 'b', 'c');
+        await accountCreate(store, 'a', 'b', 'c');
 
         expect(post.accountCreation.mock.calls.length).toEqual(1);
         expect(post.accountCreation.mock.calls[0]).toEqual(['a', 'b', 'c']);
     });
 
     it('tests that action creators are called correctly when accountCreate succeeds', async () => {
+        jest.clearAllTimers();
         jest.useFakeTimers();
 
         post.accountCreation.mockImplementationOnce(() => {
             return { status: 200, };
         });
 
-        await accountCreate('a', 'b', 'c');
+        await accountCreate(store, 'a', 'b', 'c');
 
         expect(setAccountCreatingName.mock.calls.length).toEqual(1);
         expect(setAccountCreatingName.mock.calls[0]).toEqual(['']);
@@ -137,11 +219,12 @@ describe('accountCreate unit tests', () => {
     });
 
     it('tests that action creators are called correctly when accountCreate fails', async () => {
+        jest.clearAllTimers();
         jest.useFakeTimers();
 
-        post.accountCreation.mockImplementationOnce(() => undefined);
+        post.accountCreation.mockImplementationOnce(() => null);
 
-        await accountCreate('a', 'b', 'c');
+        await accountCreate(store, 'a', 'b', 'c');
 
         expect(setAccountCreatingName.mock.calls.length).toEqual(1);
         expect(setAccountCreatingName.mock.calls[0]).toEqual(['']);
@@ -167,145 +250,26 @@ describe('accountCreate unit tests', () => {
         expect(setAccountCreatingMessage.mock.calls[1]).toEqual(['']);
     });
 
-    it('tests that store.dispatch is called correctly when accountCreate succeeds', async () => {
+    it('tests that the account creating message is not cleared if it does not match the constructed message', async () => {
+        jest.clearAllTimers();
         jest.useFakeTimers();
 
-        post.accountCreation.mockImplementationOnce(() => {
-            return {
-                status: 200,
-            };
-        });
+        post.accountCreation.mockImplementationOnce(() => ({ status: 200, }));
 
-        await accountCreate('a', 'b', 'c');
+        await accountCreate(store, 'a', 'b', 'c');
 
-        expect(store.dispatch.mock.calls.length).toEqual(4);
-
-        const args1 = [
-            {
-                name: '',
-                type: 'setAccountCreatingName',
-            },
-        ];
-
-        expect(store.dispatch.mock.calls[0]).toEqual(args1);
-
-        const args2 = [
-            {
-                password: '',
-                type: 'setAccountCreatingPassword',
-            },
-        ];
-
-        expect(store.dispatch.mock.calls[1]).toEqual(args2);
-
-        const args3 = [
-            {
-                email: '',
-                type: 'setAccountCreatingEmail',
-            },
-        ];
-
-        expect(store.dispatch.mock.calls[2]).toEqual(args3);
-
-        const message = 'Please check your e-mail ' +
-            '(including the spam folder) for the validation e-mail, ' +
-            'then follow the link therein. Your username will be ' +
-            'reserved for 24 hours; if left unvalidated it will ' +
-            'become available to everyone again.';
-
-        const args4 = [
-            {
-                message,
-                type: 'setAccountCreatingMessage',
-            },
-        ];
-
-        expect(store.dispatch.mock.calls[3]).toEqual(args4);
-
-        store.getState.mockImplementationOnce(() => {
-            return {
-                accountCreatingMessage: message,
-            };
-        });
+        store.getState.mockImplementationOnce(() => (
+            { accountCreatingMessage: 'this is different', }
+        ));
 
         jest.runAllTimers();
 
-        expect(store.dispatch.mock.calls.length).toEqual(5);
-
-        const args5 = [
-            {
-                message: '',
-                type: 'setAccountCreatingMessage',  
-            },
-        ];
-        
-        expect(store.dispatch.mock.calls[4]).toEqual(args5);
-    });
-
-    it('tests that store.dispatch is called correctly when accountCreate fails', async () => {
-        jest.useFakeTimers();
-
-        post.accountCreation.mockImplementationOnce(() => {
-            return {
-                status: 400,
-            };
-        });
-
-        await accountCreate('a', 'b', 'c');
-
-        expect(store.dispatch.mock.calls.length).toEqual(3);
-
-        const args1 = [
-            {
-                name: '',
-                type: 'setAccountCreatingName',
-            },
-        ];
-
-        expect(store.dispatch.mock.calls[0]).toEqual(args1);
-
-        const args2 = [
-            {
-                password: '',
-                type: 'setAccountCreatingPassword',
-            },
-        ];
-
-        expect(store.dispatch.mock.calls[1]).toEqual(args2);
-
-        const message = 'The request did not succeed, but there was no ' +
-            'message received.';
-
-        const args3 = [
-            {
-                message,
-                type: 'setAccountCreatingMessage',
-            },
-        ];
-
-        expect(store.dispatch.mock.calls[2]).toEqual(args3);
-
-        store.getState.mockImplementationOnce(() => {
-            return {
-                accountCreatingMessage: message,
-            };
-        });
-
-        jest.runAllTimers();
-
-        expect(store.dispatch.mock.calls.length).toEqual(4);
-
-        const args5 = [
-            {
-                message: '',
-                type: 'setAccountCreatingMessage',  
-            },
-        ];
-        
-        expect(store.dispatch.mock.calls[3]).toEqual(args5);
+        /* does not call store.dispatch in timer */
+        expect(store.dispatch.mock.calls.length).toBe(4);
     });
 
     it('tests that accountCreate logs exceptions received from post.accountCreation', async () => {
+        const log = console.log;
         console.log = jest.fn();        
 
         const exception = new Error('test error!');
@@ -313,7 +277,7 @@ describe('accountCreate unit tests', () => {
             throw exception;
         });
 
-        await accountCreate('foo', 'bar', 'baz');
+        await accountCreate(store, 'foo', 'bar', 'baz');
 
         store.getState.mockImplementationOnce(() => {
             return {};
@@ -321,21 +285,24 @@ describe('accountCreate unit tests', () => {
 
         expect(console.log.mock.calls.length).toEqual(1);
         expect(console.log.mock.calls[0]).toEqual([exception]);
+
+        console.log = log;
     });
 
     it('dispatches a generic failure message if post.accountCreation returns falsey', async () => {
+        jest.clearAllTimers();
         jest.useFakeTimers();
 
-        post.accountCreation.mockImplementationOnce(() => undefined);
+        post.accountCreation.mockImplementationOnce(() => null);
 
-        await accountCreate('foo', 'bar', 'baz');
+        await accountCreate(store, 'foo', 'bar', '__testing');
 
         expect(setAccountCreatingMessage.mock.calls.length).toEqual(1);
         const message = 'There was an error in receiving or deserializing the ' +
             'server response.';
         expect(setAccountCreatingMessage.mock.calls[0]).toEqual([message]);
 
-        store.getState.mockImplementation(() => {
+        store.getState = jest.fn().mockImplementation(() => {
             return {
                 accountCreatingMessage: message,
             };
@@ -346,7 +313,6 @@ describe('accountCreate unit tests', () => {
         expect(store.dispatch.mock.calls.length).toEqual(4);
         expect(store.dispatch.mock.calls[3]).toEqual([
             {
-                message: '',
                 type: 'setAccountCreatingMessage',
             },
         ]);
@@ -359,7 +325,7 @@ describe('accountCreate unit tests', () => {
             };
         });
 
-        await accountCreate('foo', 'bar', 'baz');
+        await accountCreate(store, 'foo', 'bar', 'baz');
 
         expect(setAccountCreatingMessage.mock.calls.length).toEqual(1);
         expect(setAccountCreatingMessage.mock.calls[0]).toEqual([
@@ -374,7 +340,7 @@ describe('accountCreate unit tests', () => {
             };
         });
 
-        await accountCreate('foo', 'bar', 'baz');
+        await accountCreate(store, 'foo', 'bar', 'baz');
 
         expect(setAccountCreatingMessage.mock.calls.length).toEqual(1);
         expect(setAccountCreatingMessage.mock.calls[0]).toEqual([

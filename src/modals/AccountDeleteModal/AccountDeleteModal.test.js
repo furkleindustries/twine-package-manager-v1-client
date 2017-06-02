@@ -1,18 +1,21 @@
-// react
+/* react */
 import React from 'react';
-import ReactTestUtils from 'react-dom/test-utils';
 
-// enzyme
-import { shallow, } from 'enzyme';
+/* next */
+jest.mock('next/router');
 
-// redux
-import store from '../../store';
+/* enzyme */
+import { shallow, mount, } from 'enzyme';
 
-// components
+/* redux */
+const store = {};
+store.dispatch = jest.fn();
+
+/* components */
 import { AccountDeleteModal, } from './AccountDeleteModal';
-import rootComponent from '../../rootComponent';
+import Profile from '../../../pages/profile';
 
-// modules
+/* modules */
 jest.mock('../../modules/accountDelete');
 import accountDelete from '../../modules/accountDelete';
 
@@ -25,28 +28,27 @@ const dispatch = store.dispatch;
 
 describe('AccountDeleteModal unit tests', () => {
     beforeEach(() => {
+        window.localStorage = {};
         store.dispatch = jest.fn();
     });
 
-    it('produces the AccountDeleteModal modal', () => {
-        window.localStorage = {};
-
-        store.dispatch = dispatch;
-        const component = ReactTestUtils.renderIntoDocument(rootComponent);
-        modalFactories.accountDelete();
-        const find = ReactTestUtils.scryRenderedComponentsWithType(
-            component,
-            AccountDeleteModal);
+    it('produces the AccountDeleteModal modal', async () => {
+        const wrapper = mount(<Profile />);
+        const app = wrapper.find('App');
+        modalFactories.accountDelete(app.props().dispatch);
+        const find = wrapper.find('AccountDeleteModal');
         expect(find.length).toEqual(1);
     });
 
     it('renders AccountDeleteModal', () => {
-        const wrapper = shallow(<AccountDeleteModal />);
+        const component = <AccountDeleteModal dispatch={store.dispatch} />;
+        const wrapper = shallow(component);
         expect(wrapper.length).toEqual(1);
     });
 
     it('handles handleKeyDown', () => {
-        const wrapper = shallow(<AccountDeleteModal />);
+        const component = <AccountDeleteModal dispatch={store.dispatch} />;
+        const wrapper = shallow(component);
         wrapper.instance().handleKeyDown({ target: { value: 'buzzbazz', }, });
         expect(store.dispatch.mock.calls.length).toEqual(1);
         expect(store.dispatch.mock.calls[0]).toEqual([
@@ -66,13 +68,15 @@ describe('AccountDeleteModal unit tests', () => {
 
         const component = <AccountDeleteModal
             id={213}
-            csrfToken="abcdef" />
+            csrfToken="abcdef"
+            dispatch={store.dispatch}
+            store={store} />
 
         const wrapper = shallow(component);
         await wrapper.instance().deleteAccount();
 
         expect(accountDelete.mock.calls.length).toEqual(1);
-        const args = [213, 'abcdef'];
+        const args = [ store, 213, 'abcdef', ];
         expect(accountDelete.mock.calls[0]).toEqual(args);
 
         jest.runAllTimers();
@@ -89,13 +93,15 @@ describe('AccountDeleteModal unit tests', () => {
 
         const component = <AccountDeleteModal
             id={245}
-            csrfToken="testing" />
+            csrfToken="testing"
+            dispatch={store.dispatch}
+            store={store} />
 
         const wrapper = shallow(component);
         await wrapper.instance().deleteAccount();
 
         expect(accountDelete.mock.calls.length).toEqual(1);
-        const args = [245, 'testing'];
+        const args = [ store, 245, 'testing', ];
         expect(accountDelete.mock.calls[0]).toEqual(args);
 
         jest.runAllTimers();

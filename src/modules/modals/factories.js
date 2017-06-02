@@ -15,37 +15,38 @@ import RulesModal from '../../modals/RulesModal/RulesModal';
 /* modules */
 import create from './create';
 
-export function accountCreate() {
+export function accountCreate(dispatch) {
     location.hash = 'createAccount';
-    create(<AccountCreateModal />);
+    create(dispatch, <AccountCreateModal />);
 }
 
-export function accountDelete() {
+export function accountDelete(dispatch) {
+    debugger;
 	location.hash = 'deleteAccount';
-	create(<AccountDeleteModal />);
+	create(dispatch, <AccountDeleteModal />);
 }
 
-export function packageCreate() {
+export function packageCreate(dispatch) {
     location.hash = 'createNewPackage';
-    create(<PackageCreateModal />);
+    create(dispatch, <PackageCreateModal />);
 }
 
-export function togglePackagePublish(id) {
+export function togglePackagePublish(dispatch, id) {
     location.hash = `togglePackagePublish-${id}`;
-    create(<PackagePublishModal />);
+    create(dispatch, <PackagePublishModal />);
 }
 
-export function packageEdit(id) {
+export function packageEdit(dispatch, id) {
 	location.hash = `editPackage-${id}`;
-    create(<PackageEditModal />);
+    create(dispatch, <PackageEditModal />);
 }
 
-export function packageDelete(id) {
+export function packageDelete(dispatch, id) {
     location.hash = `deletePackage-${id}`;
-    create(<PackageDeleteModal />);
+    create(dispatch, <PackageDeleteModal />);
 }
 
-export function rules() {
+export function rules(dispatch) {
     location.hash = 'rules';
-    create(<RulesModal />);
+    create(dispatch, <RulesModal />);
 }

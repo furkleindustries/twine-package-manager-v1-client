@@ -1,5 +1,4 @@
 /* redux */
-import store from '../store';
 import {
     setProfilePackages,
 } from '../panes/profile/profileActions';
@@ -11,7 +10,7 @@ import {
 /* modules */
 import * as _delete from './database/delete';
 
-export default async function packageDelete(id, csrfToken) {
+export default async function packageDelete(store, id, csrfToken) {
     let responseObj;
     try {
         responseObj = await _delete._package(id, csrfToken);

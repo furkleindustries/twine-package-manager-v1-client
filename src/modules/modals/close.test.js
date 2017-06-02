@@ -1,6 +1,7 @@
 /* redux */
-jest.mock('../../store');
-import store from '../../store';
+const store = {};
+store.dispatch = jest.fn();
+
 jest.mock('../../appActions');
 import { setModal, } from '../../appActions';
 
@@ -9,8 +10,14 @@ import closeListener from './closeListener';
 import close from './close';
 
 describe('modal close unit tests', () => {
+    beforeEach(() => {
+        store.dispatch.mockClear();
+    });
+
     it('tests the side effects of the close method', () => {
+        jest.clearAllTimers();
         jest.useFakeTimers();
+        
         setModal.mockImplementationOnce(() => {
             return {
                 modal: null,
@@ -20,7 +27,7 @@ describe('modal close unit tests', () => {
 
         document.body.removeEventListener = jest.fn();
 
-        close();
+        close(store.dispatch);
 
         jest.runAllTimers();
 
@@ -53,10 +60,11 @@ describe('modal close unit tests', () => {
     });
 
     it('tests that the location.hash property is set to an empty string', () => {
+        jest.clearAllTimers();
         jest.useFakeTimers();
 
         window.location.hash = 'testing';
-        close();
+        close(store.dispatch);
 
         jest.runAllTimers();
 
@@ -70,7 +78,7 @@ describe('modal close unit tests', () => {
             return { style: obj, };
         });
 
-        close();
+        close(store.dispatch);
 
         expect(document.querySelector.mock.calls.length).toEqual(1);
         expect(document.querySelector.mock.calls[0]).toEqual([

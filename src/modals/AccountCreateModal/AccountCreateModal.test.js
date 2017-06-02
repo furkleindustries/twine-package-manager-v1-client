@@ -1,18 +1,21 @@
-// react
+/* react */
 import React from 'react';
-import ReactTestUtils from 'react-dom/test-utils';
 
-// enzyme
+/* enzyme */
 import { shallow, mount, } from 'enzyme';
 
-// redux
-import store from '../../store';
+/* next */
+jest.mock('next/router');
 
-// components
+/* redux */
+const store = {};
+store.dispatch = jest.fn();
+
+/* components */
 import { AccountCreateModal, } from './AccountCreateModal';
-import rootComponent from '../../rootComponent';
+import Login from '../../../pages/login';
 
-// modules
+/* modules */
 jest.mock('../../modules/accountCreate');
 import accountCreate from '../../modules/accountCreate';
 
@@ -25,28 +28,25 @@ const dispatch = store.dispatch;
 
 describe('AccountCreateModal unit tests', () => {
     beforeEach(() => {
+        window.localStorage = {};
         store.dispatch = jest.fn();
     });
 
     it('produces the AccountCreateModal modal', () => {
-        window.localStorage = {};
-
-        store.dispatch = dispatch;
-        const component = ReactTestUtils.renderIntoDocument(rootComponent);
-        modalFactories.accountCreate();
-        const find = ReactTestUtils.scryRenderedComponentsWithType(
-            component,
-            AccountCreateModal);
+        const wrapper = mount(<Login />);
+        const app = wrapper.find('App');
+        modalFactories.accountCreate(app.props().dispatch);
+        const find = wrapper.find('AccountCreateModal');
         expect(find.length).toEqual(1);
     });
 
     it('renders AccountCreateModal', () => {
-        const wrapper = shallow(<AccountCreateModal />);
+        const wrapper = mount(<AccountCreateModal store={store} />);
         expect(wrapper.length).toEqual(1);
     });
 
     it('handles handleKeyDown with keyCode of 13', () => {
-        const wrapper = shallow(<AccountCreateModal />);
+        const wrapper = shallow(<AccountCreateModal store={store} />);
         wrapper.instance().doAccountCreate = jest.fn();
         wrapper.instance().handleKeyDown({ keyCode: 13, });
         expect(wrapper.instance().doAccountCreate.mock.calls.length)
@@ -54,7 +54,7 @@ describe('AccountCreateModal unit tests', () => {
     });
 
     it('rejects handleKeyDown with keyCode !== 13', () => {
-        const wrapper = shallow(<AccountCreateModal />);
+        const wrapper = shallow(<AccountCreateModal store={store} />);
         wrapper.instance().doAccountCreate = jest.fn();
         wrapper.instance().handleKeyDown({ keyCode: 14, })
         expect(wrapper.instance().doAccountCreate.mock.calls.length)
@@ -62,7 +62,11 @@ describe('AccountCreateModal unit tests', () => {
     });
 
     it('handles handleNameChange', () => {
-        const wrapper = shallow(<AccountCreateModal />);
+        const component = <AccountCreateModal
+            store={store}
+            dispatch={store.dispatch} />
+
+        const wrapper = shallow(component);
         const e = {
             target: {
                 value: 'foobar',
@@ -81,7 +85,11 @@ describe('AccountCreateModal unit tests', () => {
     });
 
     it('handles handlePasswordChange', () => {
-        const wrapper = shallow(<AccountCreateModal />);
+        const component = <AccountCreateModal
+            store={store}
+            dispatch={store.dispatch} />;
+
+        const wrapper = shallow(component);
         const e = {
             target: {
                 value: 'bazbar',
@@ -100,7 +108,11 @@ describe('AccountCreateModal unit tests', () => {
     });
 
     it('handles handleEmailChange', () => {
-        const wrapper = shallow(<AccountCreateModal />);
+        const component = <AccountCreateModal
+            store={store}
+            dispatch={store.dispatch} />
+
+        const wrapper = shallow(component);
         const e = {
             target: {
                 value: 'buxbuzz',
@@ -125,16 +137,16 @@ describe('AccountCreateModal unit tests', () => {
         accountCreate.mockImplementationOnce(() => true);
 
         const component = <AccountCreateModal
+            store={store}
             name="foo"
             password="bar"
-            email="baz"
-            csrfToken="abcdef" />
+            email="baz" />;
 
         const wrapper = shallow(component);
         await wrapper.instance().doAccountCreate();
 
         expect(accountCreate.mock.calls.length).toEqual(1);
-        const args = ['foo', 'bar', 'baz', 'abcdef'];
+        const args = [ store, 'foo', 'bar', 'baz', ];
         expect(accountCreate.mock.calls[0]).toEqual(args);
 
         jest.runAllTimers();
@@ -150,17 +162,17 @@ describe('AccountCreateModal unit tests', () => {
         modalClose.mockClear();
 
         const component = <AccountCreateModal
+            store={store}
             name="foo"
             password="bar"
-            email="baz"
-            csrfToken="abcdef" />
+            email="baz" />;
 
-        // must be mounted for refs to exist
+        /* must be mounted for refs to exist */
         const wrapper = mount(component);
         await wrapper.instance().doAccountCreate();
 
         expect(accountCreate.mock.calls.length).toEqual(1);
-        const args = ['foo', 'bar', 'baz', 'abcdef'];
+        const args = [ store, 'foo', 'bar', 'baz', ];
         expect(accountCreate.mock.calls[0]).toEqual(args);
 
         jest.runAllTimers();

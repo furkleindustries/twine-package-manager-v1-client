@@ -1,5 +1,4 @@
 /* redux */
-import store from '../store';
 import {
     setProfileMessage,
     setProfileRollback,
@@ -8,7 +7,7 @@ import {
 /* modules */
 import * as post from './database/post';
 
-export default async function accountUpdate(account, csrfToken) {
+export default async function accountUpdate(store, account, csrfToken) {
     let responseObj;
     try {
         responseObj = await post.accountUpdate(account, csrfToken);

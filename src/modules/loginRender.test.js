@@ -1,12 +1,10 @@
 /* react */
-jest.mock('react-router');
-import { browserHistory, } from 'react-router';
+jest.mock('next/router');
+import Router from 'next/router';
 
 /* redux */
-jest.mock('../store');
-import store from '../store';
-
-store.getState.mockImplementation(() => {
+const store = {};
+store.getState = jest.fn().mockImplementation(() => {
     return {
         appPanes: {
             login: {},
@@ -20,6 +18,8 @@ store.getState.mockImplementation(() => {
         },
     };
 });
+
+store.dispatch = jest.fn();
 
 jest.mock('../appActions');
 import {
@@ -66,7 +66,7 @@ import * as get from './database/get';
 describe('loginRender unit tests', () => {
     beforeEach(() => {
         window.localStorage = {};
-        browserHistory.push.mockClear();
+        Router.push.mockClear();
         store.dispatch.mockClear();
         setAppPanes.mockClear();
         setAppSelectedPane.mockClear();
@@ -85,7 +85,7 @@ describe('loginRender unit tests', () => {
             };
         });
 
-        await loginRender('test_token');
+        await loginRender(store, 'test_token');
 
         expect(get.userdata.mock.calls.length).toBe(1);
         expect(get.userdata.mock.calls[0]).toEqual(['test_token']);
@@ -101,7 +101,7 @@ describe('loginRender unit tests', () => {
             };
         });
 
-        await loginRender('test_token');
+        await loginRender(store, 'test_token');
 
         expect(setAppPanes.mock.calls.length).toBe(1);
         expect(setAppPanes.mock.calls[0]).toEqual([
@@ -130,7 +130,7 @@ describe('loginRender unit tests', () => {
             };
         });
 
-        await loginRender('test_token');
+        await loginRender(store, 'test_token');
 
         expect(store.dispatch.mock.calls.length).toBe(5);
         expect(store.dispatch.mock.calls[0]).toEqual([
@@ -172,16 +172,15 @@ describe('loginRender unit tests', () => {
             };
         });
 
-        await loginRender('test_token', 'gotoProfile');
+        await loginRender(store, 'test_token', 'gotoProfile');
 
         expect(store.dispatch.mock.calls.length).toBe(6);
         expect(store.dispatch.mock.calls[5]).toEqual([
             { type: 'setAppSelectedPane', },
         ]);
 
-        expect(browserHistory.push.mock.calls.length).toBe(1);
-        expect(/\/profile$/.test(browserHistory.push.mock.calls[0]))
-            .toBe(true);
+        expect(Router.push.mock.calls.length).toBe(1);
+        expect(Router.push.mock.calls[0]).toEqual([ '/profile', 'profile', ]);
     });
 
     it('creates side effects correctly when get.userdata fails with errorCode of no_access_cookie', async () => {
@@ -203,7 +202,7 @@ describe('loginRender unit tests', () => {
             };
         });
 
-        await loginRender('test_token');
+        await loginRender(store, 'test_token');
 
         expect('twinepmCSRFToken' in localStorage).toBe(false);
         
@@ -238,7 +237,7 @@ describe('loginRender unit tests', () => {
             };
         });
 
-        await loginRender('test_token');
+        await loginRender(store, 'test_token');
 
         expect('twinepmCSRFToken' in localStorage).toBe(false);
         
@@ -284,7 +283,7 @@ describe('loginRender unit tests', () => {
             };
         });
 
-        await loginRender('test_token');
+        await loginRender(store, 'test_token');
 
         expect('twinepmCSRFToken' in localStorage).toBe(false);
         
@@ -312,19 +311,18 @@ describe('loginRender unit tests', () => {
             return { appSelectedPane: 'profile', };
         });
 
-        await loginRender('test_token');
+        await loginRender(store, 'test_token');
 
         expect(setAppSelectedPane.mock.calls.length).toBe(1);
-        expect(setAppSelectedPane.mock.calls[0]).toEqual(['login']);
+        expect(setAppSelectedPane.mock.calls[0]).toEqual([ 'login', ]);
 
         expect(store.dispatch.mock.calls.length).toBe(2);
         expect(store.dispatch.mock.calls[1]).toEqual([
             { type: 'setAppSelectedPane', },
         ]);
 
-        expect(browserHistory.push.mock.calls.length).toBe(1);
-        expect(/\/login$/.test(browserHistory.push.mock.calls[0][0]))
-            .toEqual(true);
+        expect(Router.push.mock.calls.length).toBe(1);
+        expect(Router.push.mock.calls[0]).toEqual([ '/login', 'login', ]);
     });
 
     it('does not redirect when loginRender is called with appSelectedPane !== profile', async () => {
@@ -335,10 +333,10 @@ describe('loginRender unit tests', () => {
             };
         });
 
-        await loginRender('test_token');
+        await loginRender(store, 'test_token');
 
         expect(store.dispatch.mock.calls.length).toBe(1);
-        expect(browserHistory.push.mock.calls.length).toBe(0);
+        expect(Router.push.mock.calls.length).toBe(0);
     });
 
     it('only logs with no other side effects when the response has an error or status !== 200 and errorCode !== no_access_cookie or anti_csrf_mismatch', async () => {
@@ -349,7 +347,7 @@ describe('loginRender unit tests', () => {
             return { error: 'test error', };
         });
 
-        await loginRender('test_token');
+        await loginRender(store, 'test_token');
 
         expect(store.dispatch.mock.calls.length).toBe(0);
 
@@ -367,7 +365,7 @@ describe('loginRender unit tests', () => {
             throw exception;
         });
 
-        await loginRender('test_token');
+        await loginRender(store, 'test_token');
 
         expect(console.log.mock.calls.length).toBe(1);
         expect(console.log.mock.calls[0]).toEqual([exception]);
@@ -386,7 +384,7 @@ describe('loginRender unit tests', () => {
 
         window.localStorage.twinepmProfileCache = `{"test":"testing"}`;
 
-        await loginRender('test_token');
+        await loginRender(store, 'test_token');
 
         expect(setProfile.mock.calls.length).toBe(1);
         expect(setProfile.mock.calls[0]).toEqual([
@@ -407,7 +405,7 @@ describe('loginRender unit tests', () => {
 
         window.localStorage.twinepmProfileCache = `realbadjson`;
 
-        await loginRender('test_token');
+        await loginRender(store, 'test_token');
 
         expect(console.log.mock.calls.length).toBe(2);
         expect(store.dispatch.mock.calls.length).toBe(0);

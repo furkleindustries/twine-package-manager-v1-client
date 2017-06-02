@@ -1,6 +1,7 @@
 /* redux */
-jest.mock('../store');
-import store from '../store';
+const store = {};
+store.dispatch = jest.fn();
+store.getState = jest.fn();
 
 jest.mock('../appActions');
 import { setCSRFToken, } from '../appActions';
@@ -33,6 +34,7 @@ describe('login unit tests', () => {
     beforeEach(() => {
         window.localStorage = {};
         store.dispatch.mockClear();
+        store.getState.mockClear();
         setCSRFToken.mockClear();
         setLoginMessage.mockClear();
         loginRender.mockClear();
@@ -46,7 +48,7 @@ describe('login unit tests', () => {
             };
         });
 
-        expect(await login('username', 'password')).toBe(true);
+        expect(await login(store, 'username', 'password')).toBe(true);
     });
 
     it('tests that login returns false when unsuccessful', async () => {
@@ -56,7 +58,7 @@ describe('login unit tests', () => {
             };
         });
 
-        expect(await login('fail_user', 'fail_pass')).toBe(false);
+        expect(await login(store, 'fail_user', 'fail_pass')).toBe(false);
     });
 
     it('calls relevant methods when login is successful', async () => {
@@ -67,7 +69,7 @@ describe('login unit tests', () => {
             };
         });
 
-        await login('username', 'password');
+        await login(store, 'username', 'password');
 
         expect(localStorage.twinepmCSRFToken).toBe('test_token');
         
@@ -84,6 +86,7 @@ describe('login unit tests', () => {
 
         expect(loginRender.mock.calls.length).toBe(1);
         expect(loginRender.mock.calls[0]).toEqual([
+            store,
             'test_token',
             'gotoProfile'
         ]);
@@ -91,7 +94,6 @@ describe('login unit tests', () => {
 
     it('calls relevant methods when login is unsuccessful', async () => {
         jest.clearAllTimers();
-
         jest.useFakeTimers();
 
         post.login.mockImplementationOnce(() => {
@@ -100,12 +102,12 @@ describe('login unit tests', () => {
             };
         });
 
-        await login('user', 'pass');
+        await login(store, 'user', 'pass');
 
         const message = 'Unknown error.';
 
         expect(setLoginMessage.mock.calls.length).toBe(1);
-        expect(setLoginMessage.mock.calls[0]).toEqual([message]);
+        expect(setLoginMessage.mock.calls[0]).toEqual([ message, ]);
 
         expect(store.dispatch.mock.calls.length).toBe(1);
         expect(store.dispatch.mock.calls[0]).toEqual([
@@ -124,7 +126,7 @@ describe('login unit tests', () => {
         jest.runAllTimers();
 
         expect(setLoginMessage.mock.calls.length).toBe(2);
-        expect(setLoginMessage.mock.calls[1]).toEqual(['']);
+        expect(setLoginMessage.mock.calls[1]).toEqual([ '', ]);
 
         expect(store.dispatch.mock.calls.length).toBe(2);
         expect(store.dispatch.mock.calls[1]).toEqual([
@@ -143,7 +145,7 @@ describe('login unit tests', () => {
 
         console.log = jest.fn();
 
-        login('user', 'pass');
+        login(store, 'user', 'pass');
 
         expect(console.log.mock.calls.length).toEqual(1);
         expect(console.log.mock.calls[0]).toEqual([exception]);
@@ -157,14 +159,13 @@ describe('login unit tests', () => {
             };
         });
 
-        await login('user', 'pass');
+        await login(store, 'user', 'pass');
 
         expect(setLoginMessage.mock.calls[0]).toEqual(['test error']);
     });
 
     it('does not set loginMessage if the message has changed since the timeout was created', async () => {
         jest.clearAllTimers();
-
         jest.useFakeTimers();
 
         post.login.mockImplementationOnce(() => {
@@ -174,7 +175,7 @@ describe('login unit tests', () => {
             };
         });
 
-        await login('username', 'password');
+        await login(store, 'username', 'password');
 
         store.getState.mockImplementationOnce(() => {
             return {

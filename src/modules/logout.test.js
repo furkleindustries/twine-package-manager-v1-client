@@ -1,11 +1,11 @@
 /* react */
-jest.mock('react-router');
-import { browserHistory, } from 'react-router';
+jest.mock('next/router');
+import Router from 'next/router';
 
 /* redux */
-jest.mock('../store');
-import store from '../store';
-store.getState.mockImplementation(() => {
+const store = {};
+store.dispatch = jest.fn();
+store.getState = jest.fn().mockImplementation(() => {
     return {
         appPanes: {
             login: {},
@@ -50,17 +50,17 @@ describe('logout unit tests', () => {
         window.localStorage = {
             twinepmCRFToken: 'test_token12',
             twinepmProfileLocation: 'info',
-        }
+        };
 
-        browserHistory.push.mockClear();
+        Router.push.mockClear();
         store.dispatch.mockClear();
-        setAppPanes.mockClear();
-        setAppSelectedPane.mockClear();
-        setCSRFToken.mockClear();
+        Object.keys(actionMocks).forEach(key => {
+            actionMocks[key].mockClear();
+        });
     });
 
     it('calls action creators correctly with !skipServer', async () => {
-        await logout('test_token');
+        await logout(store, 'test_token');
 
         expect(setAppPanes.mock.calls.length).toBe(1);
         expect(setAppPanes.mock.calls[0]).toEqual([
@@ -81,7 +81,7 @@ describe('logout unit tests', () => {
     });
 
     it('calls store.dispatch correctly with !skipServer', async () => {
-        await logout('test_token');
+        await logout(store, 'test_token');
 
         expect(store.dispatch.mock.calls.length).toBe(4);
         expect(store.dispatch.mock.calls[0]).toEqual([
@@ -113,16 +113,15 @@ describe('logout unit tests', () => {
             };
         });
 
-        await logout('test_token');
+        await logout(store, 'test_token');
 
         expect(store.dispatch.mock.calls.length).toBe(5);
         expect(store.dispatch.mock.calls[4]).toEqual([
             { type: 'setAppSelectedPane', },
         ]);
 
-        expect(browserHistory.push.mock.calls.length).toBe(1);
-        expect(/\/login$/.test(browserHistory.push.mock.calls[0][0]))
-            .toEqual(true);
+        expect(Router.push.mock.calls.length).toBe(1);
+        expect(/\/login$/.test(Router.push.mock.calls[0][0])).toEqual(true);
     });
 
     it('logs exceptions received from post.logout and returns early', async () => {
@@ -134,7 +133,7 @@ describe('logout unit tests', () => {
             throw exception;
         });
 
-        await logout('test_token', 'skipServer');
+        await logout(store, 'test_token', 'skipServer');
 
         expect(console.log.mock.calls.length).toBe(1);
         expect(console.log.mock.calls[0]).toEqual([exception]);

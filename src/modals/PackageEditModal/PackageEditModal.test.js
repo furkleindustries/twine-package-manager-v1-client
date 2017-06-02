@@ -1,18 +1,21 @@
-// react
+/* react */
 import React from 'react';
-import ReactTestUtils from 'react-dom/test-utils';
 
-// enzyme
+/* enzyme */
 import { shallow, mount, } from 'enzyme';
 
-// redux
-import store from '../../store';
+/* next */
+jest.mock('next/router');
 
-// components
+/* redux */
+const store = {};
+store.dispatch = jest.fn();
+
+/* components */
 import { PackageEditModal, } from './PackageEditModal';
-import rootComponent from '../../rootComponent';
+import Profile from '../../../pages/profile';
 
-// modules
+/* modules */
 jest.mock('../../modules/packageUpdate');
 import packageUpdate from '../../modules/packageUpdate';
 
@@ -24,26 +27,19 @@ import packageTransferOwnership from '../../modules/packageTransferOwnership';
 
 import * as modalFactories from '../../modules/modals/factories';
 
-const dispatch = store.dispatch;
-
 describe('PackageEditModal unit tests', () => {
     beforeEach(() => {
-        store.dispatch = jest.fn();
+        window.localStorage = {};
+        store.dispatch.mockClear();
+        packageUpdate.mockClear();
+        modalClose.mockClear();
     });
 
     it('produces the PackageEditModal modal', () => {
-        window.localStorage = {};
-
-        store.dispatch = dispatch;
-
-        const component = ReactTestUtils.renderIntoDocument(rootComponent);
-        
-        modalFactories.packageEdit();
-        
-        const find = ReactTestUtils.scryRenderedComponentsWithType(
-            component,
-            PackageEditModal);
-        
+        const wrapper = mount(<Profile />);
+        const app = wrapper.find('App');
+        modalFactories.packageEdit(app.props().dispatch);
+        const find = wrapper.find('PackageEditModal');
         expect(find.length).toEqual(1);
     });
 
@@ -67,7 +63,11 @@ describe('PackageEditModal unit tests', () => {
     });
 
     it('handles handleNewOwnerChange', () => {
-        const wrapper = shallow(<PackageEditModal type="bar" />);
+        const component = <PackageEditModal
+            type="bar"
+            dispatch={store.dispatch} />;
+
+        const wrapper = shallow(component);
         const e = {
             target: {
                 value: 'new_owner',
@@ -92,17 +92,26 @@ describe('PackageEditModal unit tests', () => {
             csrfToken: 'test_token',
         };
 
-        const wrapper = shallow(<PackageEditModal type="bar" { ...args } />);
+        const component = <PackageEditModal
+            type="bar"
+            {...args}
+            dispatch={store.dispatch} />;
+
+        const wrapper = shallow(component);
 
         wrapper.instance().transferOwnership();
 
         expect(packageTransferOwnership.mock.calls.length).toEqual(1);
         expect(packageTransferOwnership.mock.calls[0]).toEqual(
-            [args.id, args.newOwner, args.csrfToken]);
+            [ args.id, args.newOwner, args.csrfToken ]);
     });
 
     it('handles handleNameChange', () => {
-        const wrapper = shallow(<PackageEditModal type="bar" />);
+        const component = <PackageEditModal
+            type="bar"
+            dispatch={store.dispatch} />;
+
+        const wrapper = shallow(component);
         const e = {
             target: {
                 value: 'foobar',
@@ -121,7 +130,11 @@ describe('PackageEditModal unit tests', () => {
     });
 
     it('handles handleTypeChange', () => {
-        const wrapper = shallow(<PackageEditModal type="baz" />);
+        const component = <PackageEditModal
+            type="baz"
+            dispatch={store.dispatch} />;
+
+        const wrapper = shallow(component);
         const e = {
             target: {
                 value: 'bazbar',
@@ -140,7 +153,11 @@ describe('PackageEditModal unit tests', () => {
     });
 
     it('handles handleVersionChange', () => {
-        const wrapper = shallow(<PackageEditModal type="bux" />);
+        const component = <PackageEditModal
+            type="bux"
+            dispatch={store.dispatch} />;
+
+        const wrapper = shallow(component);
         const e = {
             target: {
                 value: 'buxbuzz',
@@ -159,7 +176,11 @@ describe('PackageEditModal unit tests', () => {
     });
 
     it('handles handleDescriptionChange', () => {
-        const wrapper = shallow(<PackageEditModal type="bux" />);
+        const component = <PackageEditModal
+            type="bux"
+            dispatch={store.dispatch} />;
+
+        const wrapper = shallow(component);
         const e = {
             target: {
                 value: 'foob',
@@ -178,7 +199,11 @@ describe('PackageEditModal unit tests', () => {
     });
 
     it('handles handleHomepageChange', () => {
-        const wrapper = shallow(<PackageEditModal type="dsfds" />);
+        const component = <PackageEditModal
+            type="dsfds"
+            dispatch={store.dispatch} />;
+
+        const wrapper = shallow(component);
         const e = {
             target: {
                 value: 'testing',
@@ -197,7 +222,11 @@ describe('PackageEditModal unit tests', () => {
     });
 
     it('handles handleJsChange', () => {
-        const wrapper = shallow(<PackageEditModal type="adfsd" />);
+        const component = <PackageEditModal
+            type="adfsd"
+            dispatch={store.dispatch} />;
+
+        const wrapper = shallow(component);
         const e = {
             target: {
                 value: 'test js',
@@ -216,7 +245,11 @@ describe('PackageEditModal unit tests', () => {
     });
 
     it('handles handleCssChange', () => {
-        const wrapper = shallow(<PackageEditModal type="sdafsaad" />);
+        const component = <PackageEditModal
+            type="sdafsaad"
+            dispatch={store.dispatch} />;
+
+        const wrapper = shallow(component);
         const e = {
             target: {
                 value: 'test css',
@@ -235,7 +268,11 @@ describe('PackageEditModal unit tests', () => {
     });
 
     it('handles handleKeywordsChange', () => {
-        const wrapper = shallow(<PackageEditModal type="dfhj" />);
+        const component = <PackageEditModal
+            type="dfhj"
+            dispatch={store.dispatch} />;
+
+        const wrapper = shallow(component);
         const e = {
             target: {
                 value: 'test keywords',
@@ -254,7 +291,11 @@ describe('PackageEditModal unit tests', () => {
     });
 
     it('handles handleTagChange', () => {
-        const wrapper = shallow(<PackageEditModal type="dfhj" />);
+        const component = <PackageEditModal
+            type="dfhj"
+            dispatch={store.dispatch} />;
+
+        const wrapper = shallow(component);
         const e = {
             target: {
                 value: 'test tag',
@@ -273,11 +314,10 @@ describe('PackageEditModal unit tests', () => {
     });
 
     it('handles editPackage with success', async () => {
+        jest.clearAllTimers();
         jest.useFakeTimers();
 
-        packageUpdate.mockClear();
         packageUpdate.mockImplementationOnce(() => true);
-        modalClose.mockClear();
 
         const pkg = {
             id: 12345,
@@ -292,13 +332,16 @@ describe('PackageEditModal unit tests', () => {
             tag: 'test tag',
         };
 
-        const component = <PackageEditModal {...pkg} csrfToken="_token" />
+        const component = <PackageEditModal
+            {...pkg}
+            csrfToken="_token"
+            store={store} />
 
         const wrapper = shallow(component);
         await wrapper.instance().updatePackage();
 
         expect(packageUpdate.mock.calls.length).toEqual(1);
-        const args = [pkg, '_token'];
+        const args = [ store, pkg, '_token', ];
         expect(packageUpdate.mock.calls[0]).toEqual(args);
 
         jest.runAllTimers();
@@ -307,11 +350,10 @@ describe('PackageEditModal unit tests', () => {
     });
 
     it('handles editPackage with failure', async () => {
+        jest.clearAllTimers();
         jest.useFakeTimers();
 
-        packageUpdate.mockClear();
         packageUpdate.mockImplementationOnce(() => false);
-        modalClose.mockClear();
 
         const pkg = {
             id: 12346,
@@ -326,14 +368,17 @@ describe('PackageEditModal unit tests', () => {
             tag: 'test tag',
         };
 
-        const component = <PackageEditModal { ...pkg } csrfToken="_token" />
+        const component = <PackageEditModal
+            {...pkg}
+            csrfToken="_token"
+            store={store} />;
 
-        // must be mounted for refs to exist
+        /* must be mounted for refs to exist */
         const wrapper = mount(component);
         await wrapper.instance().updatePackage();
 
         expect(packageUpdate.mock.calls.length).toEqual(1);
-        const args = [pkg, '_token'];
+        const args = [ store, pkg, '_token', ];
         expect(packageUpdate.mock.calls[0]).toEqual(args);
 
         jest.runAllTimers();

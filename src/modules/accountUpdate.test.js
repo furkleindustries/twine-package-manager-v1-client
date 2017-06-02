@@ -1,6 +1,7 @@
 /* redux */
-jest.mock('../store');
-import store from '../store';
+const store = {};
+store.dispatch = jest.fn();
+store.getState = jest.fn();
 
 jest.mock('../panes/profile/profileActions');
 import {
@@ -30,8 +31,9 @@ import * as post from './database/post';
 
 describe('accountUpdate unit tests', () => {
     beforeEach(() => {
-        post.accountUpdate.mockClear();
         store.dispatch.mockClear();
+        store.getState.mockClear();
+        post.accountUpdate.mockClear();
         setProfileMessage.mockClear();
         setProfileRollback.mockClear();
     });
@@ -47,7 +49,7 @@ describe('accountUpdate unit tests', () => {
             };
         });
 
-        const succeeded = await accountUpdate({}, 'test_token');
+        const succeeded = await accountUpdate(store, {}, 'test_token');
         expect(succeeded).toEqual(true);
     });
 
@@ -56,7 +58,7 @@ describe('accountUpdate unit tests', () => {
             return { error: 'oh no', };
         });
 
-        const succeeded = await accountUpdate({}, 'test_token');
+        const succeeded = await accountUpdate(store, {}, 'test_token');
         expect(succeeded).toEqual(false);
     });
 
@@ -65,18 +67,19 @@ describe('accountUpdate unit tests', () => {
             return { status: 400, };
         });
 
-        const succeeded = await accountUpdate({}, 'test_token');
+        const succeeded = await accountUpdate(store, {}, 'test_token');
         expect(succeeded).toEqual(false);
     });
 
     it('tests that accountUpdate calls post.accountUpdate correctly', async () => {
-        await accountUpdate({}, 'test_token');
+        await accountUpdate(store, {}, 'test_token');
 
         expect(post.accountUpdate.mock.calls.length).toEqual(1);
-        expect(post.accountUpdate.mock.calls[0]).toEqual([{}, 'test_token']);
+        expect(post.accountUpdate.mock.calls[0]).toEqual([ {}, 'test_token', ]);
     });
 
     it('tests that action creators are called correctly when accountUpdate succeeds', async () => {
+        jest.clearAllTimers();
         jest.useFakeTimers();
 
         post.accountUpdate.mockImplementationOnce(() => {
@@ -91,7 +94,7 @@ describe('accountUpdate unit tests', () => {
             return { profile, };
         });
 
-        await accountUpdate({}, 'test_token');
+        await accountUpdate(store, {}, 'test_token');
 
         const message = 'Your account has been updated.';
 
@@ -114,11 +117,12 @@ describe('accountUpdate unit tests', () => {
     });
 
     it('tests that action creators are called correctly when accountUpdate fails', async () => {
+        jest.clearAllTimers();
         jest.useFakeTimers();
 
         post.accountUpdate.mockImplementationOnce(() => undefined);
 
-        await accountUpdate({}, 'test_token');
+        await accountUpdate(store, {}, 'test_token');
 
         const message = 'There was an error in receiving or deserializing ' +
             'the server response.';
@@ -157,7 +161,7 @@ describe('accountUpdate unit tests', () => {
             };
         });
 
-        await accountUpdate('a', 'b', 'c');
+        await accountUpdate(store, 'a', 'b', 'c');
 
         expect(store.dispatch.mock.calls.length).toEqual(2);
 
@@ -210,7 +214,7 @@ describe('accountUpdate unit tests', () => {
             };
         });
 
-        await accountUpdate({}, 'test_token');
+        await accountUpdate(store, {}, 'test_token');
 
         expect(store.dispatch.mock.calls.length).toEqual(1);
 
@@ -247,6 +251,7 @@ describe('accountUpdate unit tests', () => {
     });
 
     it('tests that accountUpdate logs exceptions received from post.accountUpdate', async () => {
+        const log = console.log;
         console.log = jest.fn();        
 
         const exception = new Error('test error!');
@@ -254,7 +259,7 @@ describe('accountUpdate unit tests', () => {
             throw exception;
         });
 
-        await accountUpdate({}, 'test_token');
+        await accountUpdate(store, {}, 'test_token');
 
         store.getState.mockImplementationOnce(() => {
             return {};
@@ -262,12 +267,14 @@ describe('accountUpdate unit tests', () => {
 
         expect(console.log.mock.calls.length).toEqual(1);
         expect(console.log.mock.calls[0]).toEqual([exception]);
+
+        console.log = log;
     });
 
     it('dispatches a generic failure message if post.accountUpdate returns falsey', async () => {
         post.accountUpdate.mockImplementationOnce(() => undefined);
 
-        await accountUpdate({}, 'test_token');
+        await accountUpdate(store, {}, 'test_token');
 
         expect(setProfileMessage.mock.calls.length).toEqual(1);
         const message = 'There was an error in receiving or deserializing the ' +
@@ -282,7 +289,7 @@ describe('accountUpdate unit tests', () => {
             };
         });
 
-        await accountUpdate({}, 'test_token');
+        await accountUpdate(store, {}, 'test_token');
 
         expect(setProfileMessage.mock.calls.length).toEqual(1);
         expect(setProfileMessage.mock.calls[0]).toEqual([
@@ -297,7 +304,7 @@ describe('accountUpdate unit tests', () => {
             };
         });
 
-        await accountUpdate({}, 'test_token');
+        await accountUpdate(store, {}, 'test_token');
 
         expect(setProfileMessage.mock.calls.length).toEqual(1);
         expect(setProfileMessage.mock.calls[0]).toEqual([
@@ -307,10 +314,9 @@ describe('accountUpdate unit tests', () => {
 
     it('does not blank the profileMessage if it has changed since timeout was created', async () => {
         jest.clearAllTimers();
-
         jest.useFakeTimers();
 
-        await accountUpdate({}, 'test_token');
+        await accountUpdate(store, {}, 'test_token');
 
         store.getState.mockImplementationOnce(() => {
             return {

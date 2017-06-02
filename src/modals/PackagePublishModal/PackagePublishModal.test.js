@@ -1,18 +1,21 @@
-// react
+/* react */
 import React from 'react';
-import ReactTestUtils from 'react-dom/test-utils';
 
-// enzyme
-import { shallow, } from 'enzyme';
+/* enzyme */
+import { shallow, mount, } from 'enzyme';
 
-// redux
-import store from '../../store';
+/* next */
+jest.mock('next/router');
 
-// components
+/* redux */
+const store = {};
+store.dispatch = jest.fn();
+
+/* components */
 import { PackagePublishModal, } from './PackagePublishModal';
-import rootComponent from '../../rootComponent';
+import Profile from '../../../pages/profile';
 
-// modules
+/* modules */
 jest.mock('../../modules/packagePublish');
 import packagePublish from '../../modules/packagePublish';
 
@@ -25,18 +28,17 @@ const dispatch = store.dispatch;
 
 describe('PackagePublishModal unit tests', () => {
     beforeEach(() => {
-        store.dispatch = jest.fn();
+        window.localStorage = {};
+        store.dispatch.mockClear();
+        packagePublish.mockClear();
+        modalClose.mockClear();
     });
 
     it('produces the PackagePublishModal modal', () => {
-        window.localStorage = {};
-
-        store.dispatch = dispatch;
-        const component = ReactTestUtils.renderIntoDocument(rootComponent);
-        modalFactories.togglePackagePublish();
-        const find = ReactTestUtils.scryRenderedComponentsWithType(
-            component,
-            PackagePublishModal);
+        const wrapper = mount(<Profile />);
+        const app = wrapper.find('App');
+        modalFactories.togglePackagePublish(app.props().dispatch);
+        const find = wrapper.find('PackagePublishModal');
         expect(find.length).toEqual(1);
     });
 
@@ -46,6 +48,7 @@ describe('PackagePublishModal unit tests', () => {
     });
 
     it('handles publishPackage with success', async () => {
+        jest.clearAllTimers();
         jest.useFakeTimers();
 
         packagePublish.mockClear();
@@ -55,13 +58,14 @@ describe('PackagePublishModal unit tests', () => {
         const component = <PackagePublishModal
             id={213}
             published={true}
-            csrfToken="abcdef" />
+            csrfToken="abcdef"
+            store={store} />
 
         const wrapper = shallow(component);
         await wrapper.instance().publishPackage();
 
         expect(packagePublish.mock.calls.length).toEqual(1);
-        const args = [213, false, 'abcdef'];
+        const args = [ store, 213, false, 'abcdef', ];
         expect(packagePublish.mock.calls[0]).toEqual(args);
 
         jest.runAllTimers();
@@ -70,22 +74,22 @@ describe('PackagePublishModal unit tests', () => {
     });
 
     it('handles publishPackage with failure', async () => {
+        jest.clearAllTimers();
         jest.useFakeTimers();
 
-        packagePublish.mockClear();
         packagePublish.mockImplementationOnce(() => false);
-        modalClose.mockClear();
 
         const component = <PackagePublishModal
             id={245}
             published={false}
-            csrfToken="testing" />
+            csrfToken="testing"
+            store={store} />
 
         const wrapper = shallow(component);
         await wrapper.instance().publishPackage();
 
         expect(packagePublish.mock.calls.length).toEqual(1);
-        const args = [245, true, 'testing'];
+        const args = [ store, 245, true, 'testing', ];
         expect(packagePublish.mock.calls[0]).toEqual(args);
 
         jest.runAllTimers();

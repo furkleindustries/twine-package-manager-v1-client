@@ -62,6 +62,7 @@
     "next": "latest",
     "next-redux-wrapper": "^1.1.2",
     "offline-plugin": "^4.8.1",
+    "prop-types": "^15.5.10",
     "react": "^15.5.0",
     "react-dom": "^15.5.0",
     "react-redux": "^5.0.5",
@@ -80,7 +81,9 @@
   },
   "jest": {
     "collectCoverageFrom": [
-      "src/**/*.{js,jsx}"
+      "src/**/*.{js,jsx}",
+      "pages/**/*.{js,jsx}",
+      "!**/*.css.{js,jsx}"
     ],
     "setupFiles": [
       "<rootDir>\\config\\polyfills.js"

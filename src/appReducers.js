@@ -16,10 +16,11 @@ export function appPanesReducer(previous = panesSourceApp, action) {
 
 let pathname;
 if (isRunningNodeJs()) {
-    /* TODO: FIX THIS */
+    /* TODO: FIX THIS (or maybe it doesn't matter in practice, given that 
+     * this seems to be overridden on all pages by getInitialProps?) */
     pathname = '/';
 } else {
-    pathname = location.pathname;
+    pathname = window.location.pathname;
 }
 
 const startPane = pathname.slice(pathname.lastIndexOf('/') + 1) || 'home';

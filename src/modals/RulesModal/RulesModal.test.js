@@ -1,35 +1,28 @@
-// react
+/* react */
 import React from 'react';
-import ReactTestUtils from 'react-dom/test-utils';
 
-// enzyme
-import { shallow, } from 'enzyme';
+/* enzyme */
+import { shallow, mount, } from 'enzyme';
 
-// redux
-import store from '../../store';
+/* next */
+jest.mock('next/router');
 
-// components
+/* components */
 import { RulesModal, } from './RulesModal';
-import rootComponent from '../../rootComponent';
+import Index from '../../../pages/index';
 
 import * as modalFactories from '../../modules/modals/factories';
 
-const dispatch = store.dispatch;
-
 describe('RulesModal unit tests', () => {
     beforeEach(() => {
-        store.dispatch = jest.fn();
+        window.localStorage = {};
     });
 
     it('produces the RulesModal modal', () => {
-        window.localStorage = {};
-
-        store.dispatch = dispatch;
-        const component = ReactTestUtils.renderIntoDocument(rootComponent);
-        modalFactories.rules();
-        const find = ReactTestUtils.scryRenderedComponentsWithType(
-            component,
-            RulesModal);
+        const wrapper = mount(<Index />);
+        const app = wrapper.find('App');
+        modalFactories.rules(app.props().dispatch);
+        const find = wrapper.find('RulesModal');
         expect(find.length).toEqual(1);
     });
 

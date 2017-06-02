@@ -1,5 +1,4 @@
 /* redux */
-import store from '../store';
 import {
     setAccountCreatingName,
     setAccountCreatingPassword,
@@ -10,7 +9,7 @@ import {
 /* modules */
 import * as post from './database/post';
 
-export default async function accountCreate(name, password, email) {
+export default async function accountCreate(store, name, password, email) {
     let responseObj;
     try {
         responseObj = await post.accountCreation(name, password, email);
@@ -19,6 +18,7 @@ export default async function accountCreate(name, password, email) {
     }
 
     let message = '';
+    let succeeded = false;
     if (!responseObj) {
         message = 'There was an error in receiving or deserializing the ' +
             'server response.';
@@ -27,10 +27,7 @@ export default async function accountCreate(name, password, email) {
     } else if (responseObj.status !== 200) {
         message = 'The request did not succeed, but there was no ' +
             'message received.';
-    }
-
-    let succeeded = false;
-    if (!message) {
+    } else {
         succeeded = true;
         message = 'Please check your e-mail ' +
             '(including the spam folder) for the validation e-mail, then ' +
@@ -41,7 +38,9 @@ export default async function accountCreate(name, password, email) {
         store.dispatch(setAccountCreatingName(''));
         store.dispatch(setAccountCreatingPassword(''));
         store.dispatch(setAccountCreatingEmail(''));
-    } else {        
+    } 
+
+    if (!succeeded) {        
         store.dispatch(setAccountCreatingName(''));
         store.dispatch(setAccountCreatingPassword(''));
     }

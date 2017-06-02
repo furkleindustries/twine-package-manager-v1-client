@@ -1,18 +1,22 @@
-// react
+/* react */
 import React from 'react';
 import ReactTestUtils from 'react-dom/test-utils';
 
-// enzyme
+/* enzyme */
 import { shallow, mount, } from 'enzyme';
 
-// redux
-import store from '../../store';
+/* next */
+jest.mock('next/router');
 
-// components
+/* redux */
+const store = {};
+store.dispatch = jest.fn();
+
+/* components */
 import { PackageCreateModal, } from './PackageCreateModal';
-import rootComponent from '../../rootComponent';
+import Profile from '../../../pages/profile';
 
-// modules
+/* modules */
 jest.mock('../../modules/packageCreate');
 import packageCreate from '../../modules/packageCreate';
 
@@ -25,18 +29,15 @@ const dispatch = store.dispatch;
 
 describe('PackageCreateModal unit tests', () => {
     beforeEach(() => {
-        store.dispatch = jest.fn();
+        store.dispatch.mockClear();
+        window.localStorage = {};
     });
 
     it('produces the PackageCreateModal modal', () => {
-        window.localStorage = {};
-
-        store.dispatch = dispatch;
-        const component = ReactTestUtils.renderIntoDocument(rootComponent);
-        modalFactories.packageCreate();
-        const find = ReactTestUtils.scryRenderedComponentsWithType(
-            component,
-            PackageCreateModal);
+        const wrapper = mount(<Profile />);
+        const app = wrapper.find('App');
+        modalFactories.packageCreate(app.props().dispatch);
+        const find = wrapper.find('PackageCreateModal');
         expect(find.length).toEqual(1);
     });
 
@@ -60,7 +61,11 @@ describe('PackageCreateModal unit tests', () => {
     });
 
     it('handles handleNameChange', () => {
-        const wrapper = shallow(<PackageCreateModal type="bar" />);
+        const component = <PackageCreateModal
+            type="bar"
+            dispatch={store.dispatch} />;
+
+        const wrapper = shallow(component);
         const e = {
             target: {
                 value: 'foobar',
@@ -79,7 +84,11 @@ describe('PackageCreateModal unit tests', () => {
     });
 
     it('handles handleTypeChange', () => {
-        const wrapper = shallow(<PackageCreateModal type="baz" />);
+        const component = <PackageCreateModal
+            type="baz"
+            dispatch={store.dispatch} />;
+
+        const wrapper = shallow(component);
         const e = {
             target: {
                 value: 'bazbar',
@@ -98,7 +107,11 @@ describe('PackageCreateModal unit tests', () => {
     });
 
     it('handles handleVersionChange', () => {
-        const wrapper = shallow(<PackageCreateModal type="bux" />);
+        const component = <PackageCreateModal
+            type="bux"
+            dispatch={store.dispatch} />;
+
+        const wrapper = shallow(component);
         const e = {
             target: {
                 value: 'buxbuzz',
@@ -117,7 +130,11 @@ describe('PackageCreateModal unit tests', () => {
     });
 
     it('handles handleDescriptionChange', () => {
-        const wrapper = shallow(<PackageCreateModal type="bux" />);
+        const component = <PackageCreateModal
+            type="bux"
+            dispatch={store.dispatch} />;
+
+        const wrapper = shallow(component);
         const e = {
             target: {
                 value: 'foob',
@@ -136,7 +153,11 @@ describe('PackageCreateModal unit tests', () => {
     });
 
     it('handles handleHomepageChange', () => {
-        const wrapper = shallow(<PackageCreateModal type="dsfds" />);
+        const component = <PackageCreateModal
+            type="dsfds"
+            dispatch={store.dispatch} />;
+
+        const wrapper = shallow(component);
         const e = {
             target: {
                 value: 'testing',
@@ -155,7 +176,11 @@ describe('PackageCreateModal unit tests', () => {
     });
 
     it('handles handleJsChange', () => {
-        const wrapper = shallow(<PackageCreateModal type="adfsd" />);
+        const component = <PackageCreateModal
+            type="adfsd"
+            dispatch={store.dispatch} />;
+
+        const wrapper = shallow(component);
         const e = {
             target: {
                 value: 'test js',
@@ -174,7 +199,11 @@ describe('PackageCreateModal unit tests', () => {
     });
 
     it('handles handleCssChange', () => {
-        const wrapper = shallow(<PackageCreateModal type="sdafsaad" />);
+        const component = <PackageCreateModal
+            type="sdafsaad"
+            dispatch={store.dispatch} />;
+
+        const wrapper = shallow(component);
         const e = {
             target: {
                 value: 'test css',
@@ -193,7 +222,11 @@ describe('PackageCreateModal unit tests', () => {
     });
 
     it('handles handleKeywordsChange', () => {
-        const wrapper = shallow(<PackageCreateModal type="dfhj" />);
+        const component = <PackageCreateModal
+            type="dfhj"
+            dispatch={store.dispatch} />;
+
+        const wrapper = shallow(component);
         const e = {
             target: {
                 value: 'test keywords',
@@ -212,7 +245,11 @@ describe('PackageCreateModal unit tests', () => {
     });
 
     it('handles handleTagChange', () => {
-        const wrapper = shallow(<PackageCreateModal type="dfhj" />);
+        const component = <PackageCreateModal
+            type="dfhj"
+            dispatch={store.dispatch} />;
+
+        const wrapper = shallow(component);
         const e = {
             target: {
                 value: 'test tag',
@@ -249,13 +286,16 @@ describe('PackageCreateModal unit tests', () => {
             tag: 'test tag',
         };
 
-        const component = <PackageCreateModal {...pkg} csrfToken="_token" />
+        const component = <PackageCreateModal
+            {...pkg}
+            csrfToken="_token" 
+            store={store} />;
 
         const wrapper = shallow(component);
         await wrapper.instance().createPackage();
 
         expect(packageCreate.mock.calls.length).toEqual(1);
-        const args = [pkg, '_token'];
+        const args = [ store, pkg, '_token', ];
         expect(packageCreate.mock.calls[0]).toEqual(args);
 
         jest.runAllTimers();
@@ -282,14 +322,17 @@ describe('PackageCreateModal unit tests', () => {
             tag: 'test tag',
         };
 
-        const component = <PackageCreateModal {...pkg} csrfToken="_token" />
+        const component = <PackageCreateModal
+            {...pkg}
+            csrfToken="_token"
+            store={store} />;
 
-        // must be mounted for refs to exist
+        /* must be mounted for refs to exist */
         const wrapper = mount(component);
         await wrapper.instance().createPackage();
 
         expect(packageCreate.mock.calls.length).toEqual(1);
-        const args = [pkg, '_token'];
+        const args = [ store, pkg, '_token', ];
         expect(packageCreate.mock.calls[0]).toEqual(args);
 
         jest.runAllTimers();

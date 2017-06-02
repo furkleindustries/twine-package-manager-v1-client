@@ -1,6 +1,4 @@
 /* redux */
-import store from '../store';
-
 import {
     setSearchResults,
     setSearchedYet,
@@ -11,7 +9,7 @@ import {
 import * as get from './database/get';
 import deepCopy from './deepCopy';
 
-export default async function search(searchObj, csrfToken) {
+export default async function search(store, searchObj, csrfToken) {
     if (!searchObj || typeof searchObj !== 'object') {
         console.log('The searchObj argument provided to search was not a ' +
             'non-null object.');
@@ -40,9 +38,7 @@ export default async function search(searchObj, csrfToken) {
         /* do not allow description as a target when using similarity-based
          * filter styles */
         if (!canUseDescription) {
-            ft = ft.filter(aa => {
-                return aa !== 'description';
-            });
+            ft = ft.filter(aa => aa !== 'description');
         }
 
         filterTargets = JSON.stringify(ft);

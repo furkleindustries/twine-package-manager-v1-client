@@ -1,16 +1,16 @@
 /* react */
 import React from 'react';
-import ReactTestUtils from 'react-dom/test-utils';
-
-import { browserHistory, } from 'react-router';
-const push = browserHistory.push;
 
 /* enzyme */
-import { shallow, mount } from 'enzyme';
+import { shallow, mount, } from 'enzyme';
+
+/* next */
+jest.mock('next/router');
+import Router from 'next/router';
 
 /* redux */
-import store from '../../store';
-const dispatch = store.dispatch;
+const store = {};
+store.dispatch = jest.fn();
 
 jest.mock('../../appActions');
 import {
@@ -45,52 +45,41 @@ jest.mock('../../modules/modals/factories');
 import * as modalFactories from '../../modules/modals/factories';
 
 /* components */
-import { LoginPane, } from './login';
-import rootComponent from '../../rootComponent';
+import ConnectedLogin, {
+    LoginPage,
+    getInitialProps,
+} from '../../../pages/login';
 
-describe('LoginPane tests', () => {
+describe('LoginPage tests', () => {
     beforeEach(() => {
         window.localStorage = {};
-        
-        browserHistory.push = jest.fn();
-        store.dispatch = jest.fn();
-
-        browserHistory.push.mockClear();
-        setAppSelectedPane.mockClear();
-        setSideBarVisible.mockClear();
-        setUsername.mockClear();
-        setPassword.mockClear();
+        store.dispatch.mockClear();
+        Router.push.mockClear();
         login.mockClear();
-        modalFactories.accountCreate.mockClear();
+
+        Object.keys(actionMocks).forEach((key) => {
+            actionMocks[key].mockClear();
+        });
+
+        Object.keys(modalFactories).forEach((key) => {
+            if (typeof modalFactories[key] === 'function') {
+                modalFactories[key].mockClear();
+            }
+        });
     });
 
-    it('produces the connected LoginPane', () => {
-        const baseUrl = process.env.PUBLIC_URL;
-
-        window.localStorage = {};
-
-        store.dispatch = dispatch;
-
-        const component = ReactTestUtils.renderIntoDocument(rootComponent);
-
-        browserHistory.push = push;
-        
-        browserHistory.push(`${baseUrl}/login`);
-        
-        const find = ReactTestUtils.scryRenderedComponentsWithType(
-            component,
-            LoginPane);
-        
-        expect(find.length).toEqual(1);
+    it('renders the connected LoginPage', () => {
+        const wrapper = shallow(<ConnectedLogin />);
+        expect(wrapper.length).toEqual(1);
     });
 
-    it('renders LoginPane', () => {
-        const wrapper = shallow(<LoginPane />);
+    it('renders LoginPage', () => {
+        const wrapper = shallow(<LoginPage />);
         expect(wrapper.length).toEqual(1);
     });
 
     it('hides setSideBarVisible when mounted', () => {
-        const wrapper = mount(<LoginPane />);
+        const wrapper = mount(<LoginPage dispatch={store.dispatch} />);
 
         expect(setSideBarVisible.mock.calls.length).toBe(1);
         expect(setSideBarVisible.mock.calls[0]).toEqual([ false, ]);
@@ -104,11 +93,13 @@ describe('LoginPane tests', () => {
     it('redirects to the profile pane if localStorage.twinepmCSRFToken exists', () => {
         window.localStorage = { twinepmCSRFToken: 'test_token', };
 
-        const wrapper = mount(<LoginPane />);
+        const wrapper = mount(<LoginPage dispatch={store.dispatch} />);
 
-        expect(browserHistory.push.mock.calls.length).toBe(1);
-        expect(/\/profile$/.test(browserHistory.push.mock.calls[0][0]))
-            .toBe(true);
+        expect(Router.push.mock.calls.length).toBe(1);
+        expect(Router.push.mock.calls[0]).toEqual([
+            '/profile',
+            'profile',
+        ]);
 
         expect(setAppSelectedPane.mock.calls.length).toBe(1);
         expect(setAppSelectedPane.mock.calls[0]).toEqual([ 'profile', ]);
@@ -122,13 +113,13 @@ describe('LoginPane tests', () => {
     it('calls modalFactories.accountCreate when location.hash is #createAccount', () => {
         window.location.hash = '#createAccount';
 
-        const wrapper = mount(<LoginPane />);
+        const wrapper = mount(<LoginPage dispatch={store.dispatch} />);
 
         expect(modalFactories.accountCreate.mock.calls.length).toBe(1);
     });
 
     it('handles side effects when handleUsernameChange is called', () => {
-        const wrapper = shallow(<LoginPane />);
+        const wrapper = shallow(<LoginPage dispatch={store.dispatch} />);
 
         wrapper.instance().handleUsernameChange({
             target: { value: 'testing!', },
@@ -144,7 +135,7 @@ describe('LoginPane tests', () => {
     });
 
     it('handles side effects when handlePasswordChange is called', () => {
-        const wrapper = shallow(<LoginPane />);
+        const wrapper = shallow(<LoginPage dispatch={store.dispatch} />);
 
         wrapper.instance().handlePasswordChange({
             target: { value: 'test', },
@@ -160,7 +151,7 @@ describe('LoginPane tests', () => {
     });
 
     it('calls doLogin when handleInputKeydown is called with e.keyCode of 13', () => {
-        const wrapper = shallow(<LoginPane />);
+        const wrapper = shallow(<LoginPage dispatch={store.dispatch} />);
         
         wrapper.instance().doLogin = jest.fn();
 
@@ -170,7 +161,7 @@ describe('LoginPane tests', () => {
     });
 
     it('does not call doLogin when handleInputKeydown is called with e.keyCode !== 13', () => {
-        const wrapper = shallow(<LoginPane />);
+        const wrapper = shallow(<LoginPage dispatch={store.dispatch} />);
         
         wrapper.instance().doLogin = jest.fn();
 
@@ -180,18 +171,29 @@ describe('LoginPane tests', () => {
     });
 
     it('calls login when doLogin is called, passing the username and password props', async () => {
-        const wrapper = shallow(<LoginPane username="1" password="2" />);
+        const component = <LoginPage
+            username="1"
+            password="2"
+            dispatch={store.dispatch}
+            store={store} />;
+
+        const wrapper = shallow(component);
 
         login.mockImplementationOnce(() => true);
 
         await wrapper.instance().doLogin();
 
         expect(login.mock.calls.length).toBe(1);
-        expect(login.mock.calls[0]).toEqual([ '1', '2', ]);
+        expect(login.mock.calls[0]).toEqual([ store, '1', '2', ]);
     });
 
     it('clears password and focuses on the passwordInput when the result of login is falsey', async () => {
-        const wrapper = shallow(<LoginPane username="1" password="2" />);
+        const component = <LoginPage
+            username="1"
+            password="2"
+            dispatch={store.dispatch} />;
+
+        const wrapper = shallow(component);
 
         login.mockImplementationOnce(() => false);
 
@@ -215,7 +217,12 @@ describe('LoginPane tests', () => {
         const log = console.log;
         console.log = jest.fn();
 
-        const wrapper = shallow(<LoginPane username="1" password="2" />);
+        const component = <LoginPage
+            username="1"
+            password="2"
+            dispatch={store.dispatch} />;
+
+        const wrapper = shallow(component);
 
         wrapper.instance().passwordInput = { focus: jest.fn(), };
 
@@ -228,5 +235,24 @@ describe('LoginPane tests', () => {
 
         expect(console.log.mock.calls.length).toBe(1);
         expect(console.log.mock.calls[0]).toEqual([ exception, ]);
+    });
+
+    it('tests getInitialProps when req exists', async () => {
+        await getInitialProps({ req: { url: '/foo', }, store, });
+
+        expect(setAppSelectedPane.mock.calls.length).toBe(1);
+        expect(setAppSelectedPane.mock.calls[0]).toEqual([ 'foo', ]);
+        
+        expect(store.dispatch.mock.calls.length).toBe(1);
+        expect(store.dispatch.mock.calls[0]).toEqual([
+            { type: 'setAppSelectedPane', },
+        ]);
+    });
+
+    it('tests getInitialProps when req does not exist', async () => {
+        await getInitialProps({ store, });
+
+        expect(setAppSelectedPane.mock.calls.length).toBe(0);
+        expect(store.dispatch.mock.calls.length).toBe(0);
     });
 });

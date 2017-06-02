@@ -1,6 +1,7 @@
 /* redux */
-jest.mock('../store');
-import store from '../store';
+const store = {};
+store.dispatch = jest.fn();
+store.getState = jest.fn();
 
 jest.mock('../components/PackageOwned/PackageOwnedActions');
 import {
@@ -20,6 +21,7 @@ import * as post from './database/post';
 describe('packageTransferOwnership tests', () => {
     beforeEach(() => {
         store.dispatch.mockClear();
+        store.getState.mockClear();
         setPackageEditingMessage.mockClear();
         post.packageOwnershipTransfer.mockClear();
     });
@@ -29,7 +31,7 @@ describe('packageTransferOwnership tests', () => {
             return { status: 200, };
         });
 
-        await packageTransferOwnership(12, 'test_owner', 'test_token');
+        await packageTransferOwnership(store, 12, 'test_owner', 'test_token');
 
         expect(setPackageEditingMessage.mock.calls.length).toBe(1);
         expect(setPackageEditingMessage.mock.calls[0]).toEqual([
@@ -42,7 +44,7 @@ describe('packageTransferOwnership tests', () => {
             return { status: 200, };
         });
 
-        await packageTransferOwnership(12, 'test_owner', 'test_token');
+        await packageTransferOwnership(store, 12, 'test_owner', 'test_token');
 
         expect(store.dispatch.mock.calls.length).toBe(1);
         expect(store.dispatch.mock.calls[0]).toEqual([
@@ -65,7 +67,7 @@ describe('packageTransferOwnership tests', () => {
             };
         });
 
-        await packageTransferOwnership(12, 'test_owner', 'test_token');
+        await packageTransferOwnership(store, 12, 'test_owner', 'test_token');
 
         store.getState.mockImplementationOnce(() => {
             return {};
@@ -85,7 +87,7 @@ describe('packageTransferOwnership tests', () => {
             return { status: 200, };
         });
 
-        await packageTransferOwnership(12, 'test_owner', 'test_token');
+        await packageTransferOwnership(store, 12, 'test_owner', 'test_token');
 
         jest.runAllTimers();
 
@@ -95,7 +97,7 @@ describe('packageTransferOwnership tests', () => {
     it('produces a generic message when !responseObj', async () => {
         post.packageOwnershipTransfer.mockImplementationOnce(() => undefined);
 
-        await packageTransferOwnership(12, 'test_owner', 'test_token');
+        await packageTransferOwnership(store, 12, 'test_owner', 'test_token');
 
         expect(setPackageEditingMessage.mock.calls[0]).toEqual([
             'There was an error in receiving or deserializing the server ' +
@@ -108,7 +110,7 @@ describe('packageTransferOwnership tests', () => {
             return { error: 'testing error!', };
         });
 
-        await packageTransferOwnership(12, 'test_owner', 'test_token');
+        await packageTransferOwnership(store, 12, 'test_owner', 'test_token');
 
         expect(setPackageEditingMessage.mock.calls[0]).toEqual([
             'testing error!',
@@ -120,7 +122,7 @@ describe('packageTransferOwnership tests', () => {
             return { status: 400, };
         });
 
-        await packageTransferOwnership(12, 'test_owner', 'test_token');
+        await packageTransferOwnership(store, 12, 'test_owner', 'test_token');
 
         expect(setPackageEditingMessage.mock.calls[0]).toEqual([
             'The request did not succeed, but there was no message received.',
@@ -136,7 +138,7 @@ describe('packageTransferOwnership tests', () => {
             throw exception;
         });
 
-        await packageTransferOwnership(12, 'test_owner', 'test_token');
+        await packageTransferOwnership(store, 12, 'test_owner', 'test_token');
 
         expect(console.log.mock.calls.length).toBe(1);
         expect(console.log.mock.calls[0]).toEqual([ exception, ]);

@@ -1,6 +1,6 @@
 /* redux */
-jest.mock('../../store');
-import store from '../../store';
+const store = {};
+store.dispatch = jest.fn();
 
 jest.mock('../../appActions');
 import { setAppSelectedPane, } from '../../appActions';
@@ -23,7 +23,7 @@ describe('topBarClick unit tests', () => {
             target: {
                 id: 'testingPane',
             },
-        });
+        }, store.dispatch);
 
         expect(store.dispatch.mock.calls.length).toEqual(1);
         expect(store.dispatch.mock.calls[0]).toEqual([obj]);

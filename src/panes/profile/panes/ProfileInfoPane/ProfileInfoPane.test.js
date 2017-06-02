@@ -1,14 +1,15 @@
 /* react */
 import React from 'react';
-import ReactTestUtils from 'react-dom/test-utils';
-import { browserHistory, } from 'react-router';
 
 /* enzyme */
 import { shallow, mount, } from 'enzyme';
 
+/* next */
+jest.mock('next/router');
+
 /* redux */
-import store from '../../../../store';
-const dispatch = store.dispatch;
+const store = {};
+store.dispatch = jest.fn();
 
 import {
     setAppSelectedPane,
@@ -57,13 +58,13 @@ import panesSourceProfile from '../../../../panesSourceProfile';
 
 /* components */
 import { ProfileInfoPane, } from './ProfileInfoPane';
-import rootComponent from '../../../../rootComponent';
+import Profile from '../../../../../pages/Profile';
 
 describe('ProfileInfoPane tests', () => {
     beforeEach(() => {
         window.localStorage = {};
         
-        store.dispatch = jest.fn();
+        store.dispatch.mockClear();
 
         accountUpdate.mockClear();
 
@@ -73,24 +74,14 @@ describe('ProfileInfoPane tests', () => {
     });
 
     it('produces the connected ProfileInfoPane', () => {
-        const baseUrl = process.env.PUBLIC_URL;
+        const wrapper = mount(<Profile />);
+        const app = wrapper.find('App');
+        app.props().dispatch({
+            selectedPane: 'info',
+            type: 'setSideBarSelectedPane',
+        });
 
-        window.localStorage = { twinepmCSRFToken: 'test', };
-        
-        store.dispatch = dispatch;
-  
-        const component = ReactTestUtils.renderIntoDocument(rootComponent);
-
-        browserHistory.push(`${baseUrl}/profile`);
-
-        store.dispatch(setAppSelectedPane('profile'));
-        store.dispatch(setSideBarPanes(panesSourceProfile));
-        store.dispatch(setSideBarSelectedPane('info'));
-        
-        const find = ReactTestUtils.scryRenderedComponentsWithType(
-            component,
-            ProfileInfoPane);
-        
+        const find = wrapper.find(ProfileInfoPane);
         expect(find.length).toEqual(1);
     });
 
@@ -105,7 +96,8 @@ describe('ProfileInfoPane tests', () => {
             changed={false}
             rollback={{}}
             packages={[]}
-            csrfToken="test_token" />
+            csrfToken="test_token"
+            dispatch={store.dispatch} />
 
         const wrapper = mount(component);
 
@@ -120,10 +112,10 @@ describe('ProfileInfoPane tests', () => {
         ]);
     });
 
-    it('creates correct side effects when handleDateCreatedChange is called', () => {
-        const wrapper = shallow(<ProfileInfoPane />);
+    it('creates correct side effects when handleDateCreatedVisibleChange is called', () => {
+        const wrapper = shallow(<ProfileInfoPane dispatch={store.dispatch} />);
         
-        wrapper.instance().handleDateCreatedChange({
+        wrapper.instance().handleDateCreatedVisibleChange({
             target: { checked: true, },
         });
 
@@ -137,7 +129,7 @@ describe('ProfileInfoPane tests', () => {
     });
 
     it('creates correct side effects when handleNameChange is called', () => {
-        const wrapper = shallow(<ProfileInfoPane />);
+        const wrapper = shallow(<ProfileInfoPane dispatch={store.dispatch} />);
         
         wrapper.instance().handleNameChange({
             target: { value: 'testing1', },
@@ -155,7 +147,7 @@ describe('ProfileInfoPane tests', () => {
     });
 
     it('creates correct side effects when handleNameVisibleChange is called', () => {
-        const wrapper = shallow(<ProfileInfoPane />);
+        const wrapper = shallow(<ProfileInfoPane dispatch={store.dispatch} />);
         
         wrapper.instance().handleNameVisibleChange({
             target: { checked: true, },
@@ -171,7 +163,7 @@ describe('ProfileInfoPane tests', () => {
     });
 
     it('creates correct side effects when handleDescriptionChange is called', () => {
-        const wrapper = shallow(<ProfileInfoPane />);
+        const wrapper = shallow(<ProfileInfoPane dispatch={store.dispatch} />);
         
         wrapper.instance().handleDescriptionChange({
             target: { value: 'testing2', },
@@ -189,7 +181,7 @@ describe('ProfileInfoPane tests', () => {
     });
 
     it('creates correct side effects when handleEmailChange is called', () => {
-        const wrapper = shallow(<ProfileInfoPane />);
+        const wrapper = shallow(<ProfileInfoPane dispatch={store.dispatch} />);
         
         wrapper.instance().handleEmailChange({
             target: { value: 'testing3', },
@@ -207,7 +199,7 @@ describe('ProfileInfoPane tests', () => {
     });
 
     it('creates correct side effects when handleEmailVisibleChange is called', () => {
-        const wrapper = shallow(<ProfileInfoPane />);
+        const wrapper = shallow(<ProfileInfoPane dispatch={store.dispatch} />);
         
         wrapper.instance().handleEmailVisibleChange({
             target: { checked: false, },
@@ -223,7 +215,7 @@ describe('ProfileInfoPane tests', () => {
     });
 
     it('creates correct side effects when handleHomepageChange is called', () => {
-        const wrapper = shallow(<ProfileInfoPane />);
+        const wrapper = shallow(<ProfileInfoPane dispatch={store.dispatch} />);
         
         wrapper.instance().handleHomepageChange({
             target: { value: 'testing4', },
@@ -239,7 +231,7 @@ describe('ProfileInfoPane tests', () => {
     });
 
     it('creates correct side effects when handleDateStyleChange is called with e.target.value of month/day/year', () => {
-        const wrapper = shallow(<ProfileInfoPane />);
+        const wrapper = shallow(<ProfileInfoPane dispatch={store.dispatch} />);
         
         wrapper.instance().handleDateStyleChange({
             target: { value: 'month/day/year', },
@@ -255,7 +247,7 @@ describe('ProfileInfoPane tests', () => {
     });
 
     it('creates correct side effects when handleDateStyleChange is called with e.target.value of day/month/year', () => {
-        const wrapper = shallow(<ProfileInfoPane />);
+        const wrapper = shallow(<ProfileInfoPane dispatch={store.dispatch} />);
         
         wrapper.instance().handleDateStyleChange({
             target: { value: 'day/month/year', },
@@ -271,7 +263,7 @@ describe('ProfileInfoPane tests', () => {
     });
 
     it('throws exception when handleDateStyleChange is called with e.target.value !== month/day/year and !== day/month/year', () => {
-        const wrapper = shallow(<ProfileInfoPane />);
+        const wrapper = shallow(<ProfileInfoPane dispatch={store.dispatch} />);
         
         expect(() => {
             wrapper.instance().handleDateStyleChange({
@@ -284,7 +276,7 @@ describe('ProfileInfoPane tests', () => {
     });
 
     it('creates correct side effects when handleHomepageChange is called', () => {
-        const wrapper = shallow(<ProfileInfoPane />);
+        const wrapper = shallow(<ProfileInfoPane dispatch={store.dispatch} />);
         
         wrapper.instance().handleHomepageChange({
             target: { value: 'testing4', },
@@ -300,7 +292,8 @@ describe('ProfileInfoPane tests', () => {
     });
 
     it('creates correct side effects when handleTimeStyleChange is called', () => {
-        const wrapper = shallow(<ProfileInfoPane />);
+        const dispatchMock = jest.fn();
+        const wrapper = shallow(<ProfileInfoPane dispatch={dispatchMock} />);
         
         wrapper.instance().handleTimeStyleChange({
             target: { value: 'testing5', },
@@ -309,8 +302,8 @@ describe('ProfileInfoPane tests', () => {
         expect(setProfileTimeStyle.mock.calls.length).toBe(1);
         expect(setProfileTimeStyle.mock.calls[0]).toEqual([ 'testing5', ]);
 
-        expect(store.dispatch.mock.calls.length).toBe(1);
-        expect(store.dispatch.mock.calls[0]).toEqual([
+        expect(dispatchMock.mock.calls.length).toBe(1);
+        expect(dispatchMock.mock.calls[0]).toEqual([
             { type: 'setProfileTimeStyle', },
         ]);
     });
@@ -379,7 +372,7 @@ describe('ProfileInfoPane tests', () => {
 
         const component = <ProfileInfoPane
             csrfToken="test_token"
-            { ...obj } />;
+            {...obj} />;
 
         const wrapper = shallow(component);
 

@@ -4,6 +4,7 @@ import { browserHistory, } from 'react-router';
 
 /* next */
 import withRedux from 'next-redux-wrapper';
+import Router from 'next/router';
 
 /* redux */
 import initStore from '../src/store';
@@ -26,9 +27,7 @@ import * as modalFactories from '../src/modules/modals/factories';
 import App from '../src/App';
 
 /* css */
-import css from '../src/panes/login/login.css';
-
-const baseUrl = process.env.PUBLIC_URL;
+/*import css from '../src/panes/login/login.css';*/
 
 export class LoginPage extends Component {
     constructor() {
@@ -95,14 +94,125 @@ export class LoginPage extends Component {
                     {this.props.message}
                 </p>
 
-                <style>{css}</style>
+                <style jsx>{
+                    `.Login {
+                        text-align: left;
+                    }
+
+                    .Login-fieldContainer {
+                        text-align: center;
+                    }
+
+                    .Login-infoPairContainer {
+                        display: inline-block;
+                        text-align: left;
+                    }
+
+                    .Login-title {
+                        text-align: center;
+                    }
+
+                    .Login-label {
+                        display: inline-block;
+                        text-align: left;
+                    }
+
+                    .Login-button:hover,
+                    .Login-button:active {
+                        background: rgb(200, 0, 0);
+                    }
+
+                    .Login-message {
+                        height: 1rem;
+                        text-align: center;
+                    }
+
+                    @media (min-width: 0px) {
+                        .Login-input {
+                            width: 100%;
+                            margin-bottom: 0.5rem;
+                        }
+
+                        .Login-input:last-of-type {
+                            margin-bottom: 0.75rem;
+                        }
+                    }
+
+                    @media (min-width: 550px) {
+                        .Login-label {
+                            width: 7rem;
+                        }
+
+                        .Login-input {
+                            width: 15.25rem;
+                        }
+
+                        .Login-input {
+                            margin-bottom: 0.75rem;
+                        }
+
+                        .Login-input:last-of-type {
+                            margin-bottom: 1.125rem;
+                        }
+                    }
+
+                    @media (min-width: 750px) {
+                        .Login-label {
+                            width: 7.5rem;
+                        }
+
+                        .Login-input {
+                            width: 24.5rem;
+                        }
+                    }
+
+                    @media (min-width: 1000px) {
+                        .Login-label {
+                            width: 8rem;
+                        }
+
+                        .Login-input {
+                            width: 36.5rem;
+                        }
+                    }
+
+                    @media (min-width: 1250px) {
+                        .Login-label {
+                            width: 8.75rem;
+                        }
+
+                        .Login-input {
+                            width: 46rem;
+                        }
+                    }
+
+                    @media (min-width: 1500px) {
+                        .Login-label {
+                            width: 9.5rem;
+                        }
+
+                        .Login-input {
+                            width: 59.5rem;
+                        }
+                    }
+
+                    @media (min-width: 1750px) {
+                        .Login-label {
+                            width: 10.5rem;
+                        }
+
+                        .Login-input {
+                            width: 63.5rem;
+                        }
+                    }`
+                }</style>
             </div>
         );
     }
 
     componentDidMount() {
         if (localStorage.twinepmCSRFToken) {
-            browserHistory.push(`${baseUrl}/profile`);
+            Router.push('/profile', 'profile');
             this.props.dispatch(setAppSelectedPane('profile'));
         }
 
@@ -130,7 +240,10 @@ export class LoginPage extends Component {
     async doLogin() {
         let success;
         try {
-            success = await login(this.props.username, this.props.password);
+            success = await login(
+                this.props.store,
+                this.props.username,
+                this.props.password);
         } catch (e) {
             console.log(e);
         }
@@ -150,18 +263,20 @@ function mapStateToProps(state) {
     };
 }
 
-const ConnectedPage = connect()(LoginPage);
-
+const Connected = connect(mapStateToProps)(LoginPage);
 const wrapped = () => (
     <App>
-        <ConnectedPage />
+        <Connected />
     </App>
 );
 
-wrapped.getInitialProps = ({ req, store }) => {
+export async function getInitialProps({ req, store, }) {
+    /* req only exists on server side */
     if (req) {
         store.dispatch(setAppSelectedPane(req.url.slice(1)));
     }
-};
+}
+
+wrapped.getInitialProps = getInitialProps;
 
 export default withRedux(initStore, mapStateToProps, null)(wrapped);

@@ -1,7 +1,7 @@
 /* redux */
-jest.mock('../store');
-import store from '../store';
-store.getState.mockImplementation(() => {
+const store = {};
+store.dispatch = jest.fn();
+store.getState = jest.fn().mockImplementation(() => {
     return {
         profile: {
             packages: [
@@ -40,10 +40,11 @@ import * as post from './database/post';
 
 describe('packagePublish tests', () => {
     beforeEach(() => {
-        store.dispatch.mockClear();
-        setProfilePackages.mockClear();
-        setPackagePublishingMessage.mockClear();
         post.packagePublish.mockClear();
+        store.dispatch.mockClear();
+        Object.keys(actionMocks).forEach(key => {
+            actionMocks[key].mockClear();
+        });
     });
 
     it('calls action creators correctly', async () => {
@@ -51,7 +52,7 @@ describe('packagePublish tests', () => {
             return { status: 200, };
         });
 
-        await packagePublish(124, true, 'test_token');
+        await packagePublish(store, 124, true, 'test_token');
 
         expect(setProfilePackages.mock.calls.length).toBe(1);
         expect(setProfilePackages.mock.calls[0]).toEqual([
@@ -74,7 +75,7 @@ describe('packagePublish tests', () => {
             return { status: 200, };
         });
 
-        await packagePublish(124, true, 'test_token');
+        await packagePublish(store, 124, true, 'test_token');
 
         expect(store.dispatch.mock.calls.length).toBe(2);
         expect(store.dispatch.mock.calls[0]).toEqual([
@@ -98,7 +99,7 @@ describe('packagePublish tests', () => {
             return { profile: {}, };
         });
 
-        await packagePublish(124, true, 'test_token');
+        await packagePublish(store, 124, true, 'test_token');
 
         expect(console.log.mock.calls.length).toBe(1);
         expect(store.dispatch.mock.calls.length).toBe(0);
@@ -109,7 +110,7 @@ describe('packagePublish tests', () => {
     it('creates a generic error message when !responseObj', async () => {
         post.packagePublish(() => undefined);
 
-        await packagePublish(124, true, 'test_token');
+        await packagePublish(store, 124, true, 'test_token');
 
         expect(setPackagePublishingMessage.mock.calls[0]).toEqual([
             'There was an error in receiving or deserializing the server ' +
@@ -122,7 +123,7 @@ describe('packagePublish tests', () => {
             return { error: 'testing error!', };
         });
 
-        await packagePublish(124, true, 'test_token');
+        await packagePublish(store, 124, true, 'test_token');
 
         expect(setPackagePublishingMessage.mock.calls[0]).toEqual([
             'testing error!',
@@ -134,7 +135,7 @@ describe('packagePublish tests', () => {
             return { status: 400, };
         });
 
-        await packagePublish(124, false, 'test_token');
+        await packagePublish(store, 124, false, 'test_token');
 
         expect(setPackagePublishingMessage.mock.calls[0]).toEqual([
             'The request did not succeed, but there was no message received.',
@@ -149,7 +150,7 @@ describe('packagePublish tests', () => {
             return { status: 200, };
         });
 
-        await packagePublish(124, false, 'test_token');
+        await packagePublish(store, 124, false, 'test_token');
 
         store.getState.mockImplementationOnce(() => {
             return {
@@ -172,7 +173,7 @@ describe('packagePublish tests', () => {
             return { status: 200, };
         });
 
-        await packagePublish(124, false, 'test_token');
+        await packagePublish(store, 124, false, 'test_token');
 
         jest.runAllTimers();
 
@@ -188,7 +189,7 @@ describe('packagePublish tests', () => {
             throw exception;
         });
 
-        await packagePublish(124, true, 'test_token');
+        await packagePublish(store, 124, true, 'test_token');
 
         expect(console.log.mock.calls.length).toBe(1);
         expect(console.log.mock.calls[0]).toEqual([ exception, ]);
@@ -212,7 +213,7 @@ describe('packagePublish tests', () => {
             };
         });
 
-        await packagePublish(126, false, 'test_token');
+        await packagePublish(store, 126, false, 'test_token');
 
         expect(setProfilePackages.mock.calls[0]).toEqual([
             [

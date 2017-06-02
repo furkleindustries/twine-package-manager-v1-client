@@ -4,9 +4,12 @@ import React from 'react';
 /* enzyme */
 import { shallow, mount, } from 'enzyme';
 
+/* next */
+jest.mock('next/router');
+
 /* redux */
-jest.mock('../../store');
-import store from '../../store';
+const store = {};
+store.dispatch = jest.fn();
 
 jest.mock('../../appActions');
 import {
@@ -14,30 +17,39 @@ import {
     setSideBarVisible,
 } from '../../appActions';
 
-setAppSelectedPane.mockImplementation(() => {
-    return { type: 'setAppSelectedPane', };
-});
+const actionMocks = {
+    setAppSelectedPane,
+    setSideBarVisible,
+};
 
-setSideBarVisible.mockImplementation(() => {
-    return { type: 'setSideBarVisible', };
+Object.keys(actionMocks).forEach((key) => {
+    actionMocks[key].mockImplementation(() => ( { type: key, } ));
 });
 
 /* components */
-import { HomePane, } from './home';
+import ConnectedHome, {
+    HomePage,
+    getInitialProps,
+} from '../../../pages/index';
 
-describe('HomePane unit tests', () => {
+describe('HomePage unit tests', () => {
     beforeEach(() => {
+        window.localStorage = {};
         store.dispatch.mockClear();
-        setSideBarVisible.mockClear();
+
+        Object.keys(actionMocks).forEach((key) => {
+            actionMocks[key].mockClear();
+        });
     });
 
-    it('renders HomePane', () => {
-        const wrapper = shallow(<HomePane />);
+    it('renders connected HomePage component', () => {
+        const wrapper = mount(<ConnectedHome />);
         expect(wrapper.length).toEqual(1);
     });
 
     it('hides setSideBarVisible', () => {
-        const wrapper = mount(<HomePane />);
+        const wrapper = shallow(<HomePage dispatch={store.dispatch} />);
+        wrapper.instance().componentDidMount();
 
         expect(setSideBarVisible.mock.calls.length).toBe(1);
         expect(setSideBarVisible.mock.calls[0]).toEqual([ false, ]);
@@ -49,7 +61,7 @@ describe('HomePane unit tests', () => {
     });
 
     it('handles side effects when this.redirect is called', () => {
-        const wrapper = shallow(<HomePane />);
+        const wrapper = shallow(<HomePage dispatch={store.dispatch} />);
 
         const e = {
             target: { id: 'testfoo', },
@@ -64,5 +76,24 @@ describe('HomePane unit tests', () => {
         expect(store.dispatch.mock.calls[0]).toEqual([
             { type: 'setAppSelectedPane', },
         ]);
+    });
+
+    it('tests getInitialProps when req exists', async () => {
+        await getInitialProps({ req: { url: '/foo', }, store, });
+
+        expect(setAppSelectedPane.mock.calls.length).toBe(1);
+        expect(setAppSelectedPane.mock.calls[0]).toEqual([ 'foo', ]);
+        
+        expect(store.dispatch.mock.calls.length).toBe(1);
+        expect(store.dispatch.mock.calls[0]).toEqual([
+            { type: 'setAppSelectedPane', },
+        ]);
+    });
+
+    it('tests getInitialProps when req does not exist', async () => {
+        await getInitialProps({ store, });
+
+        expect(setAppSelectedPane.mock.calls.length).toBe(0);
+        expect(store.dispatch.mock.calls.length).toBe(0);
     });
 });

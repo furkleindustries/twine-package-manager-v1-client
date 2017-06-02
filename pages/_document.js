@@ -19,6 +19,10 @@ export default class MyDocument extends Document {
                         sizes="192x192"
                         href="static/images/icon_192.png" />
                     <link rel="manifest" href="static/manifest.json" />
+                    <link
+                        rel="stylesheet"
+                        type="text/css"
+                        href="https://fonts.googleapis.com/css?family=Lato" />
                     <title>TwinePM Client</title>
                 </Head>
 

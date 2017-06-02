@@ -35,6 +35,26 @@ const css =
     filter: saturate(0.25);
 }
 
+.topNavBar {
+    display: flex;
+    position: absolute;
+    right: 0;
+    margin-right: 1rem;
+}
+
+.topNavBar :global(.NavBarItem) {
+    display: inline-block;
+    border-radius: 0.25rem;
+    text-decoration: none;
+    color: white;
+    cursor: pointer;
+    transition:
+        0.33s color,
+        0.33s text-shadow,
+        0.33s background,
+        0.33s border-radius;
+}
+
 @media (min-width: 0px) {
     .Header {
         height: 1.5rem;

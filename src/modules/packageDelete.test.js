@@ -1,19 +1,19 @@
 /* redux */
-jest.mock('../store');
-import store from '../store';
+const store = {};
+store.dispatch = jest.fn();
 
 const testPackage = {
     id: 10,
     test: '_testing',
 };
 
-store.getState.mockImplementation(() => {
-    return {
+store.getState = jest.fn().mockImplementation(() => (
+    {
         profile: {
             packages: [ testPackage, ],
         },
-    };
-});
+    }
+));
 
 jest.mock('../panes/profile/profileActions');
 import {
@@ -55,7 +55,7 @@ describe('packageDelete unit tests', () => {
             return { status: 200, };
         });
 
-        await packageDelete(10, 'test_token');
+        await packageDelete(store, 10, 'test_token');
 
         expect(setProfilePackages.mock.calls.length).toBe(1);
         expect(setProfilePackages.mock.calls[0]).toEqual([[]]);
@@ -71,7 +71,7 @@ describe('packageDelete unit tests', () => {
             return { status: 200, };
         });
 
-        await packageDelete(10, 'test_token');
+        await packageDelete(store, 10, 'test_token');
 
         expect(store.dispatch.mock.calls.length).toBe(2);
         expect(store.dispatch.mock.calls[0]).toEqual([
@@ -92,7 +92,7 @@ describe('packageDelete unit tests', () => {
             return { status: 200, };
         });
 
-        await packageDelete(10, 'test_token');
+        await packageDelete(store, 10, 'test_token');
 
         store.getState.mockImplementationOnce(() => {
             return {
@@ -115,7 +115,7 @@ describe('packageDelete unit tests', () => {
             return { status: 200, };
         });
 
-        await packageDelete(10, 'test_token');
+        await packageDelete(store, 10, 'test_token');
 
         jest.runAllTimers();
 
@@ -125,7 +125,7 @@ describe('packageDelete unit tests', () => {
     it('creates a generic message when !responseObj', async () => {
         _delete._package.mockImplementationOnce(() => undefined);
 
-        await packageDelete(10, 'test_token');
+        await packageDelete(store, 10, 'test_token');
 
         expect(setPackageDeletingMessage.mock.calls[0]).toEqual([
             'There was an error in receiving or deserializing the server ' +
@@ -138,7 +138,7 @@ describe('packageDelete unit tests', () => {
             return { error: 'testing error', };
         });
 
-        await packageDelete(10, 'test_token');
+        await packageDelete(store, 10, 'test_token');
 
         expect(setPackageDeletingMessage.mock.calls[0]).toEqual([
             'testing error',
@@ -150,7 +150,7 @@ describe('packageDelete unit tests', () => {
             return { status: 400, };
         });
 
-        await packageDelete(10, 'test_token');
+        await packageDelete(store, 10, 'test_token');
 
         expect(setPackageDeletingMessage.mock.calls[0]).toEqual([
             'The request did not succeed, but there was no message received.',
@@ -169,7 +169,7 @@ describe('packageDelete unit tests', () => {
             return { profile: {}, };
         });
 
-        await packageDelete(10, 'test_token');
+        await packageDelete(store, 10, 'test_token');
 
         expect(console.log.mock.calls.length).toBe(1);
         expect(store.dispatch.mock.calls.length).toBe(0);
@@ -185,7 +185,7 @@ describe('packageDelete unit tests', () => {
             return { status: 200, };
         });
 
-        await packageDelete(11, 'test_token');
+        await packageDelete(store, 11, 'test_token');
 
         expect(console.log.mock.calls.length).toBe(1);
         expect(store.dispatch.mock.calls.length).toBe(0);
@@ -202,7 +202,7 @@ describe('packageDelete unit tests', () => {
             throw exception;
         });
 
-        await packageDelete(10, 'test_token');
+        await packageDelete(store, 10, 'test_token');
 
         expect(console.log.mock.calls.length).toBe(1);
         expect(console.log.mock.calls[0]).toEqual([exception]);

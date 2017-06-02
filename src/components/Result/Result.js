@@ -1,10 +1,13 @@
 /* react */
 import React, { Component, } from 'react';
 
-/* css */
-import css from './Result.css';
+/* components */
+import Keyword from './Keyword';
 
-export default class Result extends Component {
+/* css */
+/*import css from './Result.css';*/
+
+export class Result extends Component {
     constructor() {
         super();
 
@@ -44,7 +47,52 @@ export default class Result extends Component {
                     {keywords}
                 </div>
 
-                <style>{css}</style>
+                <style jsx>{
+                    `.Result {
+                        position: relative;
+                        text-align: left;
+                        padding: 1rem;
+                        border: 1px solid black;
+                        border-radius: 5px;
+                        margin: 1rem;
+                        background: rgb(248, 248, 248);
+                    }
+
+                    .Result:hover,
+                    .Result:active {
+                        background: white;
+                    }
+
+                    .Result + .Result {
+                        margin-top: 0.5rem;
+                    }
+
+                    .Result-title {
+                        position: relative;
+                        display: inline-block;
+                        font-size: 120%;
+                        margin-right: 1rem;
+                        margin-bottom: 0.67rem;
+                        cursor: pointer;
+                        word-break: break-word;
+                    }
+
+                    .Result-authorName {
+                        position: absolute;
+                        right: 1rem;
+                        top: 1rem;
+                        cursor: pointer;
+                    }
+
+                    .Result-description {
+                        font-size: 90%;
+                        margin-bottom: 0.67rem;
+                    }
+
+                    .Result-keywordsContainer {
+                        word-break: break-word;
+                    }`
+                }</style>
             </div>
         );
     }
@@ -54,24 +102,4 @@ export default class Result extends Component {
     }
 }
 
-export class Keyword extends Component {
-    constructor() {
-        super();
-
-        this.openKeyword = this.openKeyword.bind(this);
-    }
-
-    render() {
-        return (
-            <div
-                className="Keyword"
-                onClick={this.openKeyword}>
-                {this.props.keyword}
-            </div>
-        );
-    }
-
-    openKeyword() {
-        
-    }
-}
+export default Result;

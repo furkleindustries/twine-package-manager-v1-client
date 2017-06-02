@@ -16,8 +16,7 @@ import {
 import App from '../src/App';
 
 /* css */
-import css from '../src/panes/forum/forum.css';
-
+/*import css from '../src/panes/forum/forum.css';*/
 
 export class ForumPage extends Component {
     constructor() {
@@ -35,7 +34,23 @@ export class ForumPage extends Component {
                     src={'https://furkleindustries.com/twinepm/forum/' +
                         this.forumPath}
                     ref={iframe => this.iframe = iframe} />
-                <style>{css}</style>
+                <style jsx>{
+                    `.paneContainer.Forum {
+                        overflow-y: hidden;
+                    }
+
+                    #forumIFrame {
+                        position: absolute;
+                        left: 0;
+                        top: 0;
+                        width: 100%;
+                        height: 100%;
+                        padding: 1rem;
+                        border: 0;
+                        background: rgb(251, 248, 248);
+                        box-sizing: border-box;
+                    }`
+                }</style>
             </div>
         );
     }
@@ -67,7 +82,7 @@ export class ForumPage extends Component {
                 const server = '/twinepm/forum/';
                 this.forumPath = message.data.href.slice(server.length);
             } else if (message.data.type === 'tpmForumSignedOut') {
-                clearInterval(intervalID);
+                clearInterval(this.intervalID);
             }
         }
     }
@@ -81,10 +96,13 @@ const wrapped = () => (
     </App>
 );
 
-wrapped.getInitialProps = ({ req, store }) => {
+export async function getInitialProps({ req, store, }) {
+    /* req only exists on server side */
     if (req) {
         store.dispatch(setAppSelectedPane(req.url.slice(1)));
     }
-};
+}
+
+wrapped.getInitialProps = getInitialProps;
 
 export default withRedux(initStore, null, null)(wrapped);

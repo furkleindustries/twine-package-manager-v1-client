@@ -22,7 +22,7 @@ import create from '../src/modules/modals/create';
 import App from '../src/App';
 
 /* css */
-import css from '../src/panes/about/about.css';
+/*import css from '../src/panes/about/about.css';*/
 
 export class AboutPage extends Component {
     render() {
@@ -46,7 +46,9 @@ export class AboutPage extends Component {
                     A Furkle Industries production.
                 </p>
 
-                <style>{css}</style>
+                <style jsx>{
+                    ``
+                }</style>
             </div>
         );
     }
@@ -73,10 +75,13 @@ const wrapped = () => (
     </App>
 );
 
-wrapped.getInitialProps = ({ req, store }) => {
+export async function getInitialProps({ req, store, }) {
+    /* req only exists on server side */
     if (req) {
         store.dispatch(setAppSelectedPane(req.url.slice(1)));
     }
-};
+}
+
+wrapped.getInitialProps = getInitialProps;
 
 export default withRedux(initStore, null, null)(wrapped);

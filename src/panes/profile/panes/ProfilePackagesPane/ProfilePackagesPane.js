@@ -11,7 +11,7 @@ import PackageOwned from '../../../../components/PackageOwned/PackageOwned';
 import * as modalFactories from '../../../../modules/modals/factories';
 
 /* css */
-import css from './ProfilePackagesPane.css';
+/*import css from './ProfilePackagesPane.css';*/
 
 export class ProfilePackagesPane extends Component {
     render() {
@@ -23,14 +23,15 @@ export class ProfilePackagesPane extends Component {
                 togglePackagePublish={this.props.togglePackagePublish}
                 editPackage={this.props.editPackage}
                 removePackage={this.props.removePackage}
-                package={pkg} />;
+                package={pkg}
+                store={this.props.store} />;
         });
 
         return (
             <div className="ProfilePackagesPane">
                 <h1 className="header">My Packages</h1>
 
-                    {list.length ? list : "No packages."}
+                {list.length ? list : "No packages."}
 
                 <button
                     className="Profile-newPackage wideButton"
@@ -38,7 +39,9 @@ export class ProfilePackagesPane extends Component {
                     Create New Package
                 </button>
 
-                <style>{css}</style>
+                <style jsx>{
+                    ``
+                }</style>
             </div>
         );
     }

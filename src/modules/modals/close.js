@@ -1,11 +1,10 @@
 /* redux */
-import store from '../../store';
 import { setModal, } from '../../appActions';
 
 /* modules */
 import closeListener from './closeListener';
 
-export default function close() {
+export default function close(dispatch) {
     /* TODO: REFACTOR DOCUMENT.QUERYSELECTOR */
     const container = document.querySelector('.Modal-container');
     if (container && container.style) {
@@ -15,7 +14,7 @@ export default function close() {
     setTimeout(() => {
         location.hash = '';
 
-        store.dispatch(setModal(null));
+        dispatch(setModal(null));
 
         document.body.removeEventListener(
             'keydown',

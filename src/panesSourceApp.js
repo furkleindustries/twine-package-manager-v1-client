@@ -7,9 +7,9 @@ const building = 'static/images/building_small.jpg';
 /* https://upload.wikimedia.org/wikipedia/commons/9/9f/Hubble%E2%80%99s_modern_art.jpg */
 const hubble = 'static/images/hubble_small.jpg';
 /* https://c2.staticflickr.com/8/7319/8730255464_529c6aea39_z.jpg */
-const maze = 'static/images/maze_small.jpg';
+const maze = 'static/images/maze.jpg';
 /* https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/PSM_V87_D113_Arrangement_of_atoms_in_a_rock_salt_crystal.png/665px-PSM_V87_D113_Arrangement_of_atoms_in_a_rock_salt_crystal.png */
-const atoms = 'static/images/atoms_small.jpg';
+const atoms = 'static/images/atoms.png';
 /* https://c1.staticflickr.com/2/1291/4709904302_6a27e8a579_b.jpg */
 const pneumonitis = 'static/images/pneumonitis_small.jpg';
 /* https://upload.wikimedia.org/wikipedia/commons/5/56/2006-08-15_-_Road_Trip_-_Day_23_-_United_States_-_California_-_San_Francisco_-_Trolley_Wires_-_Black_4889418922.jpg */

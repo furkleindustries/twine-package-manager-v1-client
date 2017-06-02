@@ -22,7 +22,7 @@ import modalClose from '../../modules/modals/close';
 import onlyFirstLetterCapitalized from '../../modules/onlyFirstLetterCapitalized';
 
 /* css */
-import css from './PackageCreateModal.css';
+/*import css from './PackageCreateModal.css';*/
 
 export class PackageCreateModal extends Component {
     constructor() {
@@ -218,7 +218,50 @@ export class PackageCreateModal extends Component {
                     {this.props.message}
                 </p>
 
-                <style>{css}</style>
+                <style jsx>{
+                    `.PackageCreateModal {
+                        text-align: left;
+                    }
+
+                    .PackageCreateModal-title {
+                        margin-top: 0;
+                        text-align: center;
+                    }
+
+                    #PackageCreateModal-dateCreated,
+                    #PackageCreateModal-dateModified {
+                        display: inline-block;
+                        border: 2px solid transparent;
+                    }
+
+                    #PackageCreateModal-js,
+                    #PackageCreateModal-css,
+                    #PackageCreateModal-tag {
+                        height: 26rem;
+                    }
+
+                    .PackageCreateModal-label {
+                        display: inline-block;
+                        margin-right: 0.5rem;
+                        font-weight: bold;
+                    }
+
+                    .PackageCreateModal-input {
+                        width: 95%;
+                        margin-bottom: 1.25rem;
+                        padding: 0.25rem;
+                    }
+
+                    .PackageCreateModal-textarea {
+                        height: 4rem;
+                        resize: none;
+                    }
+
+                    .PackageCreateModal-message {
+                        height: 1rem;
+                        text-align: center;
+                    }`
+                }</style>
             </div>
         );
     }
@@ -273,10 +316,13 @@ export class PackageCreateModal extends Component {
             tag: this.props.tag,
         };
 
-        const successful = await packageCreate(pkg, this.props.csrfToken);
+        const successful = await packageCreate(
+            this.props.store,
+            pkg,
+            this.props.csrfToken);
 
         if (successful) {
-            setTimeout(modalClose, 6000);
+            setTimeout(() => modalClose(this.props.store.dispatch), 6000);
         }
     }
 }

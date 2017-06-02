@@ -1,6 +1,7 @@
 /* redux */
-jest.mock('../store');
-import store from '../store';
+const store = {};
+store.dispatch = jest.fn();
+store.getState = jest.fn();
 
 jest.mock('../panes/search/searchActions');
 import {
@@ -27,7 +28,7 @@ import search from './search';
 jest.mock('./database/get');
 import * as get from './database/get';
 
-describe('search tests', () => {
+describe('search module tests', () => {
     beforeEach(() => {
         store.dispatch.mockClear();
         store.getState.mockClear();
@@ -43,7 +44,7 @@ describe('search tests', () => {
         const log = console.log;
         console.log = jest.fn();
 
-        await search();
+        await search(store);
 
         expect(console.log.mock.calls.length).toBe(1);
         expect(store.dispatch.mock.calls.length).toBe(0);
@@ -55,7 +56,7 @@ describe('search tests', () => {
         const log = console.log;
         console.log = jest.fn();
 
-        await search({});
+        await search(store, {});
 
         expect(console.log.mock.calls.length).toBe(1);
         expect(store.dispatch.mock.calls.length).toBe(0);
@@ -67,7 +68,7 @@ describe('search tests', () => {
         const log = console.log;
         console.log = jest.fn();
 
-        await search({}, []);
+        await search(store, {}, []);
 
         expect(console.log.mock.calls.length).toBe(1);
         expect(store.dispatch.mock.calls.length).toBe(0);
@@ -76,7 +77,7 @@ describe('search tests', () => {
     });
 
     it('passes filterTargets through', async () => {
-        await search({
+        await search(store, {
             filterTargets: [ 'id', 'description', ],
         }, 'test_token');
 
@@ -87,7 +88,7 @@ describe('search tests', () => {
     });
 
     it('drops description from filterTargets if similarity is used', async () => {
-        await search({
+        await search(store, {
             filterStyle: 'similarity',
             filterTargets: ['id', 'description', ],
         }, 'test_token');
@@ -100,7 +101,7 @@ describe('search tests', () => {
     });
 
     it('drops description from filterTargets if levenshtein is used', async () => {
-        await search({
+        await search(store, {
             filterStyle: 'levenshtein',
             filterTargets: ['id', 'description', ],
         }, 'test_token');
@@ -113,7 +114,7 @@ describe('search tests', () => {
     });
 
     it('drops description from filterTargets if soundex/levenshtein is used', async () => {
-        await search({
+        await search(store, {
             filterStyle: 'soundex/levenshtein',
             filterTargets: ['id', 'description', ],
         }, 'test_token');
@@ -126,7 +127,7 @@ describe('search tests', () => {
     });
 
     it('drops description from filterTargets if metaphone/levenshtein is used', async () => {
-        await search({
+        await search(store, {
             filterStyle: 'metaphone/levenshtein',
             filterTargets: ['id', 'description', ],
         }, 'test_token');
@@ -139,7 +140,7 @@ describe('search tests', () => {
     });
 
     it('keeps description from filterTargets if valid filterStyle is used', async () => {
-        await search({
+        await search(store, {
             filterStyle: 'contains',
             filterTargets: ['id', 'description', ],
         }, 'test_token');
@@ -152,7 +153,7 @@ describe('search tests', () => {
     });
 
     it('rejects filterTargets if length is < 1', async () => {
-        await search({
+        await search(store, {
             filterTargets: [],
         }, 'test_token');
 
@@ -163,7 +164,7 @@ describe('search tests', () => {
     });
 
     it('passes sortTarget through', async () => {
-        await search({
+        await search(store, {
             sortTarget: 'description',
         }, 'test_token');
 
@@ -174,7 +175,7 @@ describe('search tests', () => {
     });
 
     it('passes sortStyle through', async () => {
-        await search({
+        await search(store, {
             sortStyle: 'levenshtein',
         }, 'test_token');
 
@@ -184,8 +185,8 @@ describe('search tests', () => {
         expect(get.search.mock.calls[0]).toEqual([ queryStr, ]);
     });
 
-    it('passes sortTarget through', async () => {
-        await search({
+    it('passes sortDirection through', async () => {
+        await search(store, {
             sortDirection: 'descending',
         }, 'test_token');
 
@@ -196,7 +197,7 @@ describe('search tests', () => {
     });
 
     it('passes dateCreatedRange through', async () => {
-        await search({
+        await search(store, {
             dateCreatedRange: [1, 2],
         }, 'test_token');
 
@@ -207,7 +208,7 @@ describe('search tests', () => {
     });
 
     it('rejects dateCreatedRange if length is not 2', async () => {
-        await search({
+        await search(store, {
             dateCreatedRange: [ 1, ],
         }, 'test_token');
 
@@ -218,7 +219,7 @@ describe('search tests', () => {
     });
 
     it('passes dateModifiedRange through', async () => {
-        await search({
+        await search(store, {
             dateModifiedRange: [1, 2],
         }, 'test_token');
 
@@ -229,7 +230,7 @@ describe('search tests', () => {
     });
 
     it('rejects dateModifiedRange if length is not 2', async () => {
-        await search({
+        await search(store, {
             dateModifiedRange: [ 1, ],
         }, 'test_token');
 
@@ -240,7 +241,7 @@ describe('search tests', () => {
     });
 
     it('passes versionRange through', async () => {
-        await search({
+        await search(store, {
             versionRange: ['1', '2'],
         }, 'test_token');
 
@@ -251,7 +252,7 @@ describe('search tests', () => {
     });
 
     it('rejects versionRange if length is not 2', async () => {
-        await search({
+        await search(store, {
             versionRange: [ '1', ],
         }, 'test_token');
 
@@ -262,7 +263,7 @@ describe('search tests', () => {
     });
 
     it('rejects versionRange if 0th is falsey', async () => {
-        await search({
+        await search(store, {
             versionRange: [ '', 'foo', ],
         }, 'test_token');
 
@@ -273,7 +274,7 @@ describe('search tests', () => {
     });
 
     it('rejects versionRange if 0th is falsey', async () => {
-        await search({
+        await search(store, {
             versionRange: [ 'foo', '', ],
         }, 'test_token');
 
@@ -284,7 +285,7 @@ describe('search tests', () => {
     });
 
     it('passes type through', async () => {
-        await search({
+        await search(store, {
             type: 'foobar',
         }, 'test_token');
 
@@ -295,7 +296,7 @@ describe('search tests', () => {
     });
 
     it('passes query through', async () => {
-        await search({
+        await search(store, {
             query: 'a query for testing',
         }, 'test_token');
 
@@ -306,7 +307,7 @@ describe('search tests', () => {
     });
 
     it('passes subtype through when type is packages', async () => {
-        await search({
+        await search(store, {
             type: 'packages',
             subtype: 'scripts',
         }, 'test_token');
@@ -325,7 +326,7 @@ describe('search tests', () => {
             };
         });
 
-        await search({}, 'test_token');
+        await search(store, {}, 'test_token');
 
         expect(setSearchResults.mock.calls.length).toBe(1);
         expect(setSearchResults.mock.calls[0]).toEqual([ [ 'test', ], ]);
@@ -355,7 +356,7 @@ describe('search tests', () => {
             };
         });
 
-        await search({}, 'test_token');
+        await search(store, {}, 'test_token');
 
         expect(setSearchResults.mock.calls.length).toBe(1);
         expect(setSearchResults.mock.calls[0]).toEqual([ [], ]);
@@ -377,7 +378,7 @@ describe('search tests', () => {
     it('records a generic error message when get.search returns falsey', async () => {
         get.search.mockImplementationOnce(() => null);
 
-        await search({}, 'test_token');
+        await search(store, {}, 'test_token');
 
         expect(setSearchMessage.mock.calls.length).toBe(1);
         expect(setSearchMessage.mock.calls[0]).toEqual([
@@ -396,7 +397,7 @@ describe('search tests', () => {
             return { error: 'testing', };
         });
 
-        await search({}, 'test_token');
+        await search(store, {}, 'test_token');
 
         expect(setSearchMessage.mock.calls.length).toBe(1);
         expect(setSearchMessage.mock.calls[0]).toEqual([ 'testing', ]);
@@ -412,7 +413,7 @@ describe('search tests', () => {
             return { status: 400, };
         });
 
-        await search({}, 'test_token');
+        await search(store, {}, 'test_token');
 
         expect(setSearchMessage.mock.calls.length).toBe(1);
         expect(setSearchMessage.mock.calls[0]).toEqual([
@@ -433,7 +434,7 @@ describe('search tests', () => {
             return { error: 'test', };
         });
 
-        await search({}, 'test_token');
+        await search(store, {}, 'test_token');
 
         store.getState.mockImplementationOnce(() => {
             return { searchMessage: 'test', };
@@ -454,7 +455,7 @@ describe('search tests', () => {
         jest.clearAllTimers();
         jest.useFakeTimers();
 
-        await search({}, 'test_token');
+        await search(store, {}, 'test_token');
 
         store.getState.mockImplementationOnce(() => {
             return { searchMessage: 'test', };
@@ -475,7 +476,7 @@ describe('search tests', () => {
             throw exception;
         });
 
-        await search({}, 'test_token');
+        await search(store, {}, 'test_token');
 
         expect(console.log.mock.calls.length).toBe(1);
         expect(store.dispatch.mock.calls.length).toBe(0);

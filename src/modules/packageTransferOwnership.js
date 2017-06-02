@@ -1,5 +1,4 @@
 /* redux */
-import store from '../store';
 import {
     setPackageEditingMessage,
 } from '../components/PackageOwned/PackageOwnedActions';
@@ -7,7 +6,7 @@ import {
 /* modules */
 import * as post from './database/post';
 
-export default async function packageTransferOwnership(id, newOwner, csrfToken) {
+export default async function packageTransferOwnership(store, id, newOwner, csrfToken) {
     let responseObj;
     try {
         responseObj = await post.packageOwnershipTransfer(

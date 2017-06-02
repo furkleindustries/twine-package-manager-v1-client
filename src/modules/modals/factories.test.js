@@ -28,19 +28,19 @@ describe('modal factories unit tests', () => {
     });
     
     it('tests the togglePackagePublish modal creator', () => {
-        modalFactories.togglePackagePublish(12);
+        modalFactories.togglePackagePublish(null, 12);
         expect(location.hash).toEqual('#togglePackagePublish-12');
         expect(create.mock.calls.length).toEqual(1);
     });
     
     it('tests the packageEdit modal creator', () => {
-        modalFactories.packageEdit(13);
+        modalFactories.packageEdit(null, 13);
         expect(location.hash).toEqual('#editPackage-13');
         expect(create.mock.calls.length).toEqual(1);
     });
     
     it('tests the packageDelete modal creator', () => {
-        modalFactories.packageDelete(14);
+        modalFactories.packageDelete(null, 14);
         expect(location.hash).toEqual('#deletePackage-14');
         expect(create.mock.calls.length).toEqual(1);
     });

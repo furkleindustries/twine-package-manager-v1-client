@@ -1,6 +1,6 @@
 const css = 
 `.AccountDeleteModal-message {
-	height: 1rem;
+    height: 1rem;
 }`;
 
 export default css;

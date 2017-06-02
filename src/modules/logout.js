@@ -1,8 +1,7 @@
 /* react */
-import { browserHistory, } from 'react-router';
+import Router from 'next/router';
 
 /* redux */
-import store from '../store';
 import {
     setAppPanes,
     setAppSelectedPane,
@@ -16,7 +15,7 @@ import { setProfile, } from '../panes/profile/profileActions';
 import deepCopy from './deepCopy';
 import * as post from './database/post';
 
-export default function logout(antiCSRFToken, skipServer) {
+export default function logout(store, antiCSRFToken, skipServer) {
     if (skipServer !== false && skipServer === 'skipServer') {
         try {
             post.logout(antiCSRFToken);
@@ -45,6 +44,6 @@ export default function logout(antiCSRFToken, skipServer) {
         store.dispatch(setAppSelectedPane('login'));
 
         /* redirect to the login page */
-        browserHistory.push(`${process.env.PUBLIC_URL}/login`);
+        Router.push('/login', 'login');
     }
 }

@@ -9,7 +9,7 @@ import packageDelete from '../../modules/packageDelete';
 import modalClose from '../../modules/modals/close';
 
 /* css */
-import css from './PackageDeleteModal.css';
+/*import css from './PackageDeleteModal.css';*/
 
 export class PackageDeleteModal extends Component {
     constructor() {
@@ -46,13 +46,19 @@ export class PackageDeleteModal extends Component {
                     {this.props.message}
                 </p>
 
-                <style>{css}</style>
+                <style jsx>{
+                    `.PackageDeleteModal-message {
+                        height: 1rem;
+                        text-align: center;
+                    }`
+                }</style>
             </div>
         );
     }
 
     async deletePackage() {
         const successful = await packageDelete(
+            this.props.store,
             this.props.id,
             this.props.csrfToken);
         if (successful) {

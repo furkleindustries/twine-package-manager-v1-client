@@ -1,18 +1,24 @@
 /* react */
 import React from 'react';
 import ReactTestUtils from 'react-dom/test-utils';
-import { browserHistory, } from 'react-router';
+import Router from 'next/router';
 
 /* enzyme */
 import { shallow, mount, } from 'enzyme';
 
+/* next */
+jest.mock('next/router');
+
 /* redux */
-import store from '../../store';
-const dispatch = store.dispatch;
-const getState = store.getState;
+const store = {};
+store.dispatch = jest.fn();
+store.getState = jest.fn();
 
 jest.mock('../../appActions');
-import { setSideBarVisible, } from '../../appActions';
+import {
+    setAppSelectedPane,
+    setSideBarVisible,
+} from '../../appActions';
 
 jest.mock('./searchActions');
 import {
@@ -34,6 +40,7 @@ import {
 } from './searchActions';
 
 const actionMocks = {
+    setAppSelectedPane,
     setSideBarVisible,
     setSearchedYet,
     setSearchQuery,
@@ -53,9 +60,7 @@ const actionMocks = {
 };
 
 Object.keys(actionMocks).forEach(key => {
-    actionMocks[key].mockImplementation(() => {
-        return { type: key, };
-    });
+    actionMocks[key].mockImplementation(() => ( { type: key, } ));
 });
 
 /* modules */
@@ -66,45 +71,30 @@ jest.mock('../../modules/search');
 import search from '../../modules/search';
 
 /* components */
-import { SearchPane, } from './search';
-import rootComponent from '../../rootComponent';
-import Result from '../../components/Result/Result';
+import ConnectedSearch, {
+    SearchPage,
+    getInitialProps,
+} from '../../../pages/search';
 
-describe('SearchPane tests', () => {
+describe('Search tests', () => {
     beforeEach(() => {
         window.localStorage = {};
+        unixTimeToSettingsTime.mockClear();
+        store.dispatch.mockClear();
 
         Object.keys(actionMocks).forEach(key => {
             actionMocks[key].mockClear();
         });
 
-        unixTimeToSettingsTime.mockClear();
-        store.dispatch = jest.fn();
     });
 
-    it('renders the Search component', () => {
-        const wrapper = shallow(<SearchPane />);
+    it('renders the connected Search component', () => {
+        const wrapper = mount(<ConnectedSearch />);
         expect(wrapper.length).toEqual(1);
     });
 
-    it('produces the Search component within the document', () => {
-        const baseUrl = process.env.PUBLIC_URL;
-        
-        store.dispatch = dispatch;
-  
-        const component = ReactTestUtils.renderIntoDocument(rootComponent);
-
-        browserHistory.push(`${baseUrl}/search`);
-
-        const find = ReactTestUtils.scryRenderedComponentsWithType(
-            component,
-            SearchPane);
-        
-        expect(find.length).toEqual(1);
-    });
-
     it('hides the sidebar when mounted', () => {
-        const wrapper = shallow(<SearchPane />);
+        const wrapper = shallow(<SearchPage dispatch={store.dispatch} />);    
         wrapper.instance().componentDidMount();
 
         expect(setSideBarVisible.mock.calls.length).toBe(1);
@@ -122,67 +112,67 @@ describe('SearchPane tests', () => {
             { id: 102, },
         ];
 
-        const wrapper = mount(<SearchPane results={results} />);
+        const wrapper = mount(<SearchPage dispatch={store.dispatch} results={results} />);
 
-        expect(wrapper.find(Result).length).toBe(2);
+        expect(wrapper.find('Result').length).toBe(2);
     });
 
     it('writes a message if there are no results and props.searchedYet is truthy', () => {
-        const wrapper = shallow(<SearchPane searchedYet={true} />);
+        const wrapper = shallow(<SearchPage dispatch={store.dispatch} searchedYet={true} />);
         expect(wrapper.text().indexOf('No results.')).not.toBe(-1);
     });
 
     it('makes the description form element disabled when props.filterStyle is out of band', () => {
-        const wrapper = shallow(<SearchPane filterStyle="similarity" />);
+        const wrapper = shallow(<SearchPage dispatch={store.dispatch} filterStyle="similarity" />);
         const targetWrapper = wrapper.find('#Search-filterTargetDescription');
         expect(targetWrapper.length).toBe(1);
         expect(targetWrapper.node.props.disabled).toBe('disabled');
     });
 
     it('properly formats displayed filter style when props.filterStyle is metaphone/contains', () => {
-        const wrapper = shallow(<SearchPane filterStyle="metaphone/contains" />);
+        const wrapper = shallow(<SearchPage dispatch={store.dispatch} filterStyle="metaphone/contains" />);
         const targetWrapper = wrapper.find('#Search-filterStyle');
         expect(targetWrapper.length).toBe(1);
         expect(targetWrapper.node.props.value).toBe('Metaphone/Contains');
     });
 
     it('properly formats displayed filter style when props.filterStyle is soundex/levenshtein', () => {
-        const wrapper = shallow(<SearchPane filterStyle="soundex/levenshtein" />);
+        const wrapper = shallow(<SearchPage dispatch={store.dispatch} filterStyle="soundex/levenshtein" />);
         const targetWrapper = wrapper.find('#Search-filterStyle');
         expect(targetWrapper.length).toBe(1);
         expect(targetWrapper.node.props.value).toBe('Soundex/Levenshtein');
     });
 
     it('properly formats displayed filter style when props.filterStyle is metaphone/levenshtein', () => {
-        const wrapper = shallow(<SearchPane filterStyle="metaphone/levenshtein" />);
+        const wrapper = shallow(<SearchPage dispatch={store.dispatch} filterStyle="metaphone/levenshtein" />);
         const targetWrapper = wrapper.find('#Search-filterStyle');
         expect(targetWrapper.length).toBe(1);
         expect(targetWrapper.node.props.value).toBe('Metaphone/Levenshtein');
     });
 
     it('properly formats displayed sort style when props.filterStyle is soundex/levenshtein', () => {
-        const wrapper = shallow(<SearchPane sortStyle="soundex/levenshtein" />);
+        const wrapper = shallow(<SearchPage dispatch={store.dispatch} sortStyle="soundex/levenshtein" />);
         const targetWrapper = wrapper.find('#Search-sortStyle');
         expect(targetWrapper.length).toBe(1);
         expect(targetWrapper.node.props.value).toBe('Soundex/Levenshtein');
     });
 
     it('properly formats displayed sort style when initial result is metaphone/levenshtein', () => {
-        const wrapper = shallow(<SearchPane sortStyle="metaphone/levenshtein" />);
+        const wrapper = shallow(<SearchPage dispatch={store.dispatch} sortStyle="metaphone/levenshtein" />);
         const targetWrapper = wrapper.find('#Search-sortStyle');
         expect(targetWrapper.length).toBe(1);
         expect(targetWrapper.node.props.value).toBe('Metaphone/Levenshtein');
     });
 
     it('does not hide the optionsContainer when props.optionsVisible is truthy', () => {
-        const wrapper = shallow(<SearchPane optionsVisible={true} />);
+        const wrapper = shallow(<SearchPage dispatch={store.dispatch} optionsVisible={true} />);
         const targetWrapper = wrapper.find('.Search-optionsContainer');
         expect(targetWrapper.length).toBe(1);
         expect(targetWrapper.node.props.className.indexOf('hidden')).toBe(-1);
     });
 
     it('displays the sort target as ID rather than id or Id', () => {
-        const wrapper = shallow(<SearchPane sortTarget="id" />);
+        const wrapper = shallow(<SearchPage dispatch={store.dispatch} sortTarget="id" />);
         const targetWrapper = wrapper.find('#Search-sortTarget');
         expect(targetWrapper.length).toBe(1);
         expect(targetWrapper.node.props.value).toBe('ID');
@@ -190,25 +180,25 @@ describe('SearchPane tests', () => {
 
     it('does not break when props.type is packages', () => {
         expect(() => {
-            shallow(<SearchPane type="packages" />);
+            shallow(<SearchPage dispatch={store.dispatch} type="packages" />);
         }).not.toThrow();
     });
 
     it('does not break when autocomplete is called', () => {
         expect(() => {
-            shallow(<SearchPane />).instance().autocomplete();
+            shallow(<SearchPage dispatch={store.dispatch} />).instance().autocomplete();
         }).not.toThrow();
     });
 
     it('calls search when searchKeyUp is called with e.keyCode of 13', () => {
-        const wrapper = shallow(<SearchPane />);
+        const wrapper = shallow(<SearchPage dispatch={store.dispatch} />);
         wrapper.instance().search = jest.fn();
         wrapper.instance().searchKeyUp({ keyCode: 13, });
         expect(wrapper.instance().search.mock.calls.length).toBe(1);
     });
 
     it('does not call search when searchKeyUp is called with e.keyCode !== 13', () => {
-        const wrapper = shallow(<SearchPane />);
+        const wrapper = shallow(<SearchPage dispatch={store.dispatch} />);
         wrapper.instance().search = jest.fn();
         wrapper.instance().searchKeyUp({
             keyCode: 14,
@@ -219,7 +209,7 @@ describe('SearchPane tests', () => {
     });
 
     it('dispatches a created setSearchQuery action if e.keyCode !== 13', () => {
-        const wrapper = shallow(<SearchPane />);
+        const wrapper = shallow(<SearchPage dispatch={store.dispatch} />);
         wrapper.instance().searchKeyUp({
             keyCode: 14,
             target: { value: 'testing', },
@@ -235,7 +225,7 @@ describe('SearchPane tests', () => {
     });
 
     it('fires autocomplete when e.keyCode !== 13, 32, and 46', () => {
-        const wrapper = shallow(<SearchPane />);
+        const wrapper = shallow(<SearchPage dispatch={store.dispatch} />);
         wrapper.instance().autocomplete = jest.fn();
         wrapper.instance().searchKeyUp({
             keyCode: 15,
@@ -246,7 +236,7 @@ describe('SearchPane tests', () => {
     });
 
     it('does not fire autocomplete when e.keyCode === 13, 32, and 46', () => {
-        let wrapper = shallow(<SearchPane />);
+        let wrapper = shallow(<SearchPage dispatch={store.dispatch} />);
         wrapper.instance().search = jest.fn();
         wrapper.instance().autocomplete = jest.fn();
         wrapper.instance().searchKeyUp({
@@ -255,7 +245,7 @@ describe('SearchPane tests', () => {
         });
         
         expect(wrapper.instance().autocomplete.mock.calls.length).toBe(0);
-        wrapper = shallow(<SearchPane />);
+        wrapper = shallow(<SearchPage dispatch={store.dispatch} />);
         wrapper.instance().search = jest.fn();
         wrapper.instance().autocomplete = jest.fn();
         wrapper.instance().searchKeyUp({
@@ -265,7 +255,7 @@ describe('SearchPane tests', () => {
 
         expect(wrapper.instance().autocomplete.mock.calls.length).toBe(0);
 
-        wrapper = shallow(<SearchPane />);
+        wrapper = shallow(<SearchPage dispatch={store.dispatch} />);
         wrapper.instance().search = jest.fn();
         wrapper.instance().autocomplete = jest.fn();
         wrapper.instance().searchKeyUp({
@@ -277,7 +267,7 @@ describe('SearchPane tests', () => {
     });
 
     it('handles side effects when toggleOptions is called', () => {
-        const wrapper = shallow(<SearchPane optionsVisible={true} />);
+        const wrapper = shallow(<SearchPage dispatch={store.dispatch} optionsVisible={true} />);
         wrapper.instance().toggleOptions();
 
         expect(setSearchOptionsVisible.mock.calls.length).toBe(1);
@@ -290,46 +280,26 @@ describe('SearchPane tests', () => {
     });
 
     it('handles side effects when serializeSearchOptions is called', () => {
-        const wrapper = shallow(<SearchPane />);
+        const component = (
+            <SearchPage
+                dispatch={store.dispatch}
+                searchedYet={false}
+                query="test query"
+                results={[]}
+                message="test message"
+                optionsVisible={true}
+                testing="test" />
+        );
 
-        store.getState = jest.fn().mockImplementation(() => {
-            return {
-                search: {
-                    searchedYet: false,
-                    query: 'test query',
-                    results: [],
-                    message: 'test message',
-                    optionsVisible: true,
-                    testing: 'test',
-                },
-            };
-        });
+        const wrapper = shallow(component);
 
         wrapper.instance().serializeSearchOptions();
 
         expect(localStorage.twinepmSearchOptions).toBe(`{"testing":"test"}`);
-
-        store.getState = getState;
-    });
-
-    it('logs and returns early from serializeSearchOptions when the search object cannot be found', () => {
-        const log = console.log;
-        console.log = jest.fn();
-
-        const wrapper = shallow(<SearchPane />);
-
-        store.getState = jest.fn().mockImplementation(() => '');
-
-        wrapper.instance().serializeSearchOptions();
-
-        expect(console.log.mock.calls.length).toBe(1);
-        expect(localStorage.twinepmSearchOptions).toBe(undefined);
-
-        console.log = log;
     });
 
     it('handles side effects when setType is called', () => {
-        const wrapper = shallow(<SearchPane />);
+        const wrapper = shallow(<SearchPage dispatch={store.dispatch} />);
         wrapper.instance().serializeSearchOptions = jest.fn();
 
         wrapper.instance().setType({
@@ -349,7 +319,7 @@ describe('SearchPane tests', () => {
     });
 
     it('handles side effects when setSubtype is called', () => {
-        const wrapper = shallow(<SearchPane />);
+        const wrapper = shallow(<SearchPage dispatch={store.dispatch} />);
         wrapper.instance().serializeSearchOptions = jest.fn();
 
         wrapper.instance().setSubtype({
@@ -369,7 +339,7 @@ describe('SearchPane tests', () => {
     });
 
     it('sends id to setSearchFilterStyle if this.filterTargetId is checked', () => {
-        const wrapper = shallow(<SearchPane />);
+        const wrapper = shallow(<SearchPage dispatch={store.dispatch} />);
         wrapper.instance().serializeSearchOptions = jest.fn();
         wrapper.instance().filterTargetId = { checked: true, };
 
@@ -388,7 +358,7 @@ describe('SearchPane tests', () => {
     });
 
     it('sends name to setSearchFilterStyle if this.filterTargetName is checked', () => {
-        const wrapper = shallow(<SearchPane />);
+        const wrapper = shallow(<SearchPage dispatch={store.dispatch} />);
         wrapper.instance().serializeSearchOptions = jest.fn();
         wrapper.instance().filterTargetName = { checked: true, };
 
@@ -407,7 +377,7 @@ describe('SearchPane tests', () => {
     });
 
     it('sends description to setSearchFilterStyle if this.filterTargetDescription is checked', () => {
-        const wrapper = shallow(<SearchPane />);
+        const wrapper = shallow(<SearchPage dispatch={store.dispatch} />);
         wrapper.instance().serializeSearchOptions = jest.fn();
         wrapper.instance().filterTargetDescription = { checked: true, };
 
@@ -428,7 +398,7 @@ describe('SearchPane tests', () => {
     });
 
     it('sends keywords to setSearchFilterStyle if this.filterTargetKeywords is checked', () => {
-        const wrapper = shallow(<SearchPane />);
+        const wrapper = shallow(<SearchPage dispatch={store.dispatch} />);
         wrapper.instance().serializeSearchOptions = jest.fn();
         wrapper.instance().filterTargetKeywords = { checked: true, };
 
@@ -449,7 +419,7 @@ describe('SearchPane tests', () => {
     });
 
     it('sends keywords to setSearchFilterStyle if this.filterTargetHomepage is checked', () => {
-        const wrapper = shallow(<SearchPane />);
+        const wrapper = shallow(<SearchPage dispatch={store.dispatch} />);
         wrapper.instance().serializeSearchOptions = jest.fn();
         wrapper.instance().filterTargetHomepage = { checked: true, };
 
@@ -470,7 +440,7 @@ describe('SearchPane tests', () => {
     });
 
     it('sends all fields to setSearchFilterStyle if all this.filterTargetX are checked', () => {
-        const wrapper = shallow(<SearchPane />);
+        const wrapper = shallow(<SearchPage dispatch={store.dispatch} />);
         wrapper.instance().serializeSearchOptions = jest.fn();
         wrapper.instance().filterTargetId = { checked: true, };
         wrapper.instance().filterTargetName = { checked: true, };
@@ -501,7 +471,7 @@ describe('SearchPane tests', () => {
     });
 
     it('handles side effects when setFilterStyle is called', () => {
-        const wrapper = shallow(<SearchPane />);
+        const wrapper = shallow(<SearchPage dispatch={store.dispatch} />);
         wrapper.instance().serializeSearchOptions = jest.fn();
 
         wrapper.instance().setFilterStyle({
@@ -521,7 +491,7 @@ describe('SearchPane tests', () => {
     });
 
     it('handles side effects when setSortTarget is called', () => {
-        const wrapper = shallow(<SearchPane />);
+        const wrapper = shallow(<SearchPage dispatch={store.dispatch} />);
         wrapper.instance().serializeSearchOptions = jest.fn();
 
         wrapper.instance().setSortTarget({
@@ -541,7 +511,7 @@ describe('SearchPane tests', () => {
     });
 
     it('handles side effects when setSortStyle is called', () => {
-        const wrapper = shallow(<SearchPane />);
+        const wrapper = shallow(<SearchPage dispatch={store.dispatch} />);
         wrapper.instance().serializeSearchOptions = jest.fn();
 
         wrapper.instance().setSortStyle({
@@ -561,7 +531,7 @@ describe('SearchPane tests', () => {
     });
 
     it('handles side effects when setSortDirection is called', () => {
-        const wrapper = shallow(<SearchPane />);
+        const wrapper = shallow(<SearchPage dispatch={store.dispatch} />);
         wrapper.instance().serializeSearchOptions = jest.fn();
 
         wrapper.instance().setSortDirection({
@@ -581,7 +551,7 @@ describe('SearchPane tests', () => {
     });
 
     it('handles side effects when setDateCreatedRange is called', () => {
-        const wrapper = shallow(<SearchPane />);
+        const wrapper = shallow(<SearchPage dispatch={store.dispatch} />);
         wrapper.instance().serializeSearchOptions = jest.fn();
         wrapper.instance().dateCreatedRangeLower = { value: 14, };
         wrapper.instance().dateCreatedRangeUpper = { value: 15, };
@@ -605,7 +575,7 @@ describe('SearchPane tests', () => {
     });
 
     it('handles side effects when setDateModifiedRange is called', () => {
-        const wrapper = shallow(<SearchPane />);
+        const wrapper = shallow(<SearchPage dispatch={store.dispatch} />);
         wrapper.instance().serializeSearchOptions = jest.fn();
         wrapper.instance().dateModifiedRangeLower = { value: 14, };
         wrapper.instance().dateModifiedRangeUpper = { value: 15, };
@@ -629,7 +599,7 @@ describe('SearchPane tests', () => {
     });
 
     it('handles side effects when setVersionRange is called', () => {
-        const wrapper = shallow(<SearchPane />);
+        const wrapper = shallow(<SearchPage dispatch={store.dispatch} />);
         wrapper.instance().serializeSearchOptions = jest.fn();
         wrapper.instance().versionRangeLower = { value: '15', };
         wrapper.instance().versionRangeUpper = { value: '16', };
@@ -667,11 +637,36 @@ describe('SearchPane tests', () => {
             subtype: 'testSubtype',
         };
 
-        const component = <SearchPane { ...searchObj } csrfToken="test" />;
+        const component = (
+            <SearchPage
+                store={store}
+                dispatch={store.dispatch}
+                {...searchObj}
+                csrfToken="test" />
+        );
         const wrapper = shallow(component);
         wrapper.instance().search();
 
         expect(search.mock.calls.length).toBe(1);
-        expect(search.mock.calls[0]).toEqual([ searchObj, 'test', ]);
+        expect(search.mock.calls[0]).toEqual([ store, searchObj, 'test', ]);
+    });
+
+    it('tests getInitialProps when req exists', async () => {
+        await getInitialProps({ req: { url: '/foo', }, store, });
+
+        expect(setAppSelectedPane.mock.calls.length).toBe(1);
+        expect(setAppSelectedPane.mock.calls[0]).toEqual([ 'foo', ]);
+        
+        expect(store.dispatch.mock.calls.length).toBe(1);
+        expect(store.dispatch.mock.calls[0]).toEqual([
+            { type: 'setAppSelectedPane', },
+        ]);
+    });
+
+    it('tests getInitialProps when req does not exist', async () => {
+        await getInitialProps({ store, });
+
+        expect(setAppSelectedPane.mock.calls.length).toBe(0);
+        expect(store.dispatch.mock.calls.length).toBe(0);
     });
 });

@@ -27,7 +27,7 @@ import packageTransferOwnership from '../../modules/packageTransferOwnership';
 import packageUpdate from '../../modules/packageUpdate';
 
 /* css */
-import css from './PackageEditModal.css';
+/*import css from './PackageEditModal.css';*/
 
 export class PackageEditModal extends Component {
     constructor() {
@@ -285,7 +285,51 @@ export class PackageEditModal extends Component {
                     {this.props.message}
                 </p>
 
-                <style>{css}</style>
+                <style jsx>{
+                    `.PackageEditModal {
+                        text-align: left;
+                    }
+
+                    .PackageEditModal-title {
+                        margin-top: 0;
+                        text-align: center;
+                    }
+
+                    #PackageEditModal-id,
+                    #PackageEditModal-dateCreated,
+                    #PackageEditModal-dateModified {
+                        display: inline-block;
+                        border: 2px solid transparent;
+                    }
+
+                    #PackageEditModal-js,
+                    #PackageEditModal-css,
+                    #PackageEditModal-tag {
+                        height: 26rem;
+                    }
+
+                    .PackageEditModal-label {
+                        display: inline-block;
+                        margin-right: 0.5rem;
+                        font-weight: bold;
+                    }
+
+                    .PackageEditModal-input {
+                        width: 95%;
+                        margin-bottom: 1.25rem;
+                        padding: 0.25rem;
+                    }
+
+                    .PackageEditModal-textarea {
+                        height: 4rem;
+                        resize: none;
+                    }
+
+                    .PackageEditModal-message {
+                        height: 1rem;
+                        text-align: center;
+                    }`
+                }</style>
             </div>
         );
     }
@@ -353,9 +397,12 @@ export class PackageEditModal extends Component {
             tag: this.props.tag,
         };
 
-        const successful = await packageUpdate(pkg, this.props.csrfToken);
+        const successful = await packageUpdate(
+            this.props.store,
+            pkg,
+            this.props.csrfToken);
         if (successful) {
-            setTimeout(modalClose, 6000);
+            setTimeout(() => modalClose(this.props.dispatch), 6000);
         }
     }
 }

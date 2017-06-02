@@ -9,7 +9,7 @@ import modalClose from '../../modules/modals/close';
 import packagePublish from '../../modules/packagePublish';
 
 /* css */
-import css from './PackagePublishModal.css';
+/*import css from './PackagePublishModal.css';*/
 
 export class PackagePublishModal extends Component {
     constructor() {
@@ -55,13 +55,19 @@ export class PackagePublishModal extends Component {
                     {this.props.message}
                 </p>
 
-                <style>{css}</style>
+                <style jsx>{
+                    `.PackagePublishModal-message {
+                        height: 1rem;
+                        text-align: center;
+                    }`
+                }</style>
             </div>
         );
     }
 
     async publishPackage() {
         const successful = await packagePublish(
+            this.props.store,
             this.props.id,
             !this.props.published,
             this.props.csrfToken);

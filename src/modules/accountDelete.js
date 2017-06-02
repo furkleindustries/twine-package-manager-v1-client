@@ -1,15 +1,13 @@
-// redux
-import store from '../store';
+/* redux */
 import {
     setAccountDeletingMessage,
 } from '../modals/AccountDeleteModal/AccountDeleteModalActions';
 
-// modules
+/* modules */
 import * as _delete from './database/delete';
-import modalClose from './modals/close';
 import logout from './logout';
 
-export default async function accountDelete(id, csrfToken) {
+export default async function accountDelete(store, id, csrfToken) {
     let responseObj;
     try {
         responseObj = await _delete.account(id, csrfToken);
@@ -36,7 +34,7 @@ export default async function accountDelete(id, csrfToken) {
 
     if (succeeded) {
         setTimeout(() => {
-            logout(null, 'skipServer');
+            logout(store, null, 'skipServer');
             store.dispatch(setAccountDeletingMessage(''));
         }, 2000);
     } else {
