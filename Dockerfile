@@ -1,7 +1,12 @@
 FROM node:8.5
 
-RUN mkdir /etc/twinepm-server-heroku/
+RUN mkdir /etc/twine-package-manager-client/
 
-WORKDIR /etc/twinepm-server-heroku/
+WORKDIR /etc/twine-package-manager-client/
 
-COPY client/ ./client/
+COPY . .
+
+RUN
+    npm install && \
+    npm nextbuild && \
+    npm nextstart
