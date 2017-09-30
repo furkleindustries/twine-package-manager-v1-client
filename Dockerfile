@@ -6,7 +6,9 @@ WORKDIR /etc/twine-package-manager-client/
 
 COPY . .
 
+# Unsure why env is needed here. Plain npm calls fail, but not after running
+# the container itself.
 RUN
-    npm install && \
-    npm nextbuild && \
-    npm nextstart
+    env npm install && \
+    env npm nextbuild && \
+    env npm nextstart
