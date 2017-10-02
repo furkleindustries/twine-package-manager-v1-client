@@ -10,4 +10,4 @@ COPY . .
 # the container itself.
 RUN \
     env npm install && \
-    env npm nextbuild
+    env npm run nextbuild
