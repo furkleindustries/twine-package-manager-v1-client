@@ -8,6 +8,6 @@ COPY . .
 
 # Unsure why env is needed here. Plain npm calls fail, but not after running
 # the container itself.
-RUN
+RUN \
     env npm install && \
     env npm nextbuild
