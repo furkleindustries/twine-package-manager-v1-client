@@ -1,6 +1,6 @@
 FROM node:8.5
 
-RUN mkdir /etc/twine-package-manager/client/
+RUN mkdir -p /etc/twine-package-manager/client/
 
 WORKDIR /etc/twine-package-manager/client/
 
