@@ -8,7 +8,7 @@ COPY . .
 
 # Unsure why env is needed here.
 RUN \
-    env npm install --no-bin-links && \
+    env npm install && \
     env npm run nextbuild
 
 ENTRYPOINT npm run nextstart
