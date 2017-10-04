@@ -10,3 +10,5 @@ COPY . .
 RUN \
     env npm install && \
     env npm run nextbuild
+
+ENTRYPOINT npm run nextstart
