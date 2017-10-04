@@ -75,9 +75,9 @@
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom",
-    "nextstart": "set NODE_ENV=production&& node server.js",
-    "nextbuild": "set NODE_ENV=production&& next build",
-    "nextdev": "set NODE_ENV=development&& node server.js"
+    "nextstart": "set NODE_ENV='production' && export NODE_ENV && node server.js",
+    "nextbuild": "set NODE_ENV='production' && export NODE_ENV && next build",
+    "nextdev": "set NODE_ENV='development' && export NODE_ENV && node server.js"
   },
   "jest": {
     "collectCoverageFrom": [
