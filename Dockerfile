@@ -4,11 +4,12 @@ RUN mkdir -p /etc/twine-package-manager/client/
 
 WORKDIR /etc/twine-package-manager/client/
 
+ENV NODE_ENV production
+
 COPY . .
 
-# Unsure why env is needed here.
 RUN \
-    env npm install && \
-    env npm run nextbuild
+    npm install --production && \
+    npm run nextbuild
 
 ENTRYPOINT npm run nextstart
