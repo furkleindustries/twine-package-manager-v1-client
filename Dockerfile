@@ -20,7 +20,8 @@ COPY . .
 
 # Run the following command with /bin/sh -c.
 RUN \
-    npm install --production --verbose && # Install all production packages with verbose logging. \
+    # Install all production packages with verbose logging. \
+    npm install --production --verbose && \
     # Build the server. \
     npm run nextbuild
 
