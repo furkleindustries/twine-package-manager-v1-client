@@ -1,0 +1,16 @@
+sudo: required
+
+language: generic
+
+branches:
+  - master
+
+services:
+  - docker
+
+install:
+  - docker build -t client .
+  - docker run -d --name client client
+
+script:
+  - docker exec -it client npm test
