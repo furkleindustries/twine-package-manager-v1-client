@@ -13,4 +13,4 @@ install:
   - docker run -d --name client client
 
 script:
-  - docker exec -it client npm test
+  - docker exec client npm test
