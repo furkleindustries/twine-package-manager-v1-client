@@ -1,6 +1,6 @@
 # Use the official node image as a base.
 # https://github.com/nodejs/docker-node/blob/c37d5e87fa6d46c0e387f73161b056bbf90b83aa/8.6/Dockerfile
-FROM node:8.5
+FROM node:8.6
 
 # Expose the HTTP port.
 EXPOSE 80
@@ -21,7 +21,7 @@ COPY . .
 # Run the following command with /bin/sh -c.
 RUN \
     # Install all production packages with verbose logging. \
-    npm install --production --verbose && \
+    npm install --production && \
     # Build the server. \
     npm run nextbuild
 
