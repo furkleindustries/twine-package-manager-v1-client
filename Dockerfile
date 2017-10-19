@@ -11,16 +11,21 @@ RUN mkdir -p /etc/twine-package-manager/client/
 # Set the working directory.
 WORKDIR /etc/twine-package-manager/client/
 
-# Set the node environment to 'production'. This ensures that dev packages and
-# HMR functionality are not installed/enabled.
-ENV NODE_ENV production
+ARG TWINEPM_MODE=production
+
+ENV TWINEPM_MODE=${TWINEPM_MODE}
+
+# Set the node environment to 'production' by default. This ensures that dev
+# packages and HMR functionality are not installed/enabled.
+ENV NODE_ENV=${TWINEPM_MODE}
 
 # Copy the entire current host directory to the container's working directory.
 COPY . .
 
 # Run the following command with /bin/sh -c.
 RUN \
-    sh -c 'if [ "$TWINEPM_MODE" = "dev" ]; then npm install; else npm install --production; fi' && \
+    # Install all packages. \
+    npm install && \
     # Build the server. \
     npm run nextbuild
 

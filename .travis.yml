@@ -8,11 +8,8 @@ branches:
 services:
   - docker
 
-env:
-  - TWINEPM_MODE=dev
-
 install:
-  - docker build -t client .
+  - docker build -t client --build-arg TWINEPM_MODE=dev .
   - docker run -d --name client client
 
 script:
