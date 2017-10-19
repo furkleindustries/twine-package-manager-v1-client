@@ -11,6 +11,8 @@ services:
 install:
   - docker build -t client .
   - docker run -d --name client client
+  - TWINEPM_MODE=dev
+  - export TWINEPM_MODE
 
 script:
   - docker exec client npm test

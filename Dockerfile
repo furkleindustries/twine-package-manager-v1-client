@@ -20,8 +20,7 @@ COPY . .
 
 # Run the following command with /bin/sh -c.
 RUN \
-    # Install all production packages with verbose logging. \
-    npm install --production && \
+    sh -c 'if [ "$TWINEPM_MODE" = "dev" ]; then npm install; else npm install --production; fi' && \
     # Build the server. \
     npm run nextbuild
 
