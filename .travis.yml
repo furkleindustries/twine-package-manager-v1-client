@@ -10,7 +10,7 @@ services:
 
 install:
   - docker build -t client --build-arg TWINEPM_MODE=dev .
-  - docker run -d --name client client
+  - docker run -d --name client -e "CI=true" client
 
 script:
   - docker exec client npm test
